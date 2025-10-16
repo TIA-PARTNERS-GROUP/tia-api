@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import { AuthService } from '../services/auth.service.js';
-import { ApiError } from '../errors/ApiError.js';
+import { AuthService } from '../services/auth.service';
+import { ApiError } from '../errors/ApiError';
 import { StatusCodes } from 'http-status-codes';
 
 export async function expressAuthentication(

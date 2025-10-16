@@ -1,11 +1,11 @@
-import { prisma } from '@lib/prisma.js';
+import { prisma } from '@lib/prisma';
 import { ZodError } from 'zod';
 import { StatusCodes } from 'http-status-codes';
-import { ApiError } from '../errors/ApiError.js';
-import { createUserSchema, updateUserSchema } from '../types/user.validation.js';
-import type { UserCreationParams, UserUpdateParams } from '../types/user.validation.js';
-import type { UserResponse, UserAuthResponse, LoginRequest, LoginResponse } from '../types/user.dto.js';
-import { PasswordUtils } from '../utils/password.utils.js';
+import { ApiError } from '../errors/ApiError';
+import { createUserSchema, updateUserSchema } from '../types/user.validation';
+import type { UserCreationParams, UserUpdateParams } from '../types/user.validation';
+import type { UserResponse, UserAuthResponse, LoginRequest, LoginResponse } from '../types/user.dto';
+import { PasswordUtils } from '../utils/password.utils';
 
 function isPrismaError(error: unknown): error is { code: string } {
   return typeof error === 'object' && error !== null && 'code' in error;

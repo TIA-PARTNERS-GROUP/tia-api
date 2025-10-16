@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PasswordUtils } from '../utils/password.utils.js';
+import { PasswordUtils } from '../utils/password.utils';
 
 export interface UserCreationParams {
   first_name: string;

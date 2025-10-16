@@ -13,15 +13,16 @@ import {
   Request,
 } from 'tsoa';
 import { StatusCodes } from 'http-status-codes';
-import { ApiError } from '../errors/ApiError.js';
-import { AuthService } from '../services/auth.service.js';
+import { ApiError } from '../errors/ApiError';
+import { AuthService } from '../services/auth.service';
+import { loginSchema } from '../types/auth.validation';
 import type {
   LoginRequest,
   LoginResponse,
   LogoutResponse,
   SessionInfo,
   TokenValidationResponse
-} from '../types/auth.dto.js';
+} from '../types/auth.dto';
 
 /**
  * Authentication & Session Management API
@@ -74,7 +75,18 @@ export class AuthController extends Controller {
     @Header("x-forwarded-for") ipAddress?: string
   ): Promise<LoginResponse | { message: string; details?: any }> {
     try {
-      const result = await AuthService.login(requestBody, ipAddress, userAgent);
+      const validationResult = loginSchema.safeParse(requestBody);
+
+      if (!validationResult.success) {
+        this.setStatus(StatusCodes.UNPROCESSABLE_ENTITY);
+        return {
+          message: 'Validation failed',
+          details: validationResult.error.message,
+        };
+      }
+
+      const validatedData = validationResult.data;
+      const result = await AuthService.login(validatedData, ipAddress, userAgent);
       return result;
     } catch (error) {
       if (error instanceof ApiError) {
@@ -85,7 +97,6 @@ export class AuthController extends Controller {
       return { message: 'Authentication failed' };
     }
   }
-
   /**
    * User Logout
    * 

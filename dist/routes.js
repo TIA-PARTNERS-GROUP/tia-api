@@ -8,6 +8,10 @@ const runtime_1 = require("@tsoa/runtime");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const auth_controller_1 = require("./controllers/auth.controller");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+const skills_controler_1 = require("./controllers/skills.controler");
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+const user_skills_controller_1 = require("./controllers/user_skills.controller");
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const user_controller_1 = require("./controllers/user.controller");
 const auth_middleware_1 = require("./middleware/auth.middleware");
 // @ts-ignore - no great way to install types from subpackage
@@ -63,6 +67,46 @@ const models = {
             "created_at": { "dataType": "datetime", "required": true },
             "expires_at": { "dataType": "datetime", "required": true },
             "is_current": { "dataType": "boolean" },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CreateSkillInput": {
+        "dataType": "refObject",
+        "properties": {
+            "category": { "dataType": "string", "required": true },
+            "name": { "dataType": "string", "required": true },
+            "description": { "dataType": "string" },
+            "active": { "dataType": "double" },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UpdateSkillInput": {
+        "dataType": "refObject",
+        "properties": {
+            "category": { "dataType": "string" },
+            "name": { "dataType": "string" },
+            "description": { "dataType": "string" },
+            "active": { "dataType": "double" },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CreateUserSkillInput": {
+        "dataType": "refObject",
+        "properties": {
+            "skill_id": { "dataType": "double", "required": true },
+            "user_id": { "dataType": "double", "required": true },
+            "proficiency_level": { "dataType": "union", "subSchemas": [{ "dataType": "enum", "enums": ["beginner"] }, { "dataType": "enum", "enums": ["intermediate"] }, { "dataType": "enum", "enums": ["advanced"] }, { "dataType": "enum", "enums": ["expert"] }] },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UpdateUserSkillInput": {
+        "dataType": "refObject",
+        "properties": {
+            "proficiency_level": { "dataType": "union", "subSchemas": [{ "dataType": "enum", "enums": ["beginner"] }, { "dataType": "enum", "enums": ["intermediate"] }, { "dataType": "enum", "enums": ["advanced"] }, { "dataType": "enum", "enums": ["expert"] }] },
         },
         "additionalProperties": false,
     },
@@ -204,6 +248,319 @@ function RegisterRoutes(app) {
             const controller = new auth_controller_1.AuthController();
             const promise = controller.getSessions.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, 200, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/skills', ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController)), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController.prototype.getSkills)), function SkillsController_getSkills(request, response, next) {
+        const args = {
+            category: { "in": "query", "name": "category", "dataType": "string" },
+            active: { "in": "query", "name": "active", "dataType": "boolean" },
+            search: { "in": "query", "name": "search", "dataType": "string" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new skills_controler_1.SkillsController();
+            const promise = controller.getSkills.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/skills/:skillId', ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController)), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController.prototype.getSkillById)), function SkillsController_getSkillById(request, response, next) {
+        const args = {
+            skillId: { "in": "path", "name": "skillId", "required": true, "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new skills_controler_1.SkillsController();
+            const promise = controller.getSkillById.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/skills/name/:name', ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController)), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController.prototype.getSkillByName)), function SkillsController_getSkillByName(request, response, next) {
+        const args = {
+            name: { "in": "path", "name": "name", "required": true, "dataType": "string" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new skills_controler_1.SkillsController();
+            const promise = controller.getSkillByName.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.post('/skills', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController)), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController.prototype.createSkill)), function SkillsController_createSkill(request, response, next) {
+        const args = {
+            body: { "in": "body", "name": "body", "required": true, "ref": "CreateSkillInput" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new skills_controler_1.SkillsController();
+            const promise = controller.createSkill.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, 201, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.put('/skills/:skillId', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController)), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController.prototype.updateSkill)), function SkillsController_updateSkill(request, response, next) {
+        const args = {
+            skillId: { "in": "path", "name": "skillId", "required": true, "dataType": "double" },
+            body: { "in": "body", "name": "body", "required": true, "ref": "UpdateSkillInput" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new skills_controler_1.SkillsController();
+            const promise = controller.updateSkill.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.delete('/skills/:skillId', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController)), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController.prototype.deleteSkill)), function SkillsController_deleteSkill(request, response, next) {
+        const args = {
+            skillId: { "in": "path", "name": "skillId", "required": true, "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new skills_controler_1.SkillsController();
+            const promise = controller.deleteSkill.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, 204, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/skills/category/:category', ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController)), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController.prototype.getSkillsByCategory)), function SkillsController_getSkillsByCategory(request, response, next) {
+        const args = {
+            category: { "in": "path", "name": "category", "required": true, "dataType": "string" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new skills_controler_1.SkillsController();
+            const promise = controller.getSkillsByCategory.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/skills/categories/all', ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController)), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController.prototype.getSkillCategories)), function SkillsController_getSkillCategories(request, response, next) {
+        const args = {};
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new skills_controler_1.SkillsController();
+            const promise = controller.getSkillCategories.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.put('/skills/:skillId/toggle-status', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController)), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController.prototype.toggleSkillStatus)), function SkillsController_toggleSkillStatus(request, response, next) {
+        const args = {
+            skillId: { "in": "path", "name": "skillId", "required": true, "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new skills_controler_1.SkillsController();
+            const promise = controller.toggleSkillStatus.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/skills/popular', ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController)), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController.prototype.getPopularSkills)), function SkillsController_getPopularSkills(request, response, next) {
+        const args = {
+            limit: { "in": "query", "name": "limit", "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new skills_controler_1.SkillsController();
+            const promise = controller.getPopularSkills.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/skills/search/:query', ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController)), ...((0, runtime_1.fetchMiddlewares)(skills_controler_1.SkillsController.prototype.searchSkills)), function SkillsController_searchSkills(request, response, next) {
+        const args = {
+            query: { "in": "path", "name": "query", "required": true, "dataType": "string" },
+            limit: { "in": "query", "name": "limit", "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new skills_controler_1.SkillsController();
+            const promise = controller.searchSkills.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/user-skills/user/:userId', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController)), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController.prototype.getUserSkills)), function UserSkillsController_getUserSkills(request, response, next) {
+        const args = {
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new user_skills_controller_1.UserSkillsController();
+            const promise = controller.getUserSkills.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/user-skills/:skillId/user/:userId', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController)), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController.prototype.getUserSkillById)), function UserSkillsController_getUserSkillById(request, response, next) {
+        const args = {
+            skillId: { "in": "path", "name": "skillId", "required": true, "dataType": "double" },
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new user_skills_controller_1.UserSkillsController();
+            const promise = controller.getUserSkillById.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.post('/user-skills', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController)), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController.prototype.createUserSkill)), function UserSkillsController_createUserSkill(request, response, next) {
+        const args = {
+            body: { "in": "body", "name": "body", "required": true, "ref": "CreateUserSkillInput" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new user_skills_controller_1.UserSkillsController();
+            const promise = controller.createUserSkill.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, 201, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.put('/user-skills/:skillId/user/:userId', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController)), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController.prototype.updateUserSkill)), function UserSkillsController_updateUserSkill(request, response, next) {
+        const args = {
+            skillId: { "in": "path", "name": "skillId", "required": true, "dataType": "double" },
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "double" },
+            body: { "in": "body", "name": "body", "required": true, "ref": "UpdateUserSkillInput" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new user_skills_controller_1.UserSkillsController();
+            const promise = controller.updateUserSkill.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.delete('/user-skills/:skillId/user/:userId', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController)), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController.prototype.deleteUserSkill)), function UserSkillsController_deleteUserSkill(request, response, next) {
+        const args = {
+            skillId: { "in": "path", "name": "skillId", "required": true, "dataType": "double" },
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new user_skills_controller_1.UserSkillsController();
+            const promise = controller.deleteUserSkill.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, 204, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/user-skills/skill/:skillId/users', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController)), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController.prototype.getUsersBySkill)), function UserSkillsController_getUsersBySkill(request, response, next) {
+        const args = {
+            skillId: { "in": "path", "name": "skillId", "required": true, "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new user_skills_controller_1.UserSkillsController();
+            const promise = controller.getUsersBySkill.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/user-skills/user/:userId/proficiency/:proficiencyLevel', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController)), ...((0, runtime_1.fetchMiddlewares)(user_skills_controller_1.UserSkillsController.prototype.getUserSkillsByProficiency)), function UserSkillsController_getUserSkillsByProficiency(request, response, next) {
+        const args = {
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "double" },
+            proficiencyLevel: { "in": "path", "name": "proficiencyLevel", "required": true, "dataType": "string" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new user_skills_controller_1.UserSkillsController();
+            const promise = controller.getUserSkillsByProficiency.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
         }
         catch (err) {
             return next(err);

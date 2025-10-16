@@ -2,12 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUserSchema = exports.createUserSchema = void 0;
 const zod_1 = require("zod");
-const password_utils_js_1 = require("../utils/password.utils.js");
+const password_utils_1 = require("../utils/password.utils");
 const passwordSchema = zod_1.z.string()
     .min(8, 'Password must be at least 8 characters long')
     .max(100, 'Password too long')
     .refine((password) => {
-    const validation = password_utils_js_1.PasswordUtils.validatePasswordComplexity(password);
+    const validation = password_utils_1.PasswordUtils.validatePasswordComplexity(password);
     return validation.isValid;
 }, {
     message: 'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'
@@ -53,7 +53,7 @@ exports.updateUserSchema = exports.createUserSchema.partial().extend({
     active: zod_1.z.boolean().optional(),
 }).refine((data) => {
     if (data.password) {
-        const validation = password_utils_js_1.PasswordUtils.validatePasswordComplexity(data.password);
+        const validation = password_utils_1.PasswordUtils.validatePasswordComplexity(data.password);
         return validation.isValid;
     }
     return true;

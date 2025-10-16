@@ -3,7 +3,7 @@ import swaggerUi from 'swagger-ui-express';
 // @ts-ignore
 import { RegisterRoutes } from './routes';
 
-const app = express();
+export const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
@@ -16,6 +16,10 @@ try {
 } catch (error) {
   console.error('Error: Unable to load swagger.json. Please run the docs build command.');
 }
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

@@ -15,8 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const tsoa_1 = require("tsoa");
 const http_status_codes_1 = require("http-status-codes");
-const ApiError_js_1 = require("../errors/ApiError.js");
-const auth_service_js_1 = require("../services/auth.service.js");
+const ApiError_1 = require("../errors/ApiError");
+const auth_service_1 = require("../services/auth.service");
+const auth_validation_1 = require("../types/auth.validation");
 /**
  * Authentication & Session Management API
  *
@@ -54,11 +55,20 @@ let AuthController = class AuthController extends tsoa_1.Controller {
      */
     async login(requestBody, userAgent, ipAddress) {
         try {
-            const result = await auth_service_js_1.AuthService.login(requestBody, ipAddress, userAgent);
+            const validationResult = auth_validation_1.loginSchema.safeParse(requestBody);
+            if (!validationResult.success) {
+                this.setStatus(http_status_codes_1.StatusCodes.UNPROCESSABLE_ENTITY);
+                return {
+                    message: 'Validation failed',
+                    details: validationResult.error.message,
+                };
+            }
+            const validatedData = validationResult.data;
+            const result = await auth_service_1.AuthService.login(validatedData, ipAddress, userAgent);
             return result;
         }
         catch (error) {
-            if (error instanceof ApiError_js_1.ApiError) {
+            if (error instanceof ApiError_1.ApiError) {
                 this.setStatus(error.statusCode);
                 return { message: error.message };
             }
@@ -86,11 +96,11 @@ let AuthController = class AuthController extends tsoa_1.Controller {
         try {
             const session = request.user?.session;
             if (!session) {
-                throw new ApiError_js_1.ApiError(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'No active session found');
+                throw new ApiError_1.ApiError(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'No active session found');
             }
-            const success = await auth_service_js_1.AuthService.logout(session.id, session.userId);
+            const success = await auth_service_1.AuthService.logout(session.id, session.userId);
             if (!success) {
-                throw new ApiError_js_1.ApiError(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to logout');
+                throw new ApiError_1.ApiError(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to logout');
             }
             return {
                 message: 'Logout successful',
@@ -98,7 +108,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
             };
         }
         catch (error) {
-            if (error instanceof ApiError_js_1.ApiError) {
+            if (error instanceof ApiError_1.ApiError) {
                 this.setStatus(error.statusCode);
                 return { message: error.message };
             }
@@ -125,16 +135,16 @@ let AuthController = class AuthController extends tsoa_1.Controller {
         try {
             const userId = request.user?.id;
             if (!userId) {
-                throw new ApiError_js_1.ApiError(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'User not authenticated');
+                throw new ApiError_1.ApiError(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'User not authenticated');
             }
-            const sessionsEnded = await auth_service_js_1.AuthService.logoutAll(userId);
+            const sessionsEnded = await auth_service_1.AuthService.logoutAll(userId);
             return {
                 message: 'All sessions ended successfully',
                 sessions_ended: sessionsEnded
             };
         }
         catch (error) {
-            if (error instanceof ApiError_js_1.ApiError) {
+            if (error instanceof ApiError_1.ApiError) {
                 this.setStatus(error.statusCode);
                 return { message: error.message };
             }
@@ -210,13 +220,13 @@ let AuthController = class AuthController extends tsoa_1.Controller {
         try {
             const userId = request.user?.id;
             if (!userId) {
-                throw new ApiError_js_1.ApiError(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'User not authenticated');
+                throw new ApiError_1.ApiError(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'User not authenticated');
             }
-            const sessions = await auth_service_js_1.AuthService.getUserSessions(userId);
+            const sessions = await auth_service_1.AuthService.getUserSessions(userId);
             return sessions;
         }
         catch (error) {
-            if (error instanceof ApiError_js_1.ApiError) {
+            if (error instanceof ApiError_1.ApiError) {
                 this.setStatus(error.statusCode);
                 return { message: error.message };
             }

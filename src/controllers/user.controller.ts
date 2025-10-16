@@ -13,14 +13,14 @@ import {
   Example,
 } from 'tsoa';
 import { StatusCodes, ReasonPhrases } from 'http-status-codes';
-import { ApiError } from '../errors/ApiError.js';
-import * as userService from '@services/user.services.js';
+import { ApiError } from '../errors/ApiError';
+import * as userService from '@services/user.services';
 import type {
   UserResponse,
   UserCreateRequest,
   UserUpdateRequest
 } from '../types/user.dto.js';
-import type { UserUpdateParams } from '../types/user.validation.js';
+import type { UserUpdateParams } from '../types/user.validation';
 
 /**
  * User Management API

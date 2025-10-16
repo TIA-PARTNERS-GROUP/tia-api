@@ -1,11 +1,14 @@
-import { prisma } from '@lib/prisma.js';
+import { prisma } from '@lib/prisma';
 import { StatusCodes } from 'http-status-codes';
-import { ApiError } from '../errors/ApiError.js';
-import { JWTUtils } from '../utils/jwt.utils.js';
-import { PasswordUtils } from '../utils/password.utils.js';
-import type { LoginRequest, LoginResponse } from '../types/auth.dto.js';
+import { ApiError } from '../errors/ApiError';
+import { JWTUtils } from '../utils/jwt.utils';
+import { PasswordUtils } from '../utils/password.utils';
+import type { LoginRequest, LoginResponse } from '../types/auth.dto';
+
+import * as cron from 'node-cron';
 
 export class AuthService {
+  private static cleanupJob: cron.ScheduledTask;
   /**
    * Authenticate user and create session
    */
@@ -198,6 +201,45 @@ export class AuthService {
   }
 
   /**
+   * Initialize session cleanup job
+   */
+  static initializeSessionCleanup(): void {
+    // Run daily at 2 AM
+    this.cleanupJob = cron.schedule('0 2 * * *', async () => {
+      try {
+        console.log('Starting session cleanup job...');
+        const deletedCount = await this.cleanupExpiredSessions();
+        console.log(`Session cleanup completed: ${deletedCount} sessions removed`);
+      } catch (error) {
+        console.error('Session cleanup failed:', error);
+      }
+    }, {
+    });
+
+    this.cleanupJob.stop();
+  }
+
+  /**
+   * Start the cleanup job
+   */
+  static startSessionCleanup(): void {
+    if (this.cleanupJob) {
+      this.cleanupJob.start();
+      console.log('Session cleanup job started');
+    }
+  }
+
+  /**
+   * Stop the cleanup job
+   */
+  static stopSessionCleanup(): void {
+    if (this.cleanupJob) {
+      this.cleanupJob.stop();
+      console.log('Session cleanup job stopped');
+    }
+  }
+
+  /**
    * Clean up expired sessions
    */
   static async cleanupExpiredSessions(): Promise<number> {
@@ -211,5 +253,13 @@ export class AuthService {
     });
 
     return result.count;
+  }
+
+  /**
+   * Manual cleanup (for testing or admin purposes)
+   */
+  static async manualCleanup(): Promise<{ deleted: number }> {
+    const deleted = await this.cleanupExpiredSessions();
+    return { deleted };
   }
 }

@@ -48,8 +48,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const tsoa_1 = require("tsoa");
 const http_status_codes_1 = require("http-status-codes");
-const ApiError_js_1 = require("../errors/ApiError.js");
-const userService = __importStar(require("../services/user.services.js"));
+const ApiError_1 = require("../errors/ApiError");
+const userService = __importStar(require("../services/user.services"));
 /**
  * User Management API
  *
@@ -142,7 +142,7 @@ let UsersController = class UsersController extends tsoa_1.Controller {
             return result;
         }
         catch (error) {
-            if (error instanceof ApiError_js_1.ApiError) {
+            if (error instanceof ApiError_1.ApiError) {
                 this.setStatus(error.statusCode);
                 return { message: error.message, details: error.details };
             }
@@ -209,7 +209,7 @@ let UsersController = class UsersController extends tsoa_1.Controller {
             return updatedUser;
         }
         catch (error) {
-            if (error instanceof ApiError_js_1.ApiError) {
+            if (error instanceof ApiError_1.ApiError) {
                 this.setStatus(error.statusCode);
                 return { message: error.message, details: error.details };
             }
