@@ -1,0 +1,32 @@
+{
+  "entryFile": "src/index.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/controllers/**/*.ts"],
+  "spec": {
+    "outputDirectory": "docs",
+    "specVersion": 3,
+    "securityDefinitions": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "routes": {
+    "routesDir": "src",
+    "middleware": "express",
+    "authenticationModule": "src/middleware/auth.middleware.ts"
+  },
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"],
+      "@lib/*": ["lib/*"],
+      "@services/*": ["services/*"],
+      "@types/*": ["types/*"],
+      "@controllers/*": ["controllers/*"],
+      "@middleware/*": ["middleware/*"]
+    }
+  }
+}

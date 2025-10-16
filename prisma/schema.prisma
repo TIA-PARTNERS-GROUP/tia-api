@@ -1,0 +1,371 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model business_connections {
+  id                                                                 Int                                  @id @default(autoincrement()) @db.UnsignedInt
+  initiating_business_id                                             Int                                  @db.UnsignedInt
+  receiving_business_id                                              Int                                  @db.UnsignedInt
+  connection_type                                                    business_connections_connection_type
+  status                                                             business_connections_status          @default(pending)
+  initiated_by_user_id                                               Int                                  @db.UnsignedInt
+  notes                                                              String?                              @db.Text
+  created_at                                                         DateTime                             @default(now()) @db.Timestamp(0)
+  updated_at                                                         DateTime                             @default(now()) @db.Timestamp(0)
+  users                                                              users                                @relation(fields: [initiated_by_user_id], references: [id], map: "fk_business_connections_initiated_by")
+  businesses_business_connections_initiating_business_idTobusinesses businesses                           @relation("business_connections_initiating_business_idTobusinesses", fields: [initiating_business_id], references: [id], onDelete: Cascade, map: "fk_business_connections_initiating_id")
+  businesses_business_connections_receiving_business_idTobusinesses  businesses                           @relation("business_connections_receiving_business_idTobusinesses", fields: [receiving_business_id], references: [id], onDelete: Cascade, map: "fk_business_connections_receiving_id")
+
+  @@unique([initiating_business_id, receiving_business_id, connection_type], map: "uq_business_connections_unique")
+  @@index([initiated_by_user_id], map: "fk_business_connections_initiated_by")
+  @@index([initiating_business_id], map: "idx_business_connections_initiating_id")
+  @@index([receiving_business_id], map: "idx_business_connections_receiving_id")
+  @@index([status], map: "idx_business_connections_status")
+}
+
+model business_tags {
+  id          Int                    @id @default(autoincrement()) @db.UnsignedInt
+  business_id Int                    @db.UnsignedInt
+  tag_type    business_tags_tag_type
+  description String                 @db.VarChar(100)
+  created_at  DateTime               @default(now()) @db.Timestamp(0)
+  businesses  businesses             @relation(fields: [business_id], references: [id], onDelete: Cascade, map: "fk_business_tags_business_id")
+
+  @@index([business_id], map: "idx_business_tags_business_id")
+  @@index([tag_type], map: "idx_business_tags_tag_type")
+}
+
+model businesses {
+  id                                                                           Int                          @id @default(autoincrement()) @db.UnsignedInt
+  operator_user_id                                                             Int                          @db.UnsignedInt
+  name                                                                         String                       @db.VarChar(100)
+  tagline                                                                      String?                      @db.VarChar(100)
+  website                                                                      String?                      @db.VarChar(255)
+  contact_name                                                                 String?                      @db.VarChar(60)
+  contact_phone_no                                                             String?                      @db.VarChar(20)
+  contact_email                                                                String?                      @db.VarChar(254)
+  description                                                                  String?                      @db.Text
+  address                                                                      String?                      @db.VarChar(100)
+  city                                                                         String?                      @db.VarChar(60)
+  state                                                                        String?                      @db.VarChar(60)
+  country                                                                      String?                      @db.VarChar(60)
+  postal_code                                                                  String?                      @db.VarChar(20)
+  value                                                                        Decimal?                     @db.Decimal(15, 2)
+  business_type                                                                businesses_business_type
+  business_category                                                            businesses_business_category
+  business_phase                                                               businesses_business_phase
+  active                                                                       Int                          @default(1) @db.TinyInt
+  created_at                                                                   DateTime                     @default(now()) @db.Timestamp(0)
+  updated_at                                                                   DateTime                     @default(now()) @db.Timestamp(0)
+  business_connections_business_connections_initiating_business_idTobusinesses business_connections[]       @relation("business_connections_initiating_business_idTobusinesses")
+  business_connections_business_connections_receiving_business_idTobusinesses  business_connections[]       @relation("business_connections_receiving_business_idTobusinesses")
+  business_tags                                                                business_tags[]
+  users                                                                        users                        @relation(fields: [operator_user_id], references: [id], map: "fk_businesses_operator_user_id")
+  projects                                                                     projects[]
+  publications                                                                 publications[]
+
+  @@index([active], map: "idx_businesses_active")
+  @@index([business_type], map: "idx_businesses_business_type")
+  @@index([operator_user_id], map: "idx_businesses_operator_user_id")
+}
+
+model idea_votes {
+  voter_user_id Int                  @db.UnsignedInt
+  idea_id       Int                  @db.UnsignedInt
+  vote_type     idea_votes_vote_type
+  created_at    DateTime             @default(now()) @db.Timestamp(0)
+  ideas         ideas                @relation(fields: [idea_id], references: [id], onDelete: Cascade, map: "fk_idea_votes_idea_id")
+  users         users                @relation(fields: [voter_user_id], references: [id], onDelete: Cascade, map: "fk_idea_votes_user_id")
+
+  @@id([voter_user_id, idea_id])
+  @@index([idea_id], map: "idx_idea_votes_idea_id")
+}
+
+model ideas {
+  id                   Int          @id @default(autoincrement()) @db.UnsignedInt
+  submitted_by_user_id Int          @db.UnsignedInt
+  title                String       @db.VarChar(200)
+  content              String       @db.Text
+  status               ideas_status @default(open)
+  created_at           DateTime     @default(now()) @db.Timestamp(0)
+  updated_at           DateTime     @default(now()) @db.Timestamp(0)
+  idea_votes           idea_votes[]
+  users                users        @relation(fields: [submitted_by_user_id], references: [id], onDelete: Cascade, map: "fk_ideas_user_id")
+
+  @@index([status], map: "idx_ideas_status")
+  @@index([submitted_by_user_id], map: "idx_ideas_user_id")
+}
+
+model notifications {
+  id                                          Int                                @id @default(autoincrement()) @db.UnsignedInt
+  sender_user_id                              Int?                               @db.UnsignedInt
+  receiver_user_id                            Int                                @db.UnsignedInt
+  notification_type                           notifications_notification_type
+  title                                       String                             @db.VarChar(255)
+  message                                     String                             @db.Text
+  related_entity_type                         notifications_related_entity_type?
+  related_entity_id                           Int?                               @db.UnsignedInt
+  read                                        Int                                @default(0) @db.UnsignedTinyInt
+  action_url                                  String?                            @db.VarChar(500)
+  created_at                                  DateTime                           @default(now()) @db.Timestamp(0)
+  users_notifications_receiver_user_idTousers users                              @relation("notifications_receiver_user_idTousers", fields: [receiver_user_id], references: [id], onDelete: Cascade, map: "fk_notifications_receiver_user_id")
+  users_notifications_sender_user_idTousers   users?                             @relation("notifications_sender_user_idTousers", fields: [sender_user_id], references: [id], map: "fk_notifications_sender_user_id")
+
+  @@index([created_at], map: "idx_notifications_created_at")
+  @@index([read], map: "idx_notifications_read")
+  @@index([receiver_user_id], map: "idx_notifications_receiver_user_id")
+  @@index([sender_user_id], map: "idx_notifications_sender_user_id")
+}
+
+model project_members {
+  project_id Int                  @db.UnsignedInt
+  user_id    Int                  @db.UnsignedInt
+  role       project_members_role @default(contributor)
+  joined_at  DateTime             @default(now()) @db.Timestamp(0)
+  projects   projects             @relation(fields: [project_id], references: [id], onDelete: Cascade, map: "fk_project_members_project_id")
+  users      users                @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_project_members_user_id")
+
+  @@id([project_id, user_id])
+  @@index([user_id], map: "idx_project_members_user_id")
+}
+
+model project_skills {
+  project_id Int                       @db.UnsignedInt
+  skill_id   Int                       @db.UnsignedInt
+  importance project_skills_importance @default(preferred)
+  projects   projects                  @relation(fields: [project_id], references: [id], onDelete: Cascade, map: "fk_project_skills_project_id")
+  skills     skills                    @relation(fields: [skill_id], references: [id], onDelete: Cascade, map: "fk_project_skills_skill_id")
+
+  @@id([project_id, skill_id])
+  @@index([skill_id], map: "idx_project_skills_skill_id")
+}
+
+model projects {
+  id                 Int                     @id @default(autoincrement()) @db.UnsignedInt
+  managed_by_user_id Int                     @db.UnsignedInt
+  business_id        Int?                    @db.UnsignedInt
+  name               String                  @db.VarChar(100)
+  description        String?                 @db.Text
+  project_status     projects_project_status @default(planning)
+  start_date         DateTime?               @db.Date
+  target_end_date    DateTime?               @db.Date
+  actual_end_date    DateTime?               @db.Date
+  created_at         DateTime                @default(now()) @db.Timestamp(0)
+  updated_at         DateTime                @default(now()) @db.Timestamp(0)
+  project_members    project_members[]
+  project_skills     project_skills[]
+  businesses         businesses?             @relation(fields: [business_id], references: [id], map: "fk_projects_business_id")
+  users              users                   @relation(fields: [managed_by_user_id], references: [id], map: "fk_projects_managed_by_user_id")
+
+  @@index([business_id], map: "idx_projects_business_id")
+  @@index([managed_by_user_id], map: "idx_projects_managed_by_user_id")
+  @@index([project_status], map: "idx_projects_status")
+}
+
+model publications {
+  id               Int                           @id @default(autoincrement()) @db.UnsignedInt
+  user_id          Int                           @db.UnsignedInt
+  business_id      Int?                          @db.UnsignedInt
+  publication_type publications_publication_type
+  title            String                        @db.VarChar(255)
+  slug             String                        @unique(map: "slug") @db.VarChar(300)
+  excerpt          String?                       @db.Text
+  content          String                        @db.LongText
+  thumbnail        String?                       @db.VarChar(255)
+  video_url        String?                       @db.VarChar(255)
+  published        Int                           @default(0) @db.TinyInt
+  published_at     DateTime?                     @db.Timestamp(0)
+  created_at       DateTime                      @default(now()) @db.Timestamp(0)
+  updated_at       DateTime                      @default(now()) @db.Timestamp(0)
+  businesses       businesses?                   @relation(fields: [business_id], references: [id], map: "fk_publications_business_id")
+  users            users                         @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_publications_user_id")
+
+  @@index([business_id], map: "idx_publications_business_id")
+  @@index([published], map: "idx_publications_published")
+  @@index([publication_type], map: "idx_publications_type")
+  @@index([user_id], map: "idx_publications_user_id")
+}
+
+model skills {
+  id             Int              @id @default(autoincrement()) @db.UnsignedInt
+  category       String           @db.VarChar(100)
+  name           String           @unique(map: "uq_skills_name") @db.VarChar(100)
+  description    String?          @db.Text
+  active         Int              @default(1) @db.TinyInt
+  created_at     DateTime         @default(now()) @db.Timestamp(0)
+  project_skills project_skills[]
+  user_skills    user_skills[]
+
+  @@index([active], map: "idx_skills_active")
+  @@index([category], map: "idx_skills_category")
+}
+
+model user_sessions {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int       @db.UnsignedInt
+  token_hash String    @unique(map: "uq_user_sessions_token_hash") @db.Char(128)
+  ip_address String?   @db.VarChar(45)
+  user_agent String?   @db.Text
+  created_at DateTime  @default(now()) @db.Timestamp(0)
+  expires_at DateTime  @db.Timestamp(0)
+  revoked_at DateTime? @db.Timestamp(0)
+  users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_user_sessions_user_id")
+
+  @@index([expires_at], map: "idx_user_sessions_expires_at")
+  @@index([user_id], map: "idx_user_sessions_user_id")
+}
+
+model user_skills {
+  skill_id          Int                            @db.UnsignedInt
+  user_id           Int                            @db.UnsignedInt
+  proficiency_level user_skills_proficiency_level? @default(intermediate)
+  created_at        DateTime                       @default(now()) @db.Timestamp(0)
+  skills            skills                         @relation(fields: [skill_id], references: [id], onDelete: Cascade, map: "fk_user_skills_skill_id")
+  users             users                          @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fk_user_skills_user_id")
+
+  @@id([skill_id, user_id])
+  @@index([user_id], map: "idx_user_skills_user_id")
+}
+
+model users {
+  id                                                  Int                    @id @default(autoincrement()) @db.UnsignedInt
+  first_name                                          String                 @db.VarChar(60)
+  last_name                                           String?                @db.VarChar(60)
+  login_email                                         String                 @unique(map: "login_email") @db.VarChar(254)
+  password_hash                                       String?                @db.VarChar(255)
+  contact_email                                       String?                @db.VarChar(254)
+  contact_phone_no                                    String?                @db.VarChar(20)
+  adk_session_id                                      String?                @db.VarChar(128)
+  password_reset_token                                Bytes?                 @db.Blob
+  password_reset_requested_at                         DateTime?              @db.Timestamp(0)
+  email_verified                                      Boolean                @default(false)
+  active                                              Boolean                @default(true)
+  created_at                                          DateTime               @default(now()) @db.Timestamp(0)
+  updated_at                                          DateTime               @default(now()) @db.Timestamp(0)
+  business_connections                                business_connections[]
+  businesses                                          businesses[]
+  idea_votes                                          idea_votes[]
+  ideas                                               ideas[]
+  notifications_notifications_receiver_user_idTousers notifications[]        @relation("notifications_receiver_user_idTousers")
+  notifications_notifications_sender_user_idTousers   notifications[]        @relation("notifications_sender_user_idTousers")
+  project_members                                     project_members[]
+  projects                                            projects[]
+  publications                                        publications[]
+  user_sessions                                       user_sessions[]
+  user_skills                                         user_skills[]
+
+  @@index([active], map: "idx_users_active")
+  @@index([contact_email], map: "idx_users_contact_email")
+}
+
+enum business_tags_tag_type {
+  client
+  service
+  specialty
+}
+
+enum idea_votes_vote_type {
+  up
+  down
+}
+
+enum project_members_role {
+  manager
+  contributor
+  reviewer
+}
+
+enum user_skills_proficiency_level {
+  beginner
+  intermediate
+  advanced
+  expert
+}
+
+enum project_skills_importance {
+  required
+  preferred
+  optional
+}
+
+enum business_connections_connection_type {
+  Partnership
+  Supplier
+  Client
+  Referral
+  Collaboration
+}
+
+enum publications_publication_type {
+  post
+  case_study
+  testimonial
+  article
+}
+
+enum notifications_notification_type {
+  connection_request
+  project_invite
+  message
+  system
+}
+
+enum business_connections_status {
+  pending
+  active
+  rejected
+  inactive
+}
+
+enum ideas_status {
+  open
+  under_review
+  planned
+  in_progress
+  completed
+  rejected
+}
+
+enum projects_project_status {
+  planning
+  active
+  on_hold
+  completed
+  cancelled
+}
+
+enum notifications_related_entity_type {
+  business
+  project
+  publication
+  idea
+}
+
+enum businesses_business_type {
+  Consulting
+  Retail
+  Technology
+  Manufacturing
+  Services
+  Other
+}
+
+enum businesses_business_category {
+  B2B
+  B2C
+  Non_Profit @map("Non-Profit")
+  Government
+  Mixed
+}
+
+enum businesses_business_phase {
+  Startup
+  Growth
+  Mature
+  Exit
+}
