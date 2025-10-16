@@ -87,7 +87,7 @@ describe('Users API', () => {
     it('should validate required fields', async () => {
       const invalidUser = {
         first_name: 'Invalid'
-        // Missing required fields
+       
       };
 
       const response = await request(baseUrl)
@@ -125,7 +125,7 @@ describe('Users API', () => {
         .set('Authorization', `Bearer ${authToken}`)
         .expect(204);
 
-      // 204 responses typically have no body
+     
       expect(response.body).toEqual({});
     });
   });

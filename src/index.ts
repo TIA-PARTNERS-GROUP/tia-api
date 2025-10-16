@@ -1,6 +1,5 @@
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
-// @ts-ignore
 import { RegisterRoutes } from './routes';
 
 export const app = express();

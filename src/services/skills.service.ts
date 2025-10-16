@@ -67,7 +67,7 @@ export class SkillsService {
               }
             }
           },
-          take: 10 // Limit to prevent huge responses
+          take: 10
         },
         project_skills: {
           include: {
@@ -79,7 +79,7 @@ export class SkillsService {
               }
             }
           },
-          take: 10 // Limit to prevent huge responses
+          take: 10
         }
       }
     });
@@ -118,10 +118,10 @@ export class SkillsService {
    * Create a new skill
    */
   async createSkill(data: any) {
-    // Validate input first
+
     const validatedData = createSkillSchema.parse(data);
 
-    // Check if skill name already exists
+
     const existingSkill = await prisma.skills.findUnique({
       where: { name: validatedData.name }
     });
@@ -130,7 +130,7 @@ export class SkillsService {
       throw new ApiError(StatusCodes.CONFLICT, 'Skill with this name already exists');
     }
 
-    // Use the validated data for Prisma
+
     return await prisma.skills.create({
       data: {
         category: validatedData.category,
@@ -151,10 +151,10 @@ export class SkillsService {
    * Update a skill
    */
   async updateSkill(skillId: number, data: any) {
-    // Validate input first
+
     const validatedData = updateSkillSchema.parse(data);
 
-    // Verify skill exists
+
     const existingSkill = await prisma.skills.findUnique({
       where: { id: skillId }
     });
@@ -163,7 +163,7 @@ export class SkillsService {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Skill not found');
     }
 
-    // If name is being updated, check for conflicts
+
     if (validatedData.name && validatedData.name !== existingSkill.name) {
       const nameConflict = await prisma.skills.findUnique({
         where: { name: validatedData.name }
@@ -174,7 +174,7 @@ export class SkillsService {
       }
     }
 
-    // Prepare update data, excluding undefined values
+
     const updateData: any = {};
     if (validatedData.category !== undefined) updateData.category = validatedData.category;
     if (validatedData.name !== undefined) updateData.name = validatedData.name;
@@ -197,7 +197,7 @@ export class SkillsService {
    * Delete a skill
    */
   async deleteSkill(skillId: number) {
-    // Verify skill exists
+
     const existingSkill = await prisma.skills.findUnique({
       where: { id: skillId }
     });
@@ -206,7 +206,7 @@ export class SkillsService {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Skill not found');
     }
 
-    // Check if skill is being used by users or projects
+
     const userSkillsCount = await prisma.user_skills.count({
       where: { skill_id: skillId }
     });
@@ -357,8 +357,8 @@ export class SkillsService {
    * Case-insensitive search helper (if needed for MySQL)
    */
   async searchSkillsCaseInsensitive(query: string, limit: number = 20) {
-    // For MySQL, we can use raw query for case-insensitive search if needed
-    // This is a fallback method if case sensitivity is an issue
+
+
     const skills = await prisma.$queryRaw`
       SELECT s.*, 
         COUNT(us.user_id) as user_count,

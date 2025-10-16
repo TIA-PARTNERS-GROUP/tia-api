@@ -8,4 +8,3 @@ export class ApiError extends Error {
         this.details = details;
     }
 }
-//# sourceMappingURL=ApiError.js.map

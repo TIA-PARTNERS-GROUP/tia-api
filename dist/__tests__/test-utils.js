@@ -8,7 +8,7 @@ const prisma_1 = require("../lib/prisma");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const crypto_1 = __importDefault(require("crypto"));
-const index_1 = require("../index"); // Import your Express app
+const index_1 = require("../index");
 class TestUtils {
     server;
     baseUrl;
@@ -20,7 +20,7 @@ class TestUtils {
      */
     async startServer() {
         return new Promise((resolve) => {
-            const port = process.env.TEST_PORT || 8001; // Use different port for tests
+            const port = process.env.TEST_PORT || 8001;
             this.server = index_1.app.listen(port, () => {
                 this.baseUrl = `http://localhost:${port}`;
                 console.log(`Test server running on ${this.baseUrl}`);
@@ -113,7 +113,7 @@ class TestUtils {
                 password_hash,
                 active: true,
                 ...userData,
-                password: undefined // Remove plain text password if provided
+                password: undefined
             }
         });
     }
@@ -167,8 +167,7 @@ class TestUtils {
         return jsonwebtoken_1.default.sign({
             userId: user.id,
             email: user.login_email
-        }, process.env.JWT_SECRET || 'test-secret', { expiresIn: '-1h' } // Already expired
-        );
+        }, process.env.JWT_SECRET || 'test-secret', { expiresIn: '-1h' });
     }
     /**
      * Create test user and return with token
@@ -189,7 +188,7 @@ class TestUtils {
                 user_id: userId,
                 token,
                 token_hash,
-                expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
+                expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000),
                 ...sessionData
             }
         });

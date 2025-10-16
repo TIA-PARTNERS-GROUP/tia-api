@@ -8,7 +8,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const crypto_1 = __importDefault(require("crypto"));
 class JWTUtils {
     static JWT_SECRET = process.env.JWT_SECRET || 'your-fallback-secret-change-in-production';
-    static JWT_EXPIRES_IN = '7d'; // Token expires in 7 days
+    static JWT_EXPIRES_IN = '7d';
     /**
      * Generate JWT token for authenticated user
      */

@@ -71,23 +71,19 @@ class UserSkillsService {
      * Create a new user skill
      */
     async createUserSkill(data) {
-        // Validate input first
         const validatedData = user_skills_validation_1.createUserSkillSchema.parse(data);
-        // Verify user exists
         const user = await prisma_1.prisma.users.findUnique({
             where: { id: validatedData.user_id }
         });
         if (!user) {
             throw new ApiError_1.ApiError(http_status_codes_1.StatusCodes.NOT_FOUND, 'User not found');
         }
-        // Verify skill exists
         const skill = await prisma_1.prisma.skills.findUnique({
             where: { id: validatedData.skill_id }
         });
         if (!skill) {
             throw new ApiError_1.ApiError(http_status_codes_1.StatusCodes.NOT_FOUND, 'Skill not found');
         }
-        // Check if user already has this skill
         const existingUserSkill = await prisma_1.prisma.user_skills.findUnique({
             where: {
                 skill_id_user_id: {
@@ -99,7 +95,6 @@ class UserSkillsService {
         if (existingUserSkill) {
             throw new ApiError_1.ApiError(http_status_codes_1.StatusCodes.CONFLICT, 'User already has this skill');
         }
-        // Use the validated data for Prisma
         return await prisma_1.prisma.user_skills.create({
             data: {
                 skill_id: validatedData.skill_id,
@@ -130,9 +125,7 @@ class UserSkillsService {
      * Update a user skill
      */
     async updateUserSkill(skillId, userId, data) {
-        // Validate input first
         const validatedData = user_skills_validation_1.updateUserSkillSchema.parse(data);
-        // Verify user skill exists
         const existingUserSkill = await prisma_1.prisma.user_skills.findUnique({
             where: {
                 skill_id_user_id: {
@@ -144,7 +137,6 @@ class UserSkillsService {
         if (!existingUserSkill) {
             throw new ApiError_1.ApiError(http_status_codes_1.StatusCodes.NOT_FOUND, 'User skill not found');
         }
-        // Use the validated data for Prisma
         return await prisma_1.prisma.user_skills.update({
             where: {
                 skill_id_user_id: {
@@ -240,7 +232,7 @@ class UserSkillsService {
         return await prisma_1.prisma.user_skills.findMany({
             where: {
                 user_id: userId,
-                proficiency_level: proficiencyLevel // Remove mode if present
+                proficiency_level: proficiencyLevel
             },
             include: {
                 skills: {

@@ -2,7 +2,7 @@ import { prisma } from '@lib/prisma';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import { app } from '../index'; // Import your Express app
+import { app } from '../index';
 
 class TestUtils {
   private server: any;
@@ -17,7 +17,7 @@ class TestUtils {
    */
   async startServer(): Promise<void> {
     return new Promise((resolve) => {
-      const port = process.env.TEST_PORT || 8001; // Use different port for tests
+      const port = process.env.TEST_PORT || 8001;
       this.server = app.listen(port, () => {
         this.baseUrl = `http://localhost:${port}`;
         console.log(`Test server running on ${this.baseUrl}`);
@@ -114,7 +114,7 @@ class TestUtils {
         password_hash,
         active: true,
         ...userData,
-        password: undefined // Remove plain text password if provided
+        password: undefined
       }
     });
   }
@@ -181,7 +181,7 @@ class TestUtils {
         email: user.login_email
       },
       process.env.JWT_SECRET || 'test-secret',
-      { expiresIn: '-1h' } // Already expired
+      { expiresIn: '-1h' }
     );
   }
 
@@ -206,7 +206,7 @@ class TestUtils {
         user_id: userId,
         token,
         token_hash,
-        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
+        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000),
         ...sessionData
       }
     });

@@ -15,7 +15,7 @@ export const createUser = async (data: UserCreationParams): Promise<UserResponse
   try {
     const validatedData = createUserSchema.parse(data);
 
-    // Hash the password before storing
+   
     const hashedPassword = await PasswordUtils.hashPassword(validatedData.password);
 
     const user = await prisma.users.create({
@@ -23,7 +23,7 @@ export const createUser = async (data: UserCreationParams): Promise<UserResponse
         first_name: validatedData.first_name,
         last_name: validatedData.last_name,
         login_email: validatedData.login_email,
-        password_hash: hashedPassword, // Store the hashed password
+        password_hash: hashedPassword,
         contact_email: validatedData.contact_email,
         contact_phone_no: validatedData.contact_phone_no,
         adk_session_id: validatedData.adk_session_id,
@@ -55,7 +55,7 @@ export const createUser = async (data: UserCreationParams): Promise<UserResponse
       throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, 'Validation failed', errorDetails);
     }
 
-    // Safe Prisma error handling
+   
     if (isPrismaError(error)) {
       if (error.code === 'P2002') {
         throw new ApiError(StatusCodes.CONFLICT, 'User with this email already exists');
@@ -70,13 +70,13 @@ export const updateUser = async (id: number, data: UserUpdateParams): Promise<Us
   try {
     const validatedData = updateUserSchema.parse(data);
 
-    // Check if user exists
+   
     const existingUser = await prisma.users.findUnique({ where: { id } });
     if (!existingUser) {
       return null;
     }
 
-    // Prepare update data
+   
     const updateData: any = {
       first_name: validatedData.first_name,
       last_name: validatedData.last_name,
@@ -88,12 +88,12 @@ export const updateUser = async (id: number, data: UserUpdateParams): Promise<Us
       active: validatedData.active,
     };
 
-    // Hash password if it's being updated
+   
     if (validatedData.password) {
       updateData.password_hash = await PasswordUtils.hashPassword(validatedData.password);
     }
 
-    // Filter out undefined values
+   
     Object.keys(updateData).forEach(key => {
       if (updateData[key] === undefined) {
         delete updateData[key];
@@ -132,7 +132,7 @@ export const updateUser = async (id: number, data: UserUpdateParams): Promise<Us
       throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, 'Validation failed', errorDetails);
     }
 
-    // Safe Prisma error handling
+   
     if (isPrismaError(error)) {
       if (error.code === 'P2002') {
         throw new ApiError(StatusCodes.CONFLICT, 'User with this email already exists');
@@ -143,12 +143,11 @@ export const updateUser = async (id: number, data: UserUpdateParams): Promise<Us
   }
 };
 
-// Authentication service functions
 export const authenticateUser = async (loginData: LoginRequest): Promise<LoginResponse> => {
   try {
     const { login_email, password } = loginData;
 
-    // Find user by email
+   
     const user = await prisma.users.findUnique({
       where: { login_email },
       select: {
@@ -176,18 +175,18 @@ export const authenticateUser = async (loginData: LoginRequest): Promise<LoginRe
       throw new ApiError(StatusCodes.UNAUTHORIZED, 'No password set for this account');
     }
 
-    // Verify password
+   
     const isPasswordValid = await PasswordUtils.verifyPassword(password, user.password_hash);
     if (!isPasswordValid) {
       throw new ApiError(StatusCodes.UNAUTHORIZED, 'Invalid email or password');
     }
 
-    // Remove password hash from response
+   
     const { password_hash, ...userWithoutPassword } = user;
 
     return {
       user: userWithoutPassword,
-      // You can add JWT token or session ID here later
+     
     };
   } catch (error) {
     if (error instanceof ApiError) {
@@ -208,19 +207,19 @@ export const changePassword = async (userId: number, currentPassword: string, ne
       throw new ApiError(StatusCodes.NOT_FOUND, 'User not found');
     }
 
-    // Verify current password
+   
     const isCurrentPasswordValid = await PasswordUtils.verifyPassword(currentPassword, user.password_hash);
     if (!isCurrentPasswordValid) {
       throw new ApiError(StatusCodes.UNAUTHORIZED, 'Current password is incorrect');
     }
 
-    // Validate new password complexity
+   
     const complexityCheck = PasswordUtils.validatePasswordComplexity(newPassword);
     if (!complexityCheck.isValid) {
       throw new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, complexityCheck.message || 'Password does not meet requirements');
     }
 
-    // Hash and update new password
+   
     const newHashedPassword = await PasswordUtils.hashPassword(newPassword);
     await prisma.users.update({
       where: { id: userId },
@@ -301,10 +300,10 @@ export const deleteUser = async (id: number): Promise<UserResponse | null> => {
 
     return user;
   } catch (error) {
-    // Safe Prisma error handling
+   
     if (isPrismaError(error)) {
       if (error.code === 'P2025') {
-        return null; // User not found
+        return null;
       }
     }
     throw error;

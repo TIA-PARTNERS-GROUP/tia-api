@@ -26,7 +26,7 @@ export const userUpdateSchema = z.object({
   first_name: z.string().optional(),
   last_name: z.string().nullable().optional(),
   contact_email: z.string().email().nullable().optional(),
-  password: passwordStrengthSchema.optional(), // Optional for updates
+  password: passwordStrengthSchema.optional(),
   active: z.boolean().optional(),
   email_verified: z.boolean().optional()
 });

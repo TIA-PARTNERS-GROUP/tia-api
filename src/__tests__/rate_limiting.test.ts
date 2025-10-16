@@ -7,7 +7,7 @@ describe('Rate Limiting', () => {
   beforeAll(async () => {
     baseUrl = testUtils.getBaseUrl();
 
-    // Wait for server to be ready
+   
     const isHealthy = await testUtils.healthCheck();
     if (!isHealthy) {
       throw new Error('Server is not healthy');

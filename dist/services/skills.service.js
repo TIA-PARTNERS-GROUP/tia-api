@@ -63,7 +63,7 @@ class SkillsService {
                             }
                         }
                     },
-                    take: 10 // Limit to prevent huge responses
+                    take: 10
                 },
                 project_skills: {
                     include: {
@@ -75,7 +75,7 @@ class SkillsService {
                             }
                         }
                     },
-                    take: 10 // Limit to prevent huge responses
+                    take: 10
                 }
             }
         });
@@ -108,16 +108,13 @@ class SkillsService {
      * Create a new skill
      */
     async createSkill(data) {
-        // Validate input first
         const validatedData = skills_validation_1.createSkillSchema.parse(data);
-        // Check if skill name already exists
         const existingSkill = await prisma_1.prisma.skills.findUnique({
             where: { name: validatedData.name }
         });
         if (existingSkill) {
             throw new ApiError_1.ApiError(http_status_codes_1.StatusCodes.CONFLICT, 'Skill with this name already exists');
         }
-        // Use the validated data for Prisma
         return await prisma_1.prisma.skills.create({
             data: {
                 category: validatedData.category,
@@ -138,16 +135,13 @@ class SkillsService {
      * Update a skill
      */
     async updateSkill(skillId, data) {
-        // Validate input first
         const validatedData = skills_validation_1.updateSkillSchema.parse(data);
-        // Verify skill exists
         const existingSkill = await prisma_1.prisma.skills.findUnique({
             where: { id: skillId }
         });
         if (!existingSkill) {
             throw new ApiError_1.ApiError(http_status_codes_1.StatusCodes.NOT_FOUND, 'Skill not found');
         }
-        // If name is being updated, check for conflicts
         if (validatedData.name && validatedData.name !== existingSkill.name) {
             const nameConflict = await prisma_1.prisma.skills.findUnique({
                 where: { name: validatedData.name }
@@ -156,7 +150,6 @@ class SkillsService {
                 throw new ApiError_1.ApiError(http_status_codes_1.StatusCodes.CONFLICT, 'Skill with this name already exists');
             }
         }
-        // Prepare update data, excluding undefined values
         const updateData = {};
         if (validatedData.category !== undefined)
             updateData.category = validatedData.category;
@@ -182,14 +175,12 @@ class SkillsService {
      * Delete a skill
      */
     async deleteSkill(skillId) {
-        // Verify skill exists
         const existingSkill = await prisma_1.prisma.skills.findUnique({
             where: { id: skillId }
         });
         if (!existingSkill) {
             throw new ApiError_1.ApiError(http_status_codes_1.StatusCodes.NOT_FOUND, 'Skill not found');
         }
-        // Check if skill is being used by users or projects
         const userSkillsCount = await prisma_1.prisma.user_skills.count({
             where: { skill_id: skillId }
         });
@@ -323,8 +314,6 @@ class SkillsService {
      * Case-insensitive search helper (if needed for MySQL)
      */
     async searchSkillsCaseInsensitive(query, limit = 20) {
-        // For MySQL, we can use raw query for case-insensitive search if needed
-        // This is a fallback method if case sensitivity is an issue
         const skills = await prisma_1.prisma.$queryRaw `
       SELECT s.*, 
         COUNT(us.user_id) as user_count,

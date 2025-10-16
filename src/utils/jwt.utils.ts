@@ -9,7 +9,7 @@ export interface JWTPayload {
 
 export class JWTUtils {
   private static readonly JWT_SECRET = process.env.JWT_SECRET || 'your-fallback-secret-change-in-production';
-  private static readonly JWT_EXPIRES_IN = '7d'; // Token expires in 7 days
+  private static readonly JWT_EXPIRES_IN = '7d';
 
   /**
    * Generate JWT token for authenticated user

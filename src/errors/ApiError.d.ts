@@ -4,4 +4,3 @@ export declare class ApiError extends Error {
     readonly details: any;
     constructor(statusCode: StatusCodes, message: string, details?: any);
 }
-//# sourceMappingURL=ApiError.d.ts.map

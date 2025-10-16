@@ -25,7 +25,7 @@ exports.userUpdateSchema = zod_1.z.object({
     first_name: zod_1.z.string().optional(),
     last_name: zod_1.z.string().nullable().optional(),
     contact_email: zod_1.z.string().email().nullable().optional(),
-    password: exports.passwordStrengthSchema.optional(), // Optional for updates
+    password: exports.passwordStrengthSchema.optional(),
     active: zod_1.z.boolean().optional(),
     email_verified: zod_1.z.boolean().optional()
 });

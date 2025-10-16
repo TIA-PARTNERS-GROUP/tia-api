@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
-// @ts-ignore
 const routes_1 = require("./routes");
 exports.app = (0, express_1.default)();
 const PORT = process.env.PORT || 8000;

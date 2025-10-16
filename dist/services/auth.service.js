@@ -77,8 +77,8 @@ class AuthService {
         const placeholderToken = "pending_" + Date.now();
         const sessionData = {
             user_id: user.id,
-            token_hash: jwt_utils_1.JWTUtils.hashToken(placeholderToken), // Temporary hash
-            expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+            token_hash: jwt_utils_1.JWTUtils.hashToken(placeholderToken),
+            expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
         if (ipAddress)
             sessionData.ip_address = ipAddress;
@@ -132,7 +132,7 @@ class AuthService {
             where: {
                 user_id: userId,
                 revoked_at: null,
-                expires_at: { gt: new Date() } // Only active sessions
+                expires_at: { gt: new Date() }
             },
             data: {
                 revoked_at: new Date()
@@ -217,7 +217,6 @@ class AuthService {
      * Initialize session cleanup job
      */
     static initializeSessionCleanup() {
-        // Run daily at 2 AM
         this.cleanupJob = cron.schedule('0 2 * * *', async () => {
             try {
                 console.log('Starting session cleanup job...');
