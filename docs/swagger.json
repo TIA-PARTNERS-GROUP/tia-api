@@ -217,6 +217,144 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"z.infer_typeofcreateBusinessSchema_": {
+				"properties": {
+					"value": {
+						"type": "number",
+						"format": "double"
+					},
+					"active": {
+						"type": "number",
+						"format": "double"
+					},
+					"business_phase": {},
+					"business_category": {},
+					"business_type": {},
+					"postal_code": {
+						"type": "string"
+					},
+					"country": {
+						"type": "string"
+					},
+					"state": {
+						"type": "string"
+					},
+					"city": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"contact_email": {
+						"type": "string"
+					},
+					"contact_phone_no": {
+						"type": "string"
+					},
+					"contact_name": {
+						"type": "string"
+					},
+					"website": {
+						"type": "string"
+					},
+					"tagline": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"operator_user_id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"active",
+					"business_phase",
+					"business_category",
+					"business_type",
+					"postal_code",
+					"country",
+					"state",
+					"city",
+					"address",
+					"description",
+					"contact_email",
+					"contact_phone_no",
+					"contact_name",
+					"website",
+					"tagline",
+					"name",
+					"operator_user_id"
+				],
+				"type": "object"
+			},
+			"CreateBusinessInput": {
+				"$ref": "#/components/schemas/z.infer_typeofcreateBusinessSchema_"
+			},
+			"z.infer_typeofupdateBusinessSchema_": {
+				"properties": {
+					"active": {
+						"type": "number",
+						"format": "double"
+					},
+					"value": {
+						"type": "number",
+						"format": "double"
+					},
+					"postal_code": {
+						"type": "string"
+					},
+					"country": {
+						"type": "string"
+					},
+					"state": {
+						"type": "string"
+					},
+					"city": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"contact_email": {
+						"type": "string"
+					},
+					"contact_phone_no": {
+						"type": "string"
+					},
+					"contact_name": {
+						"type": "string"
+					},
+					"website": {
+						"type": "string"
+					},
+					"tagline": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"business_phase": {},
+					"business_category": {},
+					"business_type": {}
+				},
+				"required": [
+					"business_phase",
+					"business_category",
+					"business_type"
+				],
+				"type": "object"
+			},
+			"UpdateBusinessInput": {
+				"$ref": "#/components/schemas/z.infer_typeofupdateBusinessSchema_"
+			},
 			"CreateSkillInput": {
 				"properties": {
 					"category": {
@@ -720,6 +858,303 @@
 					}
 				],
 				"parameters": []
+			}
+		},
+		"/businesses": {
+			"get": {
+				"operationId": "GetBusinesses",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "business_type",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "business_category",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "business_phase",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "active",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					},
+					{
+						"in": "query",
+						"name": "search",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "operator_user_id",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateBusiness",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateBusinessInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/businesses/{businessId}": {
+			"get": {
+				"operationId": "GetBusinessById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "businessId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateBusiness",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "businessId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateBusinessInput"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteBusiness",
+				"responses": {
+					"204": {
+						"description": "Deleted"
+					}
+				},
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "businessId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/businesses/user/{userId}": {
+			"get": {
+				"operationId": "GetUserBusinesses",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/businesses/{businessId}/toggle-status": {
+			"put": {
+				"operationId": "ToggleBusinessStatus",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "businessId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/businesses/{businessId}/stats": {
+			"get": {
+				"operationId": "GetBusinessStats",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"stats": {
+											"properties": {
+												"tags": {},
+												"publications": {},
+												"projects": {},
+												"incoming_connections": {},
+												"outgoing_connections": {}
+											},
+											"required": [
+												"tags",
+												"publications",
+												"projects",
+												"incoming_connections",
+												"outgoing_connections"
+											],
+											"type": "object"
+										},
+										"business": {}
+									},
+									"required": [
+										"stats",
+										"business"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "businessId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/skills": {

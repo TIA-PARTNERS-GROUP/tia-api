@@ -8,6 +8,8 @@ const runtime_1 = require("@tsoa/runtime");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const auth_controller_1 = require("./controllers/auth.controller");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+const businesses_controller_1 = require("./controllers/businesses.controller");
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const skills_controler_1 = require("./controllers/skills.controler");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const user_skills_controller_1 = require("./controllers/user_skills.controller");
@@ -69,6 +71,26 @@ const models = {
             "is_current": { "dataType": "boolean" },
         },
         "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "z.infer_typeofcreateBusinessSchema_": {
+        "dataType": "refAlias",
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "value": { "dataType": "double" }, "active": { "dataType": "double", "required": true }, "business_phase": { "dataType": "any", "required": true }, "business_category": { "dataType": "any", "required": true }, "business_type": { "dataType": "any", "required": true }, "postal_code": { "dataType": "string", "required": true }, "country": { "dataType": "string", "required": true }, "state": { "dataType": "string", "required": true }, "city": { "dataType": "string", "required": true }, "address": { "dataType": "string", "required": true }, "description": { "dataType": "string", "required": true }, "contact_email": { "dataType": "string", "required": true }, "contact_phone_no": { "dataType": "string", "required": true }, "contact_name": { "dataType": "string", "required": true }, "website": { "dataType": "string", "required": true }, "tagline": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "operator_user_id": { "dataType": "double", "required": true } }, "validators": {} },
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CreateBusinessInput": {
+        "dataType": "refAlias",
+        "type": { "ref": "z.infer_typeofcreateBusinessSchema_", "validators": {} },
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "z.infer_typeofupdateBusinessSchema_": {
+        "dataType": "refAlias",
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "active": { "dataType": "double" }, "value": { "dataType": "double" }, "postal_code": { "dataType": "string" }, "country": { "dataType": "string" }, "state": { "dataType": "string" }, "city": { "dataType": "string" }, "address": { "dataType": "string" }, "description": { "dataType": "string" }, "contact_email": { "dataType": "string" }, "contact_phone_no": { "dataType": "string" }, "contact_name": { "dataType": "string" }, "website": { "dataType": "string" }, "tagline": { "dataType": "string" }, "name": { "dataType": "string" }, "business_phase": { "dataType": "any", "required": true }, "business_category": { "dataType": "any", "required": true }, "business_type": { "dataType": "any", "required": true } }, "validators": {} },
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UpdateBusinessInput": {
+        "dataType": "refAlias",
+        "type": { "ref": "z.infer_typeofupdateBusinessSchema_", "validators": {} },
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "CreateSkillInput": {
@@ -248,6 +270,148 @@ function RegisterRoutes(app) {
             const controller = new auth_controller_1.AuthController();
             const promise = controller.getSessions.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, 200, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/businesses', ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController)), ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController.prototype.getBusinesses)), function BusinessesController_getBusinesses(request, response, next) {
+        const args = {
+            business_type: { "in": "query", "name": "business_type", "dataType": "string" },
+            business_category: { "in": "query", "name": "business_category", "dataType": "string" },
+            business_phase: { "in": "query", "name": "business_phase", "dataType": "string" },
+            active: { "in": "query", "name": "active", "dataType": "boolean" },
+            search: { "in": "query", "name": "search", "dataType": "string" },
+            operator_user_id: { "in": "query", "name": "operator_user_id", "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new businesses_controller_1.BusinessesController();
+            const promise = controller.getBusinesses.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/businesses/:businessId', ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController)), ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController.prototype.getBusinessById)), function BusinessesController_getBusinessById(request, response, next) {
+        const args = {
+            businessId: { "in": "path", "name": "businessId", "required": true, "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new businesses_controller_1.BusinessesController();
+            const promise = controller.getBusinessById.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.post('/businesses', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController)), ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController.prototype.createBusiness)), function BusinessesController_createBusiness(request, response, next) {
+        const args = {
+            body: { "in": "body", "name": "body", "required": true, "ref": "CreateBusinessInput" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new businesses_controller_1.BusinessesController();
+            const promise = controller.createBusiness.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, 201, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.put('/businesses/:businessId', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController)), ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController.prototype.updateBusiness)), function BusinessesController_updateBusiness(request, response, next) {
+        const args = {
+            businessId: { "in": "path", "name": "businessId", "required": true, "dataType": "double" },
+            body: { "in": "body", "name": "body", "required": true, "ref": "UpdateBusinessInput" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new businesses_controller_1.BusinessesController();
+            const promise = controller.updateBusiness.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.delete('/businesses/:businessId', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController)), ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController.prototype.deleteBusiness)), function BusinessesController_deleteBusiness(request, response, next) {
+        const args = {
+            businessId: { "in": "path", "name": "businessId", "required": true, "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new businesses_controller_1.BusinessesController();
+            const promise = controller.deleteBusiness.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, 204, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/businesses/user/:userId', ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController)), ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController.prototype.getUserBusinesses)), function BusinessesController_getUserBusinesses(request, response, next) {
+        const args = {
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new businesses_controller_1.BusinessesController();
+            const promise = controller.getUserBusinesses.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.put('/businesses/:businessId/toggle-status', authenticateMiddleware([{ "BearerAuth": [] }]), ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController)), ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController.prototype.toggleBusinessStatus)), function BusinessesController_toggleBusinessStatus(request, response, next) {
+        const args = {
+            businessId: { "in": "path", "name": "businessId", "required": true, "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new businesses_controller_1.BusinessesController();
+            const promise = controller.toggleBusinessStatus.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/businesses/:businessId/stats', ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController)), ...((0, runtime_1.fetchMiddlewares)(businesses_controller_1.BusinessesController.prototype.getBusinessStats)), function BusinessesController_getBusinessStats(request, response, next) {
+        const args = {
+            businessId: { "in": "path", "name": "businessId", "required": true, "dataType": "double" },
+        };
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request, response);
+            const controller = new businesses_controller_1.BusinessesController();
+            const promise = controller.getBusinessStats.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, undefined, next);
         }
         catch (err) {
             return next(err);
