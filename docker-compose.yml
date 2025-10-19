@@ -1,0 +1,15 @@
+services:
+  database:
+    image: mariadb:latest
+    container_name: mariadb_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: tia-dev-password
+      MYSQL_DATABASE: tia-dev
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
