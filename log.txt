@@ -1,0 +1,483 @@
+=== RUN   TestAuthService_Integration_Login
+=== RUN   TestAuthService_Integration_Login/Success_-_Valid_Credentials
+=== RUN   TestAuthService_Integration_Login/Failure_-_Invalid_Password
+=== RUN   TestAuthService_Integration_Login/Failure_-_User_Not_Found
+
+2025/10/20 07:21:35 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/auth.service.go:30 [35;1mrecord not found
+[0m[33m[0.807ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE login_email = 'notfound@test.com' ORDER BY `users`.`id` LIMIT 1
+=== RUN   TestAuthService_Integration_Login/Failure_-_Deactivated_Account
+--- PASS: TestAuthService_Integration_Login (0.75s)
+    --- PASS: TestAuthService_Integration_Login/Success_-_Valid_Credentials (0.11s)
+    --- PASS: TestAuthService_Integration_Login/Failure_-_Invalid_Password (0.12s)
+    --- PASS: TestAuthService_Integration_Login/Failure_-_User_Not_Found (0.00s)
+    --- PASS: TestAuthService_Integration_Login/Failure_-_Deactivated_Account (0.11s)
+=== RUN   TestAuthService_Integration_Logout
+--- PASS: TestAuthService_Integration_Logout (0.32s)
+=== RUN   TestAuthService_Integration_ValidateToken
+=== RUN   TestAuthService_Integration_ValidateToken/Success_-_Valid_Token_and_Session
+=== RUN   TestAuthService_Integration_ValidateToken/Failure_-_Invalid_Token_String
+=== RUN   TestAuthService_Integration_ValidateToken/Failure_-_Session_Not_Found
+
+2025/10/20 07:21:36 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/auth.service.go:123 [35;1mrecord not found
+[0m[33m[0.876ms] [34;1m[rows:0][0m SELECT * FROM `user_sessions` WHERE id = 9999 AND user_id = 1 AND revoked_at IS NULL ORDER BY `user_sessions`.`id` LIMIT 1
+--- PASS: TestAuthService_Integration_ValidateToken (0.33s)
+    --- PASS: TestAuthService_Integration_ValidateToken/Success_-_Valid_Token_and_Session (0.01s)
+    --- PASS: TestAuthService_Integration_ValidateToken/Failure_-_Invalid_Token_String (0.00s)
+    --- PASS: TestAuthService_Integration_ValidateToken/Failure_-_Session_Not_Found (0.00s)
+=== RUN   TestBusinessConnectionService_Integration_CreateAndGet
+
+2025/10/20 07:21:37 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:52 [35;1mrecord not found
+[0m[33m[0.997ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE initiating_business_id = 1 AND receiving_business_id = 2 AND connection_type = 'Partnership' ORDER BY `business_connections`.`id` LIMIT 1
+--- PASS: TestBusinessConnectionService_Integration_CreateAndGet (0.36s)
+=== RUN   TestBusinessConnectionService_Integration_DuplicatePrevention
+
+2025/10/20 07:21:37 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:52 [35;1mrecord not found
+[0m[33m[1.238ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE initiating_business_id = 1 AND receiving_business_id = 2 AND connection_type = 'Supplier' ORDER BY `business_connections`.`id` LIMIT 1
+--- PASS: TestBusinessConnectionService_Integration_DuplicatePrevention (0.36s)
+=== RUN   TestBusinessConnectionService_Integration_CannotConnectToSelf
+--- PASS: TestBusinessConnectionService_Integration_CannotConnectToSelf (0.34s)
+=== RUN   TestBusinessConnectionService_Integration_UpdateAndDelete
+
+2025/10/20 07:21:38 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:52 [35;1mrecord not found
+[0m[33m[0.776ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE initiating_business_id = 1 AND receiving_business_id = 2 AND connection_type = 'Client' ORDER BY `business_connections`.`id` LIMIT 1
+
+2025/10/20 07:21:38 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:90 [35;1mrecord not found
+[0m[33m[0.530ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE `business_connections`.`id` = 1 ORDER BY `business_connections`.`id` LIMIT 1
+--- PASS: TestBusinessConnectionService_Integration_UpdateAndDelete (0.37s)
+=== RUN   TestBusinessConnectionService_Integration_AcceptAndReject
+
+2025/10/20 07:21:38 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:52 [35;1mrecord not found
+[0m[33m[1.496ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE initiating_business_id = 1 AND receiving_business_id = 2 AND connection_type = 'Partnership' ORDER BY `business_connections`.`id` LIMIT 1
+
+2025/10/20 07:21:38 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:52 [35;1mrecord not found
+[0m[33m[0.479ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE initiating_business_id = 2 AND receiving_business_id = 1 AND connection_type = 'Referral' ORDER BY `business_connections`.`id` LIMIT 1
+--- PASS: TestBusinessConnectionService_Integration_AcceptAndReject (0.40s)
+=== RUN   TestBusinessConnectionService_Integration_GetConnections
+
+2025/10/20 07:21:38 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:52 [35;1mrecord not found
+[0m[33m[1.057ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE initiating_business_id = 1 AND receiving_business_id = 2 AND connection_type = 'Partnership' ORDER BY `business_connections`.`id` LIMIT 1
+
+2025/10/20 07:21:38 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:52 [35;1mrecord not found
+[0m[33m[0.455ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE initiating_business_id = 1 AND receiving_business_id = 3 AND connection_type = 'Supplier' ORDER BY `business_connections`.`id` LIMIT 1
+
+2025/10/20 07:21:38 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:52 [35;1mrecord not found
+[0m[33m[0.716ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE initiating_business_id = 2 AND receiving_business_id = 1 AND connection_type = 'Client' ORDER BY `business_connections`.`id` LIMIT 1
+--- PASS: TestBusinessConnectionService_Integration_GetConnections (0.39s)
+=== RUN   TestBusinessConnectionService_Integration_Validation
+
+2025/10/20 07:21:39 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:21 [35;1mrecord not found
+[0m[33m[2.120ms] [34;1m[rows:0][0m SELECT * FROM `businesses` WHERE `businesses`.`id` = 999 ORDER BY `businesses`.`id` LIMIT 1
+
+2025/10/20 07:21:39 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:37 [35;1mrecord not found
+[0m[33m[0.891ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE `users`.`id` = 999 ORDER BY `users`.`id` LIMIT 1
+--- PASS: TestBusinessConnectionService_Integration_Validation (0.35s)
+=== RUN   TestBusinessConnectionService_Integration_NonExistentConnection
+
+2025/10/20 07:21:39 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:90 [35;1mrecord not found
+[0m[33m[1.153ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE `business_connections`.`id` = 999 ORDER BY `business_connections`.`id` LIMIT 1
+
+2025/10/20 07:21:39 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:130 [35;1mrecord not found
+[0m[33m[1.247ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE id = 999 ORDER BY `business_connections`.`id` LIMIT 1
+--- PASS: TestBusinessConnectionService_Integration_NonExistentConnection (0.33s)
+=== RUN   TestBusinessConnectionService_Integration_AcceptNonPendingConnection
+
+2025/10/20 07:21:39 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:52 [35;1mrecord not found
+[0m[33m[1.362ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE initiating_business_id = 1 AND receiving_business_id = 2 AND connection_type = 'Partnership' ORDER BY `business_connections`.`id` LIMIT 1
+
+2025/10/20 07:21:39 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_connection.service.go:190 [35;1mrecord not found
+[0m[33m[1.130ms] [34;1m[rows:0][0m SELECT * FROM `business_connections` WHERE id = 1 AND status = 'pending' ORDER BY `business_connections`.`id` LIMIT 1
+--- PASS: TestBusinessConnectionService_Integration_AcceptNonPendingConnection (0.36s)
+=== RUN   TestBusinessService_Integration_CreateAndGet
+--- PASS: TestBusinessService_Integration_CreateAndGet (0.33s)
+=== RUN   TestBusinessService_Integration_DeleteBusiness
+=== RUN   TestBusinessService_Integration_DeleteBusiness/Success_-_No_Dependencies
+=== RUN   TestBusinessService_Integration_DeleteBusiness/Failure_-_Business_In_Use
+--- PASS: TestBusinessService_Integration_DeleteBusiness (0.37s)
+    --- PASS: TestBusinessService_Integration_DeleteBusiness/Success_-_No_Dependencies (0.01s)
+    --- PASS: TestBusinessService_Integration_DeleteBusiness/Failure_-_Business_In_Use (0.02s)
+=== RUN   TestBusinessService_Integration_GetUserBusinesses
+--- PASS: TestBusinessService_Integration_GetUserBusinesses (0.37s)
+=== RUN   TestBusinessService_Integration_ToggleBusinessStatus
+--- PASS: TestBusinessService_Integration_ToggleBusinessStatus (0.37s)
+=== RUN   TestBusinessTagService_Integration_CreateAndGet
+
+2025/10/20 07:21:41 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[1.131ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'client' AND description = 'Enterprise Client' ORDER BY `business_tags`.`id` LIMIT 1
+--- PASS: TestBusinessTagService_Integration_CreateAndGet (0.36s)
+=== RUN   TestBusinessTagService_Integration_DuplicatePrevention
+
+2025/10/20 07:21:42 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[1.170ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'service' AND description = 'Consulting Services' ORDER BY `business_tags`.`id` LIMIT 1
+--- PASS: TestBusinessTagService_Integration_DuplicatePrevention (0.34s)
+=== RUN   TestBusinessTagService_Integration_UpdateAndDelete
+
+2025/10/20 07:21:42 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[1.684ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'specialty' AND description = 'E-commerce' ORDER BY `business_tags`.`id` LIMIT 1
+
+2025/10/20 07:21:42 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:117 [35;1mrecord not found
+[0m[33m[0.829ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'specialty' AND description = 'E-commerce & Mobile Apps' AND id != 1 ORDER BY `business_tags`.`id` LIMIT 1
+
+2025/10/20 07:21:42 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:67 [35;1mrecord not found
+[0m[33m[1.003ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE `business_tags`.`id` = 1 ORDER BY `business_tags`.`id` LIMIT 1
+--- PASS: TestBusinessTagService_Integration_UpdateAndDelete (0.37s)
+=== RUN   TestBusinessTagService_Integration_GetTagsByType
+
+2025/10/20 07:21:42 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[1.663ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'client' AND description = 'Fortune 500' ORDER BY `business_tags`.`id` LIMIT 1
+
+2025/10/20 07:21:42 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[0.797ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'service' AND description = 'Cloud Migration' ORDER BY `business_tags`.`id` LIMIT 1
+
+2025/10/20 07:21:42 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[0.740ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'service' AND description = 'DevOps' ORDER BY `business_tags`.`id` LIMIT 1
+
+2025/10/20 07:21:42 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[0.629ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'specialty' AND description = 'AI/ML' ORDER BY `business_tags`.`id` LIMIT 1
+--- PASS: TestBusinessTagService_Integration_GetTagsByType (0.39s)
+=== RUN   TestBusinessTagService_Integration_SearchTags
+
+2025/10/20 07:21:43 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[1.384ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'service' AND description = 'Digital Transformation' ORDER BY `business_tags`.`id` LIMIT 1
+
+2025/10/20 07:21:43 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[0.502ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'service' AND description = 'Business Process Optimization' ORDER BY `business_tags`.`id` LIMIT 1
+
+2025/10/20 07:21:43 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[0.942ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'client' AND description = 'Healthcare Industry' ORDER BY `business_tags`.`id` LIMIT 1
+    business_tag_service_integration_test.go:266: 
+        	Error Trace:	/home/segus-faultise/Work/tia/tia-api/test/business_tag_service_integration_test.go:266
+        	Error:      	"[{2 1 service Business Process Optimization 2025-10-19 21:21:43.192 +1000 AEST {1 1 Searchable Business <nil> <nil> <nil> <nil> <nil> <nil> <nil> <nil> <nil> <nil> <nil> <nil> Consulting B2B Startup true 2025-10-19 21:21:43.176 +1000 AEST 2025-10-19 21:21:43.176 +1000 AEST {0  <nil>  <nil> <nil> <nil> <nil> [] <nil> false false 0001-01-01 00:00:00 +0000 UTC 0001-01-01 00:00:00 +0000 UTC [] [] [] [] [] [] [] [] [] [] []} [] [] [] [] []}}]" should have 2 item(s), but has 1
+        	Test:       	TestBusinessTagService_Integration_SearchTags
+    business_tag_service_integration_test.go:272: 
+        	Error Trace:	/home/segus-faultise/Work/tia/tia-api/test/business_tag_service_integration_test.go:272
+        	Error:      	"[{2 1 service Business Process Optimization 2025-10-19 21:21:43.192 +1000 AEST {1 1 Searchable Business <nil> <nil> <nil> <nil> <nil> <nil> <nil> <nil> <nil> <nil> <nil> <nil> Consulting B2B Startup true 2025-10-19 21:21:43.176 +1000 AEST 2025-10-19 21:21:43.176 +1000 AEST {0  <nil>  <nil> <nil> <nil> <nil> [] <nil> false false 0001-01-01 00:00:00 +0000 UTC 0001-01-01 00:00:00 +0000 UTC [] [] [] [] [] [] [] [] [] [] []} [] [] [] [] []}}]" should have 2 item(s), but has 1
+        	Test:       	TestBusinessTagService_Integration_SearchTags
+--- FAIL: TestBusinessTagService_Integration_SearchTags (0.37s)
+=== RUN   TestBusinessTagService_Integration_GetBusinessesByTag
+
+2025/10/20 07:21:43 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[2.979ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'service' AND description = 'Enterprise Solutions' ORDER BY `business_tags`.`id` LIMIT 1
+
+2025/10/20 07:21:43 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[0.791ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 2 AND tag_type = 'service' AND description = 'Enterprise Solutions' ORDER BY `business_tags`.`id` LIMIT 1
+--- PASS: TestBusinessTagService_Integration_GetBusinessesByTag (0.37s)
+=== RUN   TestBusinessTagService_Integration_Validation
+
+2025/10/20 07:21:43 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:22 [35;1mrecord not found
+[0m[33m[1.339ms] [34;1m[rows:0][0m SELECT * FROM `businesses` WHERE `businesses`.`id` = 999 ORDER BY `businesses`.`id` LIMIT 1
+--- PASS: TestBusinessTagService_Integration_Validation (0.33s)
+=== RUN   TestBusinessTagService_Integration_NonExistentTag
+
+2025/10/20 07:21:44 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:67 [35;1mrecord not found
+[0m[33m[1.946ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE `business_tags`.`id` = 999 ORDER BY `business_tags`.`id` LIMIT 1
+
+2025/10/20 07:21:44 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:102 [35;1mrecord not found
+[0m[33m[1.006ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE id = 999 ORDER BY `business_tags`.`id` LIMIT 1
+--- PASS: TestBusinessTagService_Integration_NonExistentTag (0.34s)
+=== RUN   TestBusinessTagService_Integration_UpdateDuplicatePrevention
+
+2025/10/20 07:21:44 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[1.177ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'service' AND description = 'Service A' ORDER BY `business_tags`.`id` LIMIT 1
+
+2025/10/20 07:21:44 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[0.677ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'service' AND description = 'Service B' ORDER BY `business_tags`.`id` LIMIT 1
+--- PASS: TestBusinessTagService_Integration_UpdateDuplicatePrevention (0.37s)
+=== RUN   TestBusinessTagService_Integration_UpdateNoData
+
+2025/10/20 07:21:44 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/business_tag.service.go:34 [35;1mrecord not found
+[0m[33m[1.237ms] [34;1m[rows:0][0m SELECT * FROM `business_tags` WHERE business_id = 1 AND tag_type = 'client' AND description = 'Test Client' ORDER BY `business_tags`.`id` LIMIT 1
+--- PASS: TestBusinessTagService_Integration_UpdateNoData (0.35s)
+=== RUN   TestIdeaService_Integration_CreateAndGet
+--- PASS: TestIdeaService_Integration_CreateAndGet (0.35s)
+=== RUN   TestIdeaService_Integration_Voting
+--- PASS: TestIdeaService_Integration_Voting (0.39s)
+=== RUN   TestIdeaService_Integration_UpdateStatus
+--- PASS: TestIdeaService_Integration_UpdateStatus (0.37s)
+=== RUN   TestIntegration_SchemaCreation
+    migrate_integration_test.go:20: Integration test: Schema creation verified successfully.
+--- PASS: TestIntegration_SchemaCreation (0.01s)
+=== RUN   TestNotificationService_Integration_CreateAndGet
+--- PASS: TestNotificationService_Integration_CreateAndGet (0.37s)
+=== RUN   TestNotificationService_Integration_FilteringAndStatus
+    notification_service_integration_test.go:51: Created user with ID: 1
+    notification_service_integration_test.go:81: Created notification 1 with ID: 1, Read: false
+    notification_service_integration_test.go:81: Created notification 2 with ID: 2, Read: false
+    notification_service_integration_test.go:81: Created notification 3 with ID: 3, Read: true
+    notification_service_integration_test.go:87: Total notifications in DB for user: 3
+=== RUN   TestNotificationService_Integration_FilteringAndStatus/Get_All_Notifications
+    notification_service_integration_test.go:91: Get All - Error: <nil>, Count: 3
+=== RUN   TestNotificationService_Integration_FilteringAndStatus/Get_Unread_Notifications
+    notification_service_integration_test.go:99: Get Unread - Error: <nil>, Count: 2
+=== RUN   TestNotificationService_Integration_FilteringAndStatus/Mark_Single_As_Read
+    notification_service_integration_test.go:107: Find unread - Error: <nil>, Found ID: 1
+    notification_service_integration_test.go:111: MarkAsRead - Error: <nil>, Updated Read: true
+    notification_service_integration_test.go:117: After MarkAsRead - Unread count: 1
+=== RUN   TestNotificationService_Integration_FilteringAndStatus/Mark_All_As_Read
+    notification_service_integration_test.go:123: MarkAllAsRead - Error: <nil>, Rows affected: 1
+    notification_service_integration_test.go:129: After MarkAllAsRead - Unread count: 0
+--- PASS: TestNotificationService_Integration_FilteringAndStatus (0.38s)
+    --- PASS: TestNotificationService_Integration_FilteringAndStatus/Get_All_Notifications (0.00s)
+    --- PASS: TestNotificationService_Integration_FilteringAndStatus/Get_Unread_Notifications (0.00s)
+    --- PASS: TestNotificationService_Integration_FilteringAndStatus/Mark_Single_As_Read (0.01s)
+    --- PASS: TestNotificationService_Integration_FilteringAndStatus/Mark_All_As_Read (0.01s)
+=== RUN   TestProjectMemberService_Integration_AddAndGet
+
+2025/10/20 07:21:47 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:39 [35;1mrecord not found
+[0m[33m[1.185ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 1 AND user_id = 2 ORDER BY `project_members`.`project_id` LIMIT 1
+--- PASS: TestProjectMemberService_Integration_AddAndGet (0.35s)
+=== RUN   TestProjectMemberService_Integration_DuplicatePrevention
+
+2025/10/20 07:21:47 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:39 [35;1mrecord not found
+[0m[33m[1.536ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 1 AND user_id = 2 ORDER BY `project_members`.`project_id` LIMIT 1
+--- PASS: TestProjectMemberService_Integration_DuplicatePrevention (0.36s)
+=== RUN   TestProjectMemberService_Integration_UpdateAndRemove
+
+2025/10/20 07:21:47 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:39 [35;1mrecord not found
+[0m[33m[2.186ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 1 AND user_id = 2 ORDER BY `project_members`.`project_id` LIMIT 1
+
+2025/10/20 07:21:47 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:75 [35;1mrecord not found
+[0m[33m[0.968ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 1 AND user_id = 2 ORDER BY `project_members`.`project_id` LIMIT 1
+--- PASS: TestProjectMemberService_Integration_UpdateAndRemove (0.38s)
+=== RUN   TestProjectMemberService_Integration_GetProjectsByUser
+
+2025/10/20 07:21:48 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:39 [35;1mrecord not found
+[0m[33m[0.891ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 1 AND user_id = 3 ORDER BY `project_members`.`project_id` LIMIT 1
+
+2025/10/20 07:21:48 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:39 [35;1mrecord not found
+[0m[33m[0.697ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 2 AND user_id = 3 ORDER BY `project_members`.`project_id` LIMIT 1
+
+2025/10/20 07:21:48 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:39 [35;1mrecord not found
+[0m[33m[0.382ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 3 AND user_id = 3 ORDER BY `project_members`.`project_id` LIMIT 1
+--- PASS: TestProjectMemberService_Integration_GetProjectsByUser (0.41s)
+=== RUN   TestProjectMemberService_Integration_Validation
+
+2025/10/20 07:21:48 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:21 [35;1mrecord not found
+[0m[33m[1.365ms] [34;1m[rows:0][0m SELECT * FROM `projects` WHERE `projects`.`id` = 999 ORDER BY `projects`.`id` LIMIT 1
+
+2025/10/20 07:21:48 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:29 [35;1mrecord not found
+[0m[33m[0.662ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE `users`.`id` = 999 ORDER BY `users`.`id` LIMIT 1
+--- PASS: TestProjectMemberService_Integration_Validation (0.35s)
+=== RUN   TestProjectMemberService_Integration_GetMembersByRole
+
+2025/10/20 07:21:49 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:39 [35;1mrecord not found
+[0m[33m[0.760ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 1 AND user_id = 2 ORDER BY `project_members`.`project_id` LIMIT 1
+
+2025/10/20 07:21:49 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:39 [35;1mrecord not found
+[0m[33m[0.557ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 1 AND user_id = 3 ORDER BY `project_members`.`project_id` LIMIT 1
+
+2025/10/20 07:21:49 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:39 [35;1mrecord not found
+[0m[33m[1.640ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 1 AND user_id = 4 ORDER BY `project_members`.`project_id` LIMIT 1
+
+2025/10/20 07:21:49 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:39 [35;1mrecord not found
+[0m[33m[0.449ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 1 AND user_id = 5 ORDER BY `project_members`.`project_id` LIMIT 1
+--- PASS: TestProjectMemberService_Integration_GetMembersByRole (0.42s)
+=== RUN   TestProjectMemberService_Integration_CannotRemoveManager
+
+2025/10/20 07:21:49 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:39 [35;1mrecord not found
+[0m[33m[0.956ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 1 AND user_id = 1 ORDER BY `project_members`.`project_id` LIMIT 1
+--- PASS: TestProjectMemberService_Integration_CannotRemoveManager (0.36s)
+=== RUN   TestProjectMemberService_Integration_IsUserProjectMember
+
+2025/10/20 07:21:49 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:39 [35;1mrecord not found
+[0m[33m[0.831ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 1 AND user_id = 2 ORDER BY `project_members`.`project_id` LIMIT 1
+--- PASS: TestProjectMemberService_Integration_IsUserProjectMember (0.39s)
+=== RUN   TestProjectMemberService_Integration_NonExistentProjectMember
+
+2025/10/20 07:21:50 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:75 [35;1mrecord not found
+[0m[33m[1.541ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 999 AND user_id = 999 ORDER BY `project_members`.`project_id` LIMIT 1
+
+2025/10/20 07:21:50 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:126 [35;1mrecord not found
+[0m[33m[0.905ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 999 AND user_id = 999 ORDER BY `project_members`.`project_id` LIMIT 1
+
+2025/10/20 07:21:50 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_member.service.go:159 [35;1mrecord not found
+[0m[33m[0.819ms] [34;1m[rows:0][0m SELECT * FROM `project_members` WHERE project_id = 999 AND user_id = 999 ORDER BY `project_members`.`project_id` LIMIT 1
+--- PASS: TestProjectMemberService_Integration_NonExistentProjectMember (0.36s)
+=== RUN   TestProjectService_Integration_CreateAndGet
+--- PASS: TestProjectService_Integration_CreateAndGet (0.38s)
+=== RUN   TestProjectService_Integration_MemberManagement
+
+2025/10/20 07:21:51 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project.service.go:146 [35;1mError 1062 (23000): Duplicate entry '1-2' for key 'PRIMARY'
+[0m[33m[1.297ms] [34;1m[rows:0][0m INSERT INTO `project_members` (`project_id`,`user_id`,`role`) VALUES (1,2,'contributor') RETURNING `joined_at`
+--- PASS: TestProjectService_Integration_MemberManagement (0.39s)
+=== RUN   TestProjectSkillService_Integration_CreateAndGet
+
+2025/10/20 07:21:51 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:39 [35;1mrecord not found
+[0m[33m[1.394ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 1 AND skill_id = 1 ORDER BY `project_skills`.`project_id` LIMIT 1
+--- PASS: TestProjectSkillService_Integration_CreateAndGet (0.39s)
+=== RUN   TestProjectSkillService_Integration_DuplicatePrevention
+
+2025/10/20 07:21:51 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.818ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 1 AND skill_id = 1 ORDER BY `project_skills`.`project_id` LIMIT 1
+--- PASS: TestProjectSkillService_Integration_DuplicatePrevention (0.39s)
+=== RUN   TestProjectSkillService_Integration_UpdateAndDelete
+
+2025/10/20 07:21:52 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.761ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 1 AND skill_id = 1 ORDER BY `project_skills`.`project_id` LIMIT 1
+
+2025/10/20 07:21:52 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:79 [35;1mrecord not found
+[0m[33m[1.345ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 1 AND skill_id = 1 ORDER BY `project_skills`.`project_id` LIMIT 1
+--- PASS: TestProjectSkillService_Integration_UpdateAndDelete (0.39s)
+=== RUN   TestProjectSkillService_Integration_GetProjectsBySkill
+
+2025/10/20 07:21:52 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:39 [35;1mrecord not found
+[0m[33m[1.140ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 1 AND skill_id = 1 ORDER BY `project_skills`.`project_id` LIMIT 1
+
+2025/10/20 07:21:52 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.928ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 2 AND skill_id = 2 ORDER BY `project_skills`.`project_id` LIMIT 1
+
+2025/10/20 07:21:52 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.646ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 3 AND skill_id = 1 ORDER BY `project_skills`.`project_id` LIMIT 1
+
+2025/10/20 07:21:52 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.458ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 3 AND skill_id = 2 ORDER BY `project_skills`.`project_id` LIMIT 1
+--- PASS: TestProjectSkillService_Integration_GetProjectsBySkill (0.46s)
+=== RUN   TestProjectSkillService_Integration_Validation
+
+2025/10/20 07:21:53 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:21 [35;1mrecord not found
+[0m[33m[1.312ms] [34;1m[rows:0][0m SELECT * FROM `projects` WHERE `projects`.`id` = 999 ORDER BY `projects`.`id` LIMIT 1
+
+2025/10/20 07:21:53 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:29 [35;1mrecord not found
+[0m[33m[0.894ms] [34;1m[rows:0][0m SELECT * FROM `skills` WHERE `skills`.`id` = 999 ORDER BY `skills`.`id` LIMIT 1
+--- PASS: TestProjectSkillService_Integration_Validation (0.38s)
+=== RUN   TestProjectSkillService_Integration_GetSkillsByImportance
+
+2025/10/20 07:21:53 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.876ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 1 AND skill_id = 1 ORDER BY `project_skills`.`project_id` LIMIT 1
+
+2025/10/20 07:21:53 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:39 [35;1mrecord not found
+[0m[33m[1.059ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 1 AND skill_id = 2 ORDER BY `project_skills`.`project_id` LIMIT 1
+
+2025/10/20 07:21:53 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.508ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 1 AND skill_id = 3 ORDER BY `project_skills`.`project_id` LIMIT 1
+--- PASS: TestProjectSkillService_Integration_GetSkillsByImportance (0.41s)
+=== RUN   TestProjectSkillService_Integration_NonExistentProjectSkill
+
+2025/10/20 07:21:53 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:79 [35;1mrecord not found
+[0m[33m[1.263ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 999 AND skill_id = 999 ORDER BY `project_skills`.`project_id` LIMIT 1
+
+2025/10/20 07:21:53 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:131 [35;1mrecord not found
+[0m[33m[1.009ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 999 AND skill_id = 999 ORDER BY `project_skills`.`project_id` LIMIT 1
+--- PASS: TestProjectSkillService_Integration_NonExistentProjectSkill (0.35s)
+=== RUN   TestProjectSkillService_Integration_UpdateNoData
+
+2025/10/20 07:21:54 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/project_skill.service.go:39 [35;1mrecord not found
+[0m[33m[1.597ms] [34;1m[rows:0][0m SELECT * FROM `project_skills` WHERE project_id = 1 AND skill_id = 1 ORDER BY `project_skills`.`project_id` LIMIT 1
+--- PASS: TestProjectSkillService_Integration_UpdateNoData (0.36s)
+=== RUN   TestPublicationService_Integration_CreateAndGet
+--- PASS: TestPublicationService_Integration_CreateAndGet (0.34s)
+=== RUN   TestPublicationService_Integration_UpdatePublication
+--- PASS: TestPublicationService_Integration_UpdatePublication (0.37s)
+=== RUN   TestPublicationService_Integration_Publishing
+--- PASS: TestPublicationService_Integration_Publishing (0.35s)
+=== RUN   TestPublicationService_Integration_DeletePublication
+--- PASS: TestPublicationService_Integration_DeletePublication (0.35s)
+=== RUN   TestSkillService_Integration_CreateAndGet
+--- PASS: TestSkillService_Integration_CreateAndGet (0.33s)
+=== RUN   TestSkillService_Integration_CreateDuplicate
+
+2025/10/20 07:21:56 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/skill.service.go:66 [35;1mError 1062 (23000): Duplicate entry 'Duplicate Skill' for key 'uni_skills_name'
+[0m[33m[1.720ms] [34;1m[rows:0][0m INSERT INTO `skills` (`category`,`name`,`description`,`active`) VALUES ('Test','Duplicate Skill',NULL,true) RETURNING `created_at`,`id`
+--- PASS: TestSkillService_Integration_CreateDuplicate (0.34s)
+=== RUN   TestSkillService_Integration_DeleteSkill
+=== RUN   TestSkillService_Integration_DeleteSkill/Success_-_No_Dependencies
+=== RUN   TestSkillService_Integration_DeleteSkill/Failure_-_Skill_In_Use
+--- PASS: TestSkillService_Integration_DeleteSkill (0.37s)
+    --- PASS: TestSkillService_Integration_DeleteSkill/Success_-_No_Dependencies (0.01s)
+    --- PASS: TestSkillService_Integration_DeleteSkill/Failure_-_Skill_In_Use (0.02s)
+=== RUN   TestSkillService_Integration_GetSkillsFiltered
+=== RUN   TestSkillService_Integration_GetSkillsFiltered/Filter_by_Category
+=== RUN   TestSkillService_Integration_GetSkillsFiltered/Filter_by_Active_status
+=== RUN   TestSkillService_Integration_GetSkillsFiltered/Filter_by_Search_term
+--- PASS: TestSkillService_Integration_GetSkillsFiltered (0.36s)
+    --- PASS: TestSkillService_Integration_GetSkillsFiltered/Filter_by_Category (0.00s)
+    --- PASS: TestSkillService_Integration_GetSkillsFiltered/Filter_by_Active_status (0.00s)
+    --- PASS: TestSkillService_Integration_GetSkillsFiltered/Filter_by_Search_term (0.00s)
+=== RUN   TestUserService_Integration_CreateUser
+--- PASS: TestUserService_Integration_CreateUser (0.45s)
+=== RUN   TestUserService_Integration_FindUserByID
+=== RUN   TestUserService_Integration_FindUserByID/Success_-_User_Found
+=== RUN   TestUserService_Integration_FindUserByID/Failure_-_User_Not_Found
+
+2025/10/20 07:21:57 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user.service.go:147 [35;1mrecord not found
+[0m[33m[1.278ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE `users`.`id` = 9999 ORDER BY `users`.`id` LIMIT 1
+--- PASS: TestUserService_Integration_FindUserByID (0.34s)
+    --- PASS: TestUserService_Integration_FindUserByID/Success_-_User_Found (0.00s)
+    --- PASS: TestUserService_Integration_FindUserByID/Failure_-_User_Not_Found (0.00s)
+=== RUN   TestUserService_Integration_UpdateUser
+--- PASS: TestUserService_Integration_UpdateUser (0.36s)
+=== RUN   TestUserService_Integration_ChangePassword
+=== RUN   TestUserService_Integration_ChangePassword/Success
+=== RUN   TestUserService_Integration_ChangePassword/Failure_-_Incorrect_current_password
+--- PASS: TestUserService_Integration_ChangePassword (0.95s)
+    --- PASS: TestUserService_Integration_ChangePassword/Success (0.35s)
+    --- PASS: TestUserService_Integration_ChangePassword/Failure_-_Incorrect_current_password (0.11s)
+=== RUN   TestUserService_Integration_DeleteUser
+
+2025/10/20 07:21:59 [31;1m/home/segus-faultise/Work/tia/tia-api/test/user_service_integration_test.go:116 [35;1mrecord not found
+[0m[33m[1.225ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` LIMIT 1
+--- PASS: TestUserService_Integration_DeleteUser (0.35s)
+=== RUN   TestUserService_Integration_FindAllUsers
+--- PASS: TestUserService_Integration_FindAllUsers (0.38s)
+=== RUN   TestUserService_Integration_DeactivateUser
+--- PASS: TestUserService_Integration_DeactivateUser (0.34s)
+=== RUN   TestUserSkillService_Integration_CreateAndGet
+
+2025/10/20 07:22:00 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.949ms] [34;1m[rows:0][0m SELECT * FROM `user_skills` WHERE user_id = 1 AND skill_id = 1 ORDER BY `user_skills`.`skill_id` LIMIT 1
+--- PASS: TestUserSkillService_Integration_CreateAndGet (0.37s)
+=== RUN   TestUserSkillService_Integration_DuplicatePrevention
+
+2025/10/20 07:22:00 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.940ms] [34;1m[rows:0][0m SELECT * FROM `user_skills` WHERE user_id = 1 AND skill_id = 1 ORDER BY `user_skills`.`skill_id` LIMIT 1
+--- PASS: TestUserSkillService_Integration_DuplicatePrevention (0.37s)
+=== RUN   TestUserSkillService_Integration_UpdateAndDelete
+
+2025/10/20 07:22:01 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:39 [35;1mrecord not found
+[0m[33m[1.127ms] [34;1m[rows:0][0m SELECT * FROM `user_skills` WHERE user_id = 1 AND skill_id = 1 ORDER BY `user_skills`.`skill_id` LIMIT 1
+
+2025/10/20 07:22:01 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:73 [35;1mrecord not found
+[0m[33m[1.103ms] [34;1m[rows:0][0m SELECT * FROM `user_skills` WHERE user_id = 1 AND skill_id = 1 ORDER BY `user_skills`.`skill_id` LIMIT 1
+--- PASS: TestUserSkillService_Integration_UpdateAndDelete (0.38s)
+=== RUN   TestUserSkillService_Integration_GetUsersBySkill
+
+2025/10/20 07:22:01 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.655ms] [34;1m[rows:0][0m SELECT * FROM `user_skills` WHERE user_id = 1 AND skill_id = 1 ORDER BY `user_skills`.`skill_id` LIMIT 1
+
+2025/10/20 07:22:01 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.952ms] [34;1m[rows:0][0m SELECT * FROM `user_skills` WHERE user_id = 2 AND skill_id = 2 ORDER BY `user_skills`.`skill_id` LIMIT 1
+
+2025/10/20 07:22:01 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.486ms] [34;1m[rows:0][0m SELECT * FROM `user_skills` WHERE user_id = 3 AND skill_id = 1 ORDER BY `user_skills`.`skill_id` LIMIT 1
+
+2025/10/20 07:22:01 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.576ms] [34;1m[rows:0][0m SELECT * FROM `user_skills` WHERE user_id = 3 AND skill_id = 2 ORDER BY `user_skills`.`skill_id` LIMIT 1
+--- PASS: TestUserSkillService_Integration_GetUsersBySkill (0.42s)
+=== RUN   TestUserSkillService_Integration_Validation
+
+2025/10/20 07:22:01 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:21 [35;1mrecord not found
+[0m[33m[1.043ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE `users`.`id` = 999 ORDER BY `users`.`id` LIMIT 1
+
+2025/10/20 07:22:01 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:29 [35;1mrecord not found
+[0m[33m[0.663ms] [34;1m[rows:0][0m SELECT * FROM `skills` WHERE `skills`.`id` = 999 ORDER BY `skills`.`id` LIMIT 1
+--- PASS: TestUserSkillService_Integration_Validation (0.34s)
+=== RUN   TestUserSkillService_Integration_DefaultProficiency
+
+2025/10/20 07:22:02 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:39 [35;1mrecord not found
+[0m[33m[1.109ms] [34;1m[rows:0][0m SELECT * FROM `user_skills` WHERE user_id = 1 AND skill_id = 1 ORDER BY `user_skills`.`skill_id` LIMIT 1
+--- PASS: TestUserSkillService_Integration_DefaultProficiency (0.35s)
+=== RUN   TestUserSkillService_Integration_UpdateNoData
+
+2025/10/20 07:22:02 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:39 [35;1mrecord not found
+[0m[33m[0.845ms] [34;1m[rows:0][0m SELECT * FROM `user_skills` WHERE user_id = 1 AND skill_id = 1 ORDER BY `user_skills`.`skill_id` LIMIT 1
+--- PASS: TestUserSkillService_Integration_UpdateNoData (0.36s)
+=== RUN   TestUserSkillService_Integration_NonExistentUserSkill
+
+2025/10/20 07:22:03 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:73 [35;1mrecord not found
+[0m[33m[1.111ms] [34;1m[rows:0][0m SELECT * FROM `user_skills` WHERE user_id = 999 AND skill_id = 999 ORDER BY `user_skills`.`skill_id` LIMIT 1
+
+2025/10/20 07:22:03 [31;1m/home/segus-faultise/Work/tia/tia-api/internal/core/services/user_skill.service.go:105 [35;1mrecord not found
+[0m[33m[0.891ms] [34;1m[rows:0][0m SELECT * FROM `user_skills` WHERE user_id = 999 AND skill_id = 999 ORDER BY `user_skills`.`skill_id` LIMIT 1
+--- PASS: TestUserSkillService_Integration_NonExistentUserSkill (0.33s)
+FAIL
+FAIL	github.com/TIA-PARTNERS-GROUP/tia-api/test	28.548s
+FAIL

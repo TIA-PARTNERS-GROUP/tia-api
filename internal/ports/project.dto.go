@@ -36,14 +36,6 @@ type UpdateMemberRoleInput struct {
 	Role models.ProjectMemberRole `json:"role" validate:"required"`
 }
 
-type ProjectMemberResponse struct {
-	ProjectID uint                     `json:"project_id"`
-	UserID    uint                     `json:"user_id"`
-	Role      models.ProjectMemberRole `json:"role"`
-	JoinedAt  time.Time                `json:"joined_at"`
-	User      UserResponse             `json:"user"`
-}
-
 type ProjectResponse struct {
 	ID            uint                    `json:"id"`
 	Name          string                  `json:"name"`
@@ -57,16 +49,6 @@ type ProjectResponse struct {
 	Manager       UserResponse            `json:"manager"`
 	Business      *BusinessResponse       `json:"business,omitempty"`
 	Members       []ProjectMemberResponse `json:"members"`
-}
-
-func MapToProjectMemberResponse(pm *models.ProjectMember) ProjectMemberResponse {
-	return ProjectMemberResponse{
-		ProjectID: pm.ProjectID,
-		UserID:    pm.UserID,
-		Role:      pm.Role,
-		JoinedAt:  pm.JoinedAt,
-		User:      MapUserToResponse(&pm.User),
-	}
 }
 
 func MapToProjectResponse(p *models.Project) ProjectResponse {

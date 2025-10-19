@@ -65,6 +65,31 @@ var (
 	ErrProjectSkillAlreadyExists = &ApiError{StatusCode: 409, Message: "Project already has this skill"}
 	ErrInvalidImportance         = &ApiError{StatusCode: 400, Message: "Invalid importance level"}
 
+	// ProjectMember errors
+	ErrProjectMemberNotFound      = &ApiError{StatusCode: 404, Message: "Project member not found"}
+	ErrProjectMemberAlreadyExists = &ApiError{StatusCode: 409, Message: "User is already a member of this project"}
+	ErrCannotRemoveManager        = &ApiError{StatusCode: 400, Message: "Cannot remove project manager"}
+	ErrInvalidRole                = &ApiError{StatusCode: 400, Message: "Invalid role"}
+
+	// BusinessConnection errors
+	ErrBusinessConnectionNotFound      = &ApiError{StatusCode: 404, Message: "Business connection not found"}
+	ErrBusinessConnectionAlreadyExists = &ApiError{StatusCode: 409, Message: "Business connection already exists"}
+	ErrInvalidConnectionType           = &ApiError{StatusCode: 400, Message: "Invalid connection type"}
+	ErrInvalidConnectionStatus         = &ApiError{StatusCode: 400, Message: "Invalid connection status"}
+	ErrCannotConnectToSelf             = &ApiError{StatusCode: 400, Message: "Cannot create connection to same business"}
+	ErrConnectionNotPending            = &ApiError{StatusCode: 400, Message: "Connection is not in pending status"}
+
+	// BusinessTag errors
+	ErrBusinessTagNotFound      = &ApiError{StatusCode: 404, Message: "Business tag not found"}
+	ErrBusinessTagAlreadyExists = &ApiError{StatusCode: 409, Message: "Business tag already exists"}
+	ErrInvalidTagType           = &ApiError{StatusCode: 400, Message: "Invalid tag type"}
+
+	// IdeaVote errors
+	ErrIdeaVoteNotFound      = &ApiError{StatusCode: 404, Message: "Idea vote not found"}
+	ErrIdeaVoteAlreadyExists = &ApiError{StatusCode: 409, Message: "User has already voted on this idea"}
+	ErrInvalidVoteType       = &ApiError{StatusCode: 400, Message: "Invalid vote type"}
+	ErrCannotVoteOwnIdea     = &ApiError{StatusCode: 400, Message: "Cannot vote on your own idea"}
+
 	// Generic errors
 	ErrDatabase     = &ApiError{StatusCode: 500, Message: "A database error occurred"}
 	ErrNoUpdateData = &ApiError{StatusCode: 400, Message: "No valid fields provided for update"}
