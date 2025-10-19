@@ -17,7 +17,7 @@ import (
 var testDB *gorm.DB
 
 func TestMain(m *testing.M) {
-	if err := godotenv.Load("../.env"); err != nil {
+	if err := godotenv.Load("../../.env"); err != nil {
 		log.Printf("Warning: could not load .env file. Relying on environment variables: %v", err)
 	}
 
