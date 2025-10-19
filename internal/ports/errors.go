@@ -90,6 +90,9 @@ var (
 	ErrInvalidVoteType       = &ApiError{StatusCode: 400, Message: "Invalid vote type"}
 	ErrCannotVoteOwnIdea     = &ApiError{StatusCode: 400, Message: "Cannot vote on your own idea"}
 
+	// UserSession errors
+	ErrSessionNotFound = &ApiError{StatusCode: 404, Message: "Session not found"}
+
 	// Generic errors
 	ErrDatabase     = &ApiError{StatusCode: 500, Message: "A database error occurred"}
 	ErrNoUpdateData = &ApiError{StatusCode: 400, Message: "No valid fields provided for update"}

@@ -18,24 +18,20 @@ func NewIdeaVoteService(db *gorm.DB) *IdeaVoteService {
 }
 
 func (s *IdeaVoteService) CreateIdeaVote(ctx context.Context, data ports.CreateIdeaVoteInput) (*models.IdeaVote, error) {
-	// Check if user exists
 	var user models.User
 	if err := s.db.WithContext(ctx).First(&user, data.VoterUserID).Error; err != nil {
 		return nil, ports.ErrUserNotFound
 	}
 
-	// Check if idea exists
 	var idea models.Idea
 	if err := s.db.WithContext(ctx).First(&idea, data.IdeaID).Error; err != nil {
 		return nil, ports.ErrIdeaNotFound
 	}
 
-	// Check if user is trying to vote on their own idea
 	if idea.SubmittedByUserID == data.VoterUserID {
 		return nil, ports.ErrCannotVoteOwnIdea
 	}
 
-	// Check if vote already exists
 	var existingVote models.IdeaVote
 	err := s.db.WithContext(ctx).
 		Where("idea_id = ? AND voter_user_id = ?", data.IdeaID, data.VoterUserID).
@@ -47,7 +43,6 @@ func (s *IdeaVoteService) CreateIdeaVote(ctx context.Context, data ports.CreateI
 		return nil, ports.ErrDatabase
 	}
 
-	// Create the vote
 	vote := models.IdeaVote{
 		IdeaID:      data.IdeaID,
 		VoterUserID: data.VoterUserID,
@@ -143,14 +138,12 @@ func (s *IdeaVoteService) DeleteIdeaVote(ctx context.Context, voterUserID, ideaI
 func (s *IdeaVoteService) GetIdeaVoteStats(ctx context.Context, ideaID uint) (*ports.IdeaVoteStatsResponse, error) {
 	var upvotes, downvotes int64
 
-	// Count upvotes
 	if err := s.db.WithContext(ctx).Model(&models.IdeaVote{}).
 		Where("idea_id = ? AND vote_type = ?", ideaID, models.IdeaVoteUp).
 		Count(&upvotes).Error; err != nil {
 		return nil, ports.ErrDatabase
 	}
 
-	// Count downvotes
 	if err := s.db.WithContext(ctx).Model(&models.IdeaVote{}).
 		Where("idea_id = ? AND vote_type = ?", ideaID, models.IdeaVoteDown).
 		Count(&downvotes).Error; err != nil {
