@@ -123,6 +123,11 @@ var (
 	// UserConfig errors
 	ErrUserConfigNotFound = &ApiError{StatusCode: 404, Message: "User configuration not found"}
 
+	// Project Region errors
+	ErrRegionAlreadyAdded      = &ApiError{StatusCode: 409, Message: "Region is already associated with this project"}
+	ErrProjectRegionNotFound   = &ApiError{StatusCode: 404, Message: "This project is not associated with the specified region"}
+	ErrProjectOrRegionNotFound = &ApiError{StatusCode: 400, Message: "Project or Region not found"}
+
 	// Generic errors
 	ErrDatabase     = &ApiError{StatusCode: 500, Message: "A database error occurred"}
 	ErrNoUpdateData = &ApiError{StatusCode: 400, Message: "No valid fields provided for update"}

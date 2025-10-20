@@ -283,6 +283,33 @@ type Project struct {
 	Business       *Business       `gorm:"foreignKey:BusinessID"`
 	ProjectMembers []ProjectMember `gorm:"foreignKey:ProjectID"`
 	ProjectSkills  []ProjectSkill  `gorm:"foreignKey:ProjectID"`
+	ProjectRegions []ProjectRegion `gorm:"foreignKey:ProjectID"`
+}
+
+type Region struct {
+	ID   string `gorm:"primaryKey;size:3"`
+	Name string `gorm:"size:50;not null;unique"`
+}
+
+type ProjectRegion struct {
+	RegionID  string `gorm:"primaryKey;size:3"`
+	ProjectID uint   `gorm:"primaryKey"`
+
+	// Relationships
+	Region  Region  `gorm:"foreignKey:RegionID"`
+	Project Project `gorm:"foreignKey:ProjectID"`
+}
+
+type InferredConnection struct {
+	ID               uint      `gorm:"primaryKey"`
+	SourceEntityType string    `gorm:"size:50;not null;index"` // e.g., "user", "business"
+	SourceEntityID   uint      `gorm:"not null;index"`
+	TargetEntityType string    `gorm:"size:50;not null;index"` // e.g., "skill", "project"
+	TargetEntityID   uint      `gorm:"not null;index"`
+	ConnectionType   string    `gorm:"size:100;not null;index"` // e.g., "Potential_Collaborator", "Recommended_Skill"
+	ConfidenceScore  float64   `gorm:"not null"`                // The model's confidence in this connection
+	ModelVersion     string    `gorm:"size:50"`
+	CreatedAt        time.Time `gorm:"not null;default:current_timestamp"`
 }
 
 type Skill struct {

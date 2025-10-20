@@ -52,6 +52,9 @@ func TestMain(m *testing.M) {
 		&models.Subscription{},
 		&models.UserSubscription{},
 		&models.UserConfig{},
+		&models.Region{},
+		&models.ProjectRegion{},
+		&models.InferredConnection{},
 	}
 	if err := testDB.AutoMigrate(allModels...); err != nil {
 		log.Fatalf("Failed to migrate database for TestMain: %v", err)

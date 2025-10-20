@@ -47,6 +47,15 @@ func (s *ProjectService) CreateProject(ctx context.Context, data ports.CreatePro
 			UserID:    project.ManagedByUserID,
 			Role:      models.ProjectMemberRoleManager,
 		}
+		if len(data.RegionIDs) > 0 {
+			projectRegions := make([]models.ProjectRegion, len(data.RegionIDs))
+			for i, regionID := range data.RegionIDs {
+				projectRegions[i] = models.ProjectRegion{ProjectID: project.ID, RegionID: regionID}
+			}
+			if err := tx.Create(&projectRegions).Error; err != nil {
+				return err
+			}
+		}
 		if err := tx.Create(&member).Error; err != nil {
 			return err
 		}
@@ -66,6 +75,7 @@ func (s *ProjectService) GetProjectByID(ctx context.Context, id uint) (*models.P
 		Preload("ManagingUser").
 		Preload("Business").
 		Preload("ProjectMembers.User").
+		Preload("ProjectRegions.Region").
 		First(&project, id).Error
 
 	if err != nil {

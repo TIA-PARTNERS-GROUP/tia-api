@@ -14,6 +14,7 @@ type CreateProjectInput struct {
 	ProjectStatus   models.ProjectStatus `json:"project_status" validate:"required"`
 	StartDate       *time.Time           `json:"start_date"`
 	TargetEndDate   *time.Time           `json:"target_end_date"`
+	RegionIDs       []string             `json:"region_ids"`
 }
 
 type UpdateProjectInput struct {
@@ -25,6 +26,7 @@ type UpdateProjectInput struct {
 	StartDate       *time.Time            `json:"start_date"`
 	TargetEndDate   *time.Time            `json:"target_end_date"`
 	ActualEndDate   *time.Time            `json:"actual_end_date"`
+	RegionIDs       []string              `json:"region_ids"`
 }
 
 type AddMemberInput struct {
@@ -49,6 +51,7 @@ type ProjectResponse struct {
 	Manager       UserResponse            `json:"manager"`
 	Business      *BusinessResponse       `json:"business,omitempty"`
 	Members       []ProjectMemberResponse `json:"members"`
+	Regions       []RegionResponse        `json:"regions,omitempty"`
 }
 
 func MapToProjectResponse(p *models.Project) ProjectResponse {
@@ -78,6 +81,12 @@ func MapToProjectResponse(p *models.Project) ProjectResponse {
 		members[i] = MapToProjectMemberResponse(&member)
 	}
 	resp.Members = members
+
+	regions := make([]RegionResponse, len(p.ProjectRegions))
+	for i, pr := range p.ProjectRegions {
+		regions[i] = MapRegionToResponse(&pr.Region)
+	}
+	resp.Regions = regions
 
 	return resp
 }
