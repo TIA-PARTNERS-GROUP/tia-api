@@ -29,10 +29,29 @@ func TestMain(m *testing.M) {
 	testDB = db
 
 	allModels := []interface{}{
-		&models.User{}, &models.Business{}, &models.Project{}, &models.Skill{},
-		&models.Publication{}, &models.Idea{}, &models.Notification{}, &models.UserSkill{},
-		&models.ProjectSkill{}, &models.ProjectMember{}, &models.BusinessConnection{},
-		&models.BusinessTag{}, &models.IdeaVote{}, &models.UserSession{},
+		&models.User{},
+		&models.Business{},
+		&models.Project{},
+		&models.Skill{},
+		&models.Publication{},
+		&models.Idea{},
+		&models.Notification{},
+		&models.UserSkill{},
+		&models.ProjectSkill{},
+		&models.ProjectMember{},
+		&models.BusinessConnection{},
+		&models.BusinessTag{},
+		&models.IdeaVote{},
+		&models.UserSession{},
+		&models.L2EResponse{},
+		&models.Feedback{},
+		&models.ProjectApplicant{},
+		&models.DailyActivity{},
+		&models.DailyActivityEnrolment{},
+		&models.Event{},
+		&models.Subscription{},
+		&models.UserSubscription{},
+		&models.UserConfig{},
 	}
 	if err := testDB.AutoMigrate(allModels...); err != nil {
 		log.Fatalf("Failed to migrate database for TestMain: %v", err)

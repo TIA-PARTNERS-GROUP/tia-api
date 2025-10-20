@@ -2,6 +2,8 @@ package models
 
 import (
 	"time"
+
+	"gorm.io/datatypes"
 )
 
 // Enums
@@ -20,6 +22,7 @@ type UserSkillProficiency string
 type IdeaStatus string
 type IdeaVoteType string
 type BusinessTagType string
+type DailyActivityProgressStatus string
 
 const (
 	BusinessTypeConsulting    BusinessType = "Consulting"
@@ -88,6 +91,10 @@ const (
 	BusinessTagClient    BusinessTagType = "client"
 	BusinessTagService   BusinessTagType = "service"
 	BusinessTagSpecialty BusinessTagType = "specialty"
+
+	ProgressStatusNotStarted DailyActivityProgressStatus = "not_started"
+	ProgressStatusInProgress DailyActivityProgressStatus = "in_progress"
+	ProgressStatusCompleted  DailyActivityProgressStatus = "completed"
 )
 
 // Models
@@ -108,17 +115,122 @@ type User struct {
 	UpdatedAt                time.Time `gorm:"not null;default:current_timestamp"`
 
 	// Relationships
-	Businesses            []Business           `gorm:"foreignKey:OperatorUserID"`
-	ManagedProjects       []Project            `gorm:"foreignKey:ManagedByUserID"`
-	InitiatedConnections  []BusinessConnection `gorm:"foreignKey:InitiatedByUserID"`
-	IdeaVotes             []IdeaVote           `gorm:"foreignKey:VoterUserID"`
-	Ideas                 []Idea               `gorm:"foreignKey:SubmittedByUserID"`
-	ReceivedNotifications []Notification       `gorm:"foreignKey:ReceiverUserID"`
-	SentNotifications     []Notification       `gorm:"foreignKey:SenderUserID"`
-	ProjectMemberships    []ProjectMember      `gorm:"foreignKey:UserID"`
-	Publications          []Publication        `gorm:"foreignKey:UserID"`
-	UserSessions          []UserSession        `gorm:"foreignKey:UserID"`
-	UserSkills            []UserSkill          `gorm:"foreignKey:UserID"`
+	Businesses              []Business                  `gorm:"foreignKey:OperatorUserID"`
+	ManagedProjects         []Project                   `gorm:"foreignKey:ManagedByUserID"`
+	InitiatedConnections    []BusinessConnection        `gorm:"foreignKey:InitiatedByUserID"`
+	IdeaVotes               []IdeaVote                  `gorm:"foreignKey:VoterUserID"`
+	Ideas                   []Idea                      `gorm:"foreignKey:SubmittedByUserID"`
+	ReceivedNotifications   []Notification              `gorm:"foreignKey:ReceiverUserID"`
+	SentNotifications       []Notification              `gorm:"foreignKey:SenderUserID"`
+	ProjectMemberships      []ProjectMember             `gorm:"foreignKey:UserID"`
+	Publications            []Publication               `gorm:"foreignKey:UserID"`
+	UserSessions            []UserSession               `gorm:"foreignKey:UserID"`
+	UserSkills              []UserSkill                 `gorm:"foreignKey:UserID"`
+	DailyActivityEnrolments []DailyActivityEnrolment    `gorm:"foreignKey:UserID"`
+	ProjectApplicants       []ProjectApplicant          `gorm:"foreignKey:UserID"`
+	UserSubscriptions       []UserSubscription          `gorm:"foreignKey:UserID"`
+	UserConfigs             []UserConfig                `gorm:"foreignKey:UserID"`
+	L2EResponses            []L2EResponse               `gorm:"foreignKey:UserID"`
+	DailyActivityProgress   []UserDailyActivityProgress `gorm:"foreignKey:UserID"`
+}
+
+type Feedback struct {
+	ID            uint      `gorm:"primaryKey"`
+	Name          string    `gorm:"size:120;not null"`
+	Email         string    `gorm:"size:254;not null"`
+	Content       string    `gorm:"type:text;not null"`
+	DateSubmitted time.Time `gorm:"not null;default:current_timestamp"`
+}
+
+type ProjectApplicant struct {
+	ProjectID uint `gorm:"primaryKey"`
+	UserID    uint `gorm:"primaryKey"`
+
+	// Relationships
+	Project Project `gorm:"foreignKey:ProjectID"`
+	User    User    `gorm:"foreignKey:UserID"`
+}
+
+type DailyActivity struct {
+	ID          uint   `gorm:"primaryKey"`
+	Name        string `gorm:"size:60;not null;unique"`
+	Description string `gorm:"type:text;not null"`
+
+	// Relationships
+	Enrolments []DailyActivityEnrolment `gorm:"foreignKey:DailyActivityID"`
+}
+
+type DailyActivityEnrolment struct {
+	DailyActivityID uint `gorm:"primaryKey"`
+	UserID          uint `gorm:"primaryKey"`
+
+	// Relationships
+	DailyActivity DailyActivity `gorm:"foreignKey:DailyActivityID"`
+	User          User          `gorm:"foreignKey:UserID"`
+}
+
+type UserDailyActivityProgress struct {
+	UserID          uint                        `gorm:"primaryKey"`
+	DailyActivityID uint                        `gorm:"primaryKey"`
+	Date            datatypes.Date              `gorm:"primaryKey;type:date"`
+	Status          DailyActivityProgressStatus `gorm:"type:enum('not_started', 'in_progress', 'completed');default:not_started"`
+	Progress        int                         `gorm:"default:0"`
+
+	// Relationships
+	User          User          `gorm:"foreignKey:UserID"`
+	DailyActivity DailyActivity `gorm:"foreignKey:DailyActivityID"`
+}
+
+type Event struct {
+	ID        uint           `gorm:"primaryKey"`
+	EventType string         `gorm:"size:100;not null;index"`
+	Payload   datatypes.JSON `gorm:"type:json"`
+	Timestamp time.Time      `gorm:"not null;default:current_timestamp;index"`
+	UserID    *uint          `gorm:"index"`
+
+	// Relationships
+	User *User `gorm:"foreignKey:UserID"`
+}
+
+type Subscription struct {
+	ID          uint    `gorm:"primaryKey"`
+	Name        string  `gorm:"size:100;not null;unique"`
+	Price       float64 `gorm:"type:decimal(10,2);not null"`
+	ValidDays   *int
+	ValidMonths *int
+}
+
+type UserSubscription struct {
+	ID             uint      `gorm:"primaryKey"`
+	UserID         uint      `gorm:"not null"`
+	SubscriptionID uint      `gorm:"not null"`
+	DateFrom       time.Time `gorm:"not null"`
+	DateTo         time.Time `gorm:"not null"`
+	IsTrial        bool      `gorm:"default:false"`
+
+	// Relationships
+	User         User         `gorm:"foreignKey:UserID"`
+	Subscription Subscription `gorm:"foreignKey:SubscriptionID"`
+}
+
+type UserConfig struct {
+	ID         uint           `gorm:"primaryKey"`
+	UserID     uint           `gorm:"not null;uniqueIndex:uq_user_config_type"`
+	ConfigType string         `gorm:"size:50;not null;uniqueIndex:uq_user_config_type"`
+	Config     datatypes.JSON `gorm:"type:json;not null"`
+
+	// Relationships
+	User User `gorm:"foreignKey:UserID"`
+}
+
+type L2EResponse struct {
+	ID        uint           `gorm:"primaryKey"`
+	UserID    uint           `gorm:"not null"`
+	Response  datatypes.JSON `gorm:"type:json;not null"`
+	DateAdded time.Time      `gorm:"not null;default:current_timestamp"`
+
+	// Relationships
+	User User `gorm:"foreignKey:UserID"`
 }
 
 type Business struct {

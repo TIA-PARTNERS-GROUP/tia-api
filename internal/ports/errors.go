@@ -93,6 +93,36 @@ var (
 	// UserSession errors
 	ErrSessionNotFound = &ApiError{StatusCode: 404, Message: "Session not found"}
 
+	// L2E Response errors
+	ErrL2EResponseNotFound = &ApiError{StatusCode: 404, Message: "L2E response not found"}
+
+	// Feedback errors
+	ErrFeedbackNotFound = &ApiError{StatusCode: 404, Message: "Feedback not found"}
+
+	// Project Applicant errors
+	ErrAlreadyApplied        = &ApiError{StatusCode: 409, Message: "User has already applied to this project"}
+	ErrApplicationNotFound   = &ApiError{StatusCode: 404, Message: "Project application not found"}
+	ErrProjectOrUserNotFound = &ApiError{StatusCode: 400, Message: "Project or user not found"}
+
+	// Daily Activity errors
+	ErrDailyActivityNotFound = &ApiError{StatusCode: 404, Message: "Daily activity not found"}
+	ErrActivityNameExists    = &ApiError{StatusCode: 409, Message: "An activity with this name already exists"}
+	ErrAlreadyEnrolled       = &ApiError{StatusCode: 409, Message: "User is already enrolled in this activity"}
+	ErrEnrolmentNotFound     = &ApiError{StatusCode: 404, Message: "User is not enrolled in this activity"}
+
+	// Event errors
+	ErrEventNotFound = &ApiError{StatusCode: 404, Message: "Event not found"}
+
+	// Subscription errors
+	ErrSubscriptionNotFound   = &ApiError{StatusCode: 404, Message: "Subscription plan not found"}
+	ErrSubscriptionNameExists = &ApiError{StatusCode: 409, Message: "A subscription plan with this name already exists"}
+
+	// User Subscription errors
+	ErrUserSubscriptionNotFound = &ApiError{StatusCode: 404, Message: "User subscription not found"}
+
+	// UserConfig errors
+	ErrUserConfigNotFound = &ApiError{StatusCode: 404, Message: "User configuration not found"}
+
 	// Generic errors
 	ErrDatabase     = &ApiError{StatusCode: 500, Message: "A database error occurred"}
 	ErrNoUpdateData = &ApiError{StatusCode: 400, Message: "No valid fields provided for update"}
