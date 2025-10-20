@@ -68,11 +68,13 @@ func main() {
 	log.Println("Database migration successful.")
 
 	userService := services.NewUserService(db)
+	authService := services.NewAuthService(db)
+
 	userHandler := handler.NewUserHandler(userService)
+	authHandler := handler.NewAuthHandler(authService)
 
 	router := gin.Default()
-	routes.SetupRoutes(router, userHandler)
-
+	routes.SetupRoutes(router, userHandler, authHandler)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	log.Println("Starting server on http://localhost:8080")
