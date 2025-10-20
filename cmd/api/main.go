@@ -23,6 +23,11 @@ import (
 // @license.name  Apache 2.0
 // @host      localhost:8080
 // @BasePath  /api/v1
+//
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @bearerFormat JWT
 func main() {
 	config := configs.LoadConfig()
 
@@ -74,7 +79,7 @@ func main() {
 	authHandler := handler.NewAuthHandler(authService)
 
 	router := gin.Default()
-	routes.SetupRoutes(router, userHandler, authHandler)
+	routes.SetupRoutes(router, userHandler, authHandler, authService)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	log.Println("Starting server on http://localhost:8080")
