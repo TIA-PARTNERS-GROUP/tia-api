@@ -1,0 +1,149 @@
+basePath: /api/v1
+definitions:
+  ports.UserCreationSchema:
+    properties:
+      adk_session_id:
+        maxLength: 128
+        type: string
+      contact_email:
+        type: string
+      contact_phone_no:
+        maxLength: 20
+        type: string
+      first_name:
+        maxLength: 60
+        minLength: 2
+        type: string
+      last_name:
+        maxLength: 60
+        minLength: 2
+        type: string
+      login_email:
+        type: string
+      password:
+        maxLength: 72
+        minLength: 8
+        type: string
+    required:
+    - first_name
+    - login_email
+    - password
+    type: object
+  ports.UserResponse:
+    properties:
+      active:
+        type: boolean
+      contact_email:
+        type: string
+      contact_phone_no:
+        type: string
+      created_at:
+        type: string
+      email_verified:
+        type: boolean
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      login_email:
+        type: string
+      updated_at:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is the API server for the TIA platform.
+  license:
+    name: Apache 2.0
+  title: TIA API
+  version: "1.0"
+paths:
+  /users:
+    get:
+      description: Retrieves a list of all user accounts.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ports.UserResponse'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all users
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user account with the provided details.
+      parameters:
+      - description: User Creation Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UserCreationSchema'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ports.UserResponse'
+        "400":
+          description: Validation error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: User with email already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new user
+      tags:
+      - Users
+  /users/{id}:
+    get:
+      description: Retrieves the details of a single user by their unique ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ports.UserResponse'
+        "400":
+          description: Invalid user ID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: User not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a user by ID
+      tags:
+      - Users
+swagger: "2.0"

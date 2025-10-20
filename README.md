@@ -48,3 +48,10 @@ test
 │   └── user_subscription.service.integration_test.go
 ├── mutation
 └── unit
+
+## Go Packages
+go install golang.org/x/tools/cmd/godoc@latest
+godoc -http=:6060
+
+go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@latest
+go install github.com/swaggo/swag/cmd/swag@latest
