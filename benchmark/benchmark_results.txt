@@ -1,0 +1,9 @@
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/cmd/api	[no test files]
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/configs	[no test files]
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/internal/core	[no test files]
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services	[no test files]
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/internal/models	[no test files]
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports	[no test files]
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/pkg/utils	[no test files]
+PASS
+ok  	github.com/TIA-PARTNERS-GROUP/tia-api/test/integration	1.292s
