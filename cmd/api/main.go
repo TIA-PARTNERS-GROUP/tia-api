@@ -1,7 +1,10 @@
 package main
+
 import (
 	"log"
+
 	"github.com/TIA-PARTNERS-GROUP/tia-api/configs"
+	_ "github.com/TIA-PARTNERS-GROUP/tia-api/docs"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/handlers"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/middleware"
 	routes "github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/routes"
@@ -9,12 +12,12 @@ import (
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-	_ "github.com/TIA-PARTNERS-GROUP/tia-api/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
+
 func main() {
 	config := configs.LoadConfig()
 	db, err := gorm.Open(mysql.Open(config.DatabaseURL), &gorm.Config{})
@@ -66,25 +69,50 @@ func main() {
 	inferredConnectionService := services.NewInferredConnectionService(db)
 	l2eResponseService := services.NewL2EResponseService(db)
 	notificationService := services.NewNotificationService(db)
-	userHandler := handlers.NewUserHandler(userService, &constants.AppRoutes)                                                       
-	authHandler := handlers.NewAuthHandler(authService, &constants.AppRoutes)                                                       
-	businessHandler := handlers.NewBusinessHandler(businessService, &constants.AppRoutes)                                           
-	businessConnectionHandler := handlers.NewBusinessConnectionHandler(businessConnectionService, &constants.AppRoutes)             
-	businessTagHandler := handlers.NewBusinessTagHandler(businessTagService, &constants.AppRoutes)                                  
-	dailyActivityHandler := handlers.NewDailyActivityHandler(dailyActivityService, &constants.AppRoutes)                            
-	dailyActivityEnrolmentHandler := handlers.NewDailyActivityEnrolmentHandler(dailyActivityEnrolmentService, &constants.AppRoutes) 
-	eventHandler := handlers.NewEventHandler(eventService, &constants.AppRoutes)                                                    
-	feedbackHandler := handlers.NewFeedbackHandler(feedbackService, &constants.AppRoutes)                                           
-	inferredConnectionHandler := handlers.NewInferredConnectionHandler(inferredConnectionService, &constants.AppRoutes)             
-	l2eHandler := handlers.NewL2EHandler(l2eResponseService, &constants.AppRoutes)                                                  
-	notificationHandler := handlers.NewNotificationHandler(notificationService, &constants.AppRoutes)                               
-	authMiddleware := middleware.AuthMiddleware(authService, &constants.AppRoutes) 
-	
+	projectService := services.NewProjectService(db)
+	projectApplicantService := services.NewProjectApplicantService(db)
+	projectMemberService := services.NewProjectMemberService(db)       // <--- ADD THIS
+	projectRegionService := services.NewProjectRegionService(db)       // <--- ADD THIS
+	projectSkillService := services.NewProjectSkillService(db)         // <--- ADD THIS
+	publicationService := services.NewPublicationService(db)           // <--- ADD THIS
+	skillService := services.NewSkillService(db)                       // <--- ADD THIS
+	subscriptionService := services.NewSubscriptionService(db)         // <--- ADD THIS
+	userSubscriptionService := services.NewUserSubscriptionService(db) // <--- ADD THIS
+	userConfigService := services.NewUserConfigService(db)             // <--- ADD THIS
+	userSkillService := services.NewUserSkillService(db)               // <--- ADD THIS
+
+	userHandler := handlers.NewUserHandler(userService, &constants.AppRoutes)
+	authHandler := handlers.NewAuthHandler(authService, &constants.AppRoutes)
+	businessHandler := handlers.NewBusinessHandler(businessService, &constants.AppRoutes)
+	businessConnectionHandler := handlers.NewBusinessConnectionHandler(businessConnectionService, &constants.AppRoutes)
+	businessTagHandler := handlers.NewBusinessTagHandler(businessTagService, &constants.AppRoutes)
+	dailyActivityHandler := handlers.NewDailyActivityHandler(dailyActivityService, &constants.AppRoutes)
+	dailyActivityEnrolmentHandler := handlers.NewDailyActivityEnrolmentHandler(dailyActivityEnrolmentService, &constants.AppRoutes)
+	eventHandler := handlers.NewEventHandler(eventService, &constants.AppRoutes)
+	feedbackHandler := handlers.NewFeedbackHandler(feedbackService, &constants.AppRoutes)
+	inferredConnectionHandler := handlers.NewInferredConnectionHandler(inferredConnectionService, &constants.AppRoutes)
+	l2eHandler := handlers.NewL2EHandler(l2eResponseService, &constants.AppRoutes)
+	notificationHandler := handlers.NewNotificationHandler(notificationService, &constants.AppRoutes)
+	projectHandler := handlers.NewProjectHandler(projectService, &constants.AppRoutes)
+	projectApplicantHandler := handlers.NewProjectApplicantHandler(projectApplicantService, projectService, &constants.AppRoutes) // <--- ADD THIS
+	projectMemberHandler := handlers.NewProjectMemberHandler(projectMemberService, projectService, &constants.AppRoutes)          // <--- ADD THIS
+	projectRegionHandler := handlers.NewProjectRegionHandler(projectRegionService, projectService, &constants.AppRoutes)          // <--- ADD THIS
+	projectSkillHandler := handlers.NewProjectSkillHandler(projectSkillService, projectService, &constants.AppRoutes)             // <--- ADD THIS
+	publicationHandler := handlers.NewPublicationHandler(publicationService, &constants.AppRoutes)                                // <--- ADD THIS
+	skillHandler := handlers.NewSkillHandler(skillService, &constants.AppRoutes)                                                  // <--- ADD THIS
+	subscriptionHandler := handlers.NewSubscriptionHandler(subscriptionService, &constants.AppRoutes)                             // <--- ADD THIS
+	userSubscriptionHandler := handlers.NewUserSubscriptionHandler(userSubscriptionService, &constants.AppRoutes)                 // <--- ADD THIS
+	userConfigHandler := handlers.NewUserConfigHandler(userConfigService, &constants.AppRoutes)                                   // <--- ADD THIS
+	userSkillHandler := handlers.NewUserSkillHandler(userSkillService, &constants.AppRoutes)                                      // <--- ADD THIS
+
+	authMiddleware := middleware.AuthMiddleware(authService, &constants.AppRoutes)
+
 	deps := &routes.RouterDependencies{
 		AuthMiddleware:                authMiddleware,
 		UserHandler:                   userHandler,
 		AuthHandler:                   authHandler,
 		BusinessHandler:               businessHandler,
+		ProjectHandler:                projectHandler,
 		BusinessConnectionHandler:     businessConnectionHandler,
 		BusinessTagHandler:            businessTagHandler,
 		DailyActivityHandler:          dailyActivityHandler,
@@ -94,10 +122,20 @@ func main() {
 		InferredConnectionHandler:     inferredConnectionHandler,
 		L2EHandler:                    l2eHandler,
 		NotificationHandler:           notificationHandler,
-		Routes:                        constants.AppRoutes, 
+		ProjectApplicantHandler:       projectApplicantHandler, // <--- ADD THIS
+		ProjectMemberHandler:          projectMemberHandler,    // <--- ADD THIS
+		ProjectRegionHandler:          projectRegionHandler,    // <--- ADD THIS
+		ProjectSkillHandler:           projectSkillHandler,     // <--- ADD THIS
+		PublicationHandler:            publicationHandler,      // <--- ADD THIS
+		SkillHandler:                  skillHandler,            // <--- ADD THIS
+		SubscriptionHandler:           subscriptionHandler,     // <--- ADD THIS
+		UserSubscriptionHandler:       userSubscriptionHandler, // <--- ADD THIS
+		UserConfigHandler:             userConfigHandler,       // <--- ADD THIS
+		UserSkillHandler:              userSkillHandler,        // <--- ADD THIS
+		Routes:                        constants.AppRoutes,
 	}
 	router := gin.Default()
-	
+
 	routes.RegisterRoutes(router, deps)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	log.Println("Starting server on http://localhost:8080")

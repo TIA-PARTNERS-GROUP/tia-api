@@ -1,14 +1,18 @@
 package services
+
 import (
 	"context"
 	"strings"
+
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"gorm.io/gorm"
 )
+
 type ProjectRegionService struct {
 	db *gorm.DB
 }
+
 func NewProjectRegionService(db *gorm.DB) *ProjectRegionService {
 	return &ProjectRegionService{db: db}
 }
@@ -26,7 +30,17 @@ func (s *ProjectRegionService) AddRegionToProject(ctx context.Context, data port
 		}
 		return nil, ports.ErrDatabase
 	}
-	return &association, nil
+
+	// --- ADDED: Retrieve the created association and preload the Region ---
+	var createdAssociation models.ProjectRegion
+	if err := s.db.WithContext(ctx).
+		Preload("Region").
+		First(&createdAssociation, "project_id = ? AND region_id = ?", data.ProjectID, data.RegionID).Error; err != nil {
+		return nil, ports.ErrDatabase
+	}
+
+	return &createdAssociation, nil
+	// --- END ADDED ---
 }
 func (s *ProjectRegionService) RemoveRegionFromProject(ctx context.Context, projectID uint, regionID string) error {
 	result := s.db.WithContext(ctx).Delete(&models.ProjectRegion{}, "project_id = ? AND region_id = ?", projectID, regionID)

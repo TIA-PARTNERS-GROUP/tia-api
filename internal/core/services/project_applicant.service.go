@@ -1,14 +1,18 @@
 package services
+
 import (
 	"context"
 	"strings"
+
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"gorm.io/gorm"
 )
+
 type ProjectApplicantService struct {
 	db *gorm.DB
 }
+
 func NewProjectApplicantService(db *gorm.DB) *ProjectApplicantService {
 	return &ProjectApplicantService{db: db}
 }

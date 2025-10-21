@@ -1,4 +1,5 @@
 package main
+
 import (
 	"bytes"
 	"encoding/json"
@@ -6,19 +7,21 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/handlers"
 	routes "github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/routes"
-	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants" 
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/pkg/utils"
 	testutil "github.com/TIA-PARTNERS-GROUP/tia-api/test/test_util"
-	"github.com/stretchr/testify/assert"
 	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
 )
+
 func SetupRouter() *gin.Engine {
-	
+
 	userService := services.NewUserService(testutil.TestDB)
 	authService := services.NewAuthService(testutil.TestDB)
 	businessService := services.NewBusinessService(testutil.TestDB)
@@ -31,22 +34,46 @@ func SetupRouter() *gin.Engine {
 	inferredConnectionService := services.NewInferredConnectionService(testutil.TestDB)
 	l2eResponseService := services.NewL2EResponseService(testutil.TestDB)
 	notificationService := services.NewNotificationService(testutil.TestDB)
-	userHandler := handlers.NewUserHandler(userService, &constants.AppRoutes)                                                       
-	authHandler := handlers.NewAuthHandler(authService, &constants.AppRoutes)                                                       
-	businessHandler := handlers.NewBusinessHandler(businessService, &constants.AppRoutes)                                           
-	businessConnectionHandler := handlers.NewBusinessConnectionHandler(businessConnectionService, &constants.AppRoutes)             
-	businessTagHandler := handlers.NewBusinessTagHandler(businessTagService, &constants.AppRoutes)                                  
-	dailyActivityHandler := handlers.NewDailyActivityHandler(dailyActivityService, &constants.AppRoutes)                            
-	dailyActivityEnrolmentHandler := handlers.NewDailyActivityEnrolmentHandler(dailyActivityEnrolmentService, &constants.AppRoutes) 
-	eventHandler := handlers.NewEventHandler(eventService, &constants.AppRoutes)                                                    
-	feedbackHandler := handlers.NewFeedbackHandler(feedbackService, &constants.AppRoutes)                                           
-	inferredConnectionHandler := handlers.NewInferredConnectionHandler(inferredConnectionService, &constants.AppRoutes)             
-	l2eHandler := handlers.NewL2EHandler(l2eResponseService, &constants.AppRoutes)                                                  
-	notificationHandler := handlers.NewNotificationHandler(notificationService, &constants.AppRoutes)                               
+	projectService := services.NewProjectService(testutil.TestDB)
+	projectApplicantService := services.NewProjectApplicantService(testutil.TestDB) // <--- ADD THIS
+	projectMemberService := services.NewProjectMemberService(testutil.TestDB)       // <--- ADD THIS
+	projectRegionService := services.NewProjectRegionService(testutil.TestDB)       // <--- ADD THIS
+	projectSkillService := services.NewProjectSkillService(testutil.TestDB)         // <--- ADD THIS
+	publicationService := services.NewPublicationService(testutil.TestDB)           // <--- ADD THIS
+	skillService := services.NewSkillService(testutil.TestDB)                       // <--- ADD THIS
+	subscriptionService := services.NewSubscriptionService(testutil.TestDB)         // <--- ADD THIS
+	userSubscriptionService := services.NewUserSubscriptionService(testutil.TestDB) // <--- ADD THIS
+	userConfigService := services.NewUserConfigService(testutil.TestDB)             // <--- ADD THIS
+	userSkillService := services.NewUserSkillService(testutil.TestDB)               // <--- ADD THIS
+
+	userHandler := handlers.NewUserHandler(userService, &constants.AppRoutes)
+	authHandler := handlers.NewAuthHandler(authService, &constants.AppRoutes)
+	businessHandler := handlers.NewBusinessHandler(businessService, &constants.AppRoutes)
+	businessConnectionHandler := handlers.NewBusinessConnectionHandler(businessConnectionService, &constants.AppRoutes)
+	businessTagHandler := handlers.NewBusinessTagHandler(businessTagService, &constants.AppRoutes)
+	dailyActivityHandler := handlers.NewDailyActivityHandler(dailyActivityService, &constants.AppRoutes)
+	dailyActivityEnrolmentHandler := handlers.NewDailyActivityEnrolmentHandler(dailyActivityEnrolmentService, &constants.AppRoutes)
+	eventHandler := handlers.NewEventHandler(eventService, &constants.AppRoutes)
+	feedbackHandler := handlers.NewFeedbackHandler(feedbackService, &constants.AppRoutes)
+	inferredConnectionHandler := handlers.NewInferredConnectionHandler(inferredConnectionService, &constants.AppRoutes)
+	l2eHandler := handlers.NewL2EHandler(l2eResponseService, &constants.AppRoutes)
+	notificationHandler := handlers.NewNotificationHandler(notificationService, &constants.AppRoutes)
+	projectHandler := handlers.NewProjectHandler(projectService, &constants.AppRoutes)
+	projectApplicantHandler := handlers.NewProjectApplicantHandler(projectApplicantService, projectService, &constants.AppRoutes) // <--- ADD THIS
+	projectMemberHandler := handlers.NewProjectMemberHandler(projectMemberService, projectService, &constants.AppRoutes)          // <--- ADD THIS
+	projectRegionHandler := handlers.NewProjectRegionHandler(projectRegionService, projectService, &constants.AppRoutes)          // <--- ADD THIS
+	projectSkillHandler := handlers.NewProjectSkillHandler(projectSkillService, projectService, &constants.AppRoutes)             // <--- ADD THIS
+	publicationHandler := handlers.NewPublicationHandler(publicationService, &constants.AppRoutes)                                // <--- ADD THIS
+	skillHandler := handlers.NewSkillHandler(skillService, &constants.AppRoutes)                                                  // <--- ADD THIS
+	subscriptionHandler := handlers.NewSubscriptionHandler(subscriptionService, &constants.AppRoutes)                             // <--- ADD THIS
+	userSubscriptionHandler := handlers.NewUserSubscriptionHandler(userSubscriptionService, &constants.AppRoutes)                 // <--- ADD THIS
+	userConfigHandler := handlers.NewUserConfigHandler(userConfigService, &constants.AppRoutes)                                   // <--- ADD THIS
+	userSkillHandler := handlers.NewUserSkillHandler(userSkillService, &constants.AppRoutes)                                      // <--- ADD THIS
+
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
 	authMiddlewareForTest := func(c *gin.Context) {
-		
+
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
@@ -68,13 +95,13 @@ func SetupRouter() *gin.Engine {
 		c.Set(constants.AppRoutes.ContextKeySessionID, session.ID)
 		c.Next()
 	}
-	
-	
+
 	deps := &routes.RouterDependencies{
 		AuthMiddleware:                authMiddlewareForTest,
 		UserHandler:                   userHandler,
 		AuthHandler:                   authHandler,
 		BusinessHandler:               businessHandler,
+		ProjectHandler:                projectHandler,
 		BusinessConnectionHandler:     businessConnectionHandler,
 		BusinessTagHandler:            businessTagHandler,
 		DailyActivityHandler:          dailyActivityHandler,
@@ -84,14 +111,24 @@ func SetupRouter() *gin.Engine {
 		InferredConnectionHandler:     inferredConnectionHandler,
 		L2EHandler:                    l2eHandler,
 		NotificationHandler:           notificationHandler,
-		Routes:                        constants.AppRoutes, 
+		ProjectApplicantHandler:       projectApplicantHandler, // <--- ADD THIS
+		ProjectMemberHandler:          projectMemberHandler,    // <--- ADD THIS
+		ProjectRegionHandler:          projectRegionHandler,    // <--- ADD THIS
+		ProjectSkillHandler:           projectSkillHandler,     // <--- ADD THIS
+		PublicationHandler:            publicationHandler,      // <--- ADD THIS
+		SkillHandler:                  skillHandler,            // <--- ADD THIS
+		SubscriptionHandler:           subscriptionHandler,     // <--- ADD THIS
+		UserSubscriptionHandler:       userSubscriptionHandler, // <--- ADD THIS
+		UserConfigHandler:             userConfigHandler,       // <--- ADD THIS
+		UserSkillHandler:              userSkillHandler,        // <--- ADD THIS
+		Routes:                        constants.AppRoutes,
 	}
-	
+
 	routes.RegisterRoutes(router, deps)
 	return router
 }
 func createJSONBody(t *testing.T, data interface{}) *bytes.Buffer {
-	
+
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		t.Fatalf("Failed to marshal JSON: %v", err)
@@ -99,7 +136,7 @@ func createJSONBody(t *testing.T, data interface{}) *bytes.Buffer {
 	return bytes.NewBuffer(jsonData)
 }
 func CreateTestUserAndLogin(t *testing.T, router *gin.Engine, email, password string) (models.User, string) {
-	
+
 	hashedPassword, err := utils.HashPassword(password)
 	assert.NoError(t, err)
 	user := models.User{
@@ -117,7 +154,7 @@ func CreateTestUserAndLogin(t *testing.T, router *gin.Engine, email, password st
 	}
 	body, err := json.Marshal(loginDTO)
 	assert.NoError(t, err)
-	
+
 	loginPath := constants.AppRoutes.APIPrefix + constants.AppRoutes.AuthBase + constants.AppRoutes.Login
 	req, _ := http.NewRequest(http.MethodPost, loginPath, bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
@@ -129,4 +166,16 @@ func CreateTestUserAndLogin(t *testing.T, router *gin.Engine, email, password st
 	assert.NoError(t, err)
 	assert.NotEmpty(t, loginResponse.Token, "Token should not be empty after login")
 	return user, loginResponse.Token
+}
+
+func BoolPtr(val bool) *bool {
+	return &val
+}
+
+func StrPtr(val string) *string {
+	return &val
+}
+
+func IntPtr(val int) *int {
+	return &val
 }

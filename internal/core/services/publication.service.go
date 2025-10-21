@@ -1,17 +1,21 @@
 package services
+
 import (
 	"context"
 	"errors"
 	"regexp"
 	"strings"
 	"time"
+
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"gorm.io/gorm"
 )
+
 type PublicationService struct {
 	db *gorm.DB
 }
+
 func NewPublicationService(db *gorm.DB) *PublicationService {
 	return &PublicationService{db: db}
 }
@@ -128,4 +132,18 @@ func (s *PublicationService) DeletePublication(ctx context.Context, id uint) err
 		return ports.ErrPublicationNotFound
 	}
 	return nil
+}
+
+// Add this method inside your services.PublicationService
+func (s *PublicationService) FindAllPublications(ctx context.Context) ([]models.Publication, error) {
+	var publications []models.Publication
+	err := s.db.WithContext(ctx).
+		Preload("User").
+		Preload("Business").
+		Order("published_at desc").
+		Find(&publications).Error
+	if err != nil {
+		return nil, ports.ErrDatabase
+	}
+	return publications, nil
 }

@@ -1,15 +1,19 @@
 package services
+
 import (
 	"context"
 	"errors"
 	"strings"
+
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"gorm.io/gorm"
 )
+
 type SkillService struct {
 	db *gorm.DB
 }
+
 func NewSkillService(db *gorm.DB) *SkillService {
 	return &SkillService{db: db}
 }

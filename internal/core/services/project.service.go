@@ -1,15 +1,19 @@
 package services
+
 import (
 	"context"
 	"errors"
 	"strings"
+
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"gorm.io/gorm"
 )
+
 type ProjectService struct {
 	db *gorm.DB
 }
+
 func NewProjectService(db *gorm.DB) *ProjectService {
 	return &ProjectService{db: db}
 }
@@ -116,13 +120,53 @@ func (s *ProjectService) UpdateProject(ctx context.Context, id uint, data ports.
 	return s.GetProjectByID(ctx, id)
 }
 func (s *ProjectService) DeleteProject(ctx context.Context, id uint) error {
-	result := s.db.WithContext(ctx).Delete(&models.Project{}, id)
-	if result.Error != nil {
-		return ports.ErrDatabase
+	err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// 1. Check if project exists *within* the transaction
+		var project models.Project
+		if err := tx.First(&project, id).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return ports.ErrProjectNotFound
+			}
+			return ports.ErrDatabase
+		}
+
+		// 2. Delete all dependent records.
+		// (Based on your models.go file)
+
+		// Delete ProjectApplicants
+		if err := tx.Unscoped().Where("project_id = ?", id).Delete(&models.ProjectApplicant{}).Error; err != nil {
+			return err
+		}
+		// Delete ProjectMembers
+		if err := tx.Unscoped().Where("project_id = ?", id).Delete(&models.ProjectMember{}).Error; err != nil {
+			return err
+		}
+		// Delete ProjectRegions
+		if err := tx.Unscoped().Where("project_id = ?", id).Delete(&models.ProjectRegion{}).Error; err != nil {
+			return err
+		}
+		// Delete ProjectSkills
+		if err := tx.Unscoped().Where("project_id = ?", id).Delete(&models.ProjectSkill{}).Error; err != nil {
+			return err
+		}
+
+		// 3. Finally, delete the project itself
+		if err := tx.Unscoped().Delete(&project).Error; err != nil {
+			return err
+		}
+
+		return nil // Commit the transaction
+	})
+
+	// Handle errors returned from the transaction
+	if err != nil {
+		var apiErr *ports.ApiError
+		if errors.As(err, &apiErr) {
+			return apiErr // Return specific errors like ErrProjectNotFound
+		}
+		return ports.ErrDatabase // Return generic db error for any other failure
 	}
-	if result.RowsAffected == 0 {
-		return ports.ErrProjectNotFound
-	}
+
 	return nil
 }
 func (s *ProjectService) AddMember(ctx context.Context, projectID uint, data ports.AddMemberInput) (*models.ProjectMember, error) {
@@ -150,4 +194,18 @@ func (s *ProjectService) RemoveMember(ctx context.Context, projectID, userID uin
 		return ports.ErrMemberNotFound
 	}
 	return nil
+}
+
+func (s *ProjectService) FindAllProjects(ctx context.Context) ([]models.Project, error) {
+	var projects []models.Project
+	err := s.db.WithContext(ctx).
+		Preload("ManagingUser").
+		Preload("Business").
+		Preload("ProjectMembers.User").
+		Preload("ProjectRegions.Region").
+		Find(&projects).Error
+	if err != nil {
+		return nil, ports.ErrDatabase
+	}
+	return projects, nil
 }

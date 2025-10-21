@@ -1,13 +1,17 @@
 package services
+
 import (
 	"context"
+
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"gorm.io/gorm"
 )
+
 type ProjectSkillService struct {
 	db *gorm.DB
 }
+
 func NewProjectSkillService(db *gorm.DB) *ProjectSkillService {
 	return &ProjectSkillService{db: db}
 }
@@ -76,6 +80,9 @@ func (s *ProjectSkillService) GetProjectSkills(ctx context.Context, projectID ui
 	var projectSkills []models.ProjectSkill
 	err := s.db.WithContext(ctx).
 		Preload("Project").
+		Preload("Project.ManagingUser").
+		Preload("Project.ProjectMembers").      // Often required to ensure members slice is loaded
+		Preload("Project.ProjectMembers.User"). // To load the User data for each member
 		Preload("Skill").
 		Where("project_id = ?", projectID).
 		Order("importance desc, skill_id asc").
