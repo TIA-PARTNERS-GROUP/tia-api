@@ -34,10 +34,10 @@ func NewBusinessHandler(businessService *services.BusinessService, routes *const
 // @Security BearerAuth
 // @Param business body ports.CreateBusinessInput true "Business creation details"
 // @Success 201 {object} ports.BusinessResponse "Business created successfully"
-// @Failure 400 {object} gin.H "Invalid request body, validation failed"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden: OperatorUserID mismatch"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid request body, validation failed"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden: OperatorUserID mismatch"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /businesses [post]
 func (h *BusinessHandler) CreateBusiness(c *gin.Context) {
 	var input ports.CreateBusinessInput
@@ -83,9 +83,9 @@ func (h *BusinessHandler) CreateBusiness(c *gin.Context) {
 // @Produce json
 // @Param id path int true "Business ID"
 // @Success 200 {object} ports.BusinessResponse "Business retrieved successfully"
-// @Failure 400 {object} gin.H "Invalid business ID"
-// @Failure 404 {object} gin.H "Business not found"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid business ID"
+// @Failure 404 {object} map[string]interface{} "Business not found"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /businesses/{id} [get]
 func (h *BusinessHandler) GetBusinessByID(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
@@ -117,8 +117,8 @@ func (h *BusinessHandler) GetBusinessByID(c *gin.Context) {
 // @Param business_phase query string false "Filter by business phase"
 // @Param search query string false "Search by name or description"
 // @Success 200 {array} ports.BusinessResponse "List of businesses"
-// @Failure 400 {object} gin.H "Invalid query parameters"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid query parameters"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /businesses [get]
 func (h *BusinessHandler) GetBusinesses(c *gin.Context) {
 	var filters ports.BusinessesFilter
@@ -147,11 +147,11 @@ func (h *BusinessHandler) GetBusinesses(c *gin.Context) {
 // @Param id path int true "Business ID"
 // @Param business body ports.UpdateBusinessInput true "Fields to update"
 // @Success 200 {object} ports.BusinessResponse "Business updated successfully"
-// @Failure 400 {object} gin.H "Invalid request body, validation failed"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden: Not the operator user"
-// @Failure 404 {object} gin.H "Business not found"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid request body, validation failed"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden: Not the operator user"
+// @Failure 404 {object} map[string]interface{} "Business not found"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /businesses/{id} [put]
 func (h *BusinessHandler) UpdateBusiness(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
@@ -202,11 +202,11 @@ func (h *BusinessHandler) UpdateBusiness(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Business ID"
 // @Success 204 "Business deleted successfully (No Content)"
-// @Failure 400 {object} gin.H "Invalid business ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden: Not the operator user or business is in use"
-// @Failure 404 {object} gin.H "Business not found"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid business ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden: Not the operator user or business is in use"
+// @Failure 404 {object} map[string]interface{} "Business not found"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /businesses/{id} [delete]
 func (h *BusinessHandler) DeleteBusiness(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)

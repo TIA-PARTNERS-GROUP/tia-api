@@ -33,9 +33,9 @@ func NewInferredConnectionHandler(service *services.InferredConnectionService, r
 // @Security BearerAuth
 // @Param connection body ports.CreateInferredConnectionInput true "Inferred connection details"
 // @Success 201 {object} ports.InferredConnectionResponse "Connection record created successfully"
-// @Failure 400 {object} gin.H "Invalid request body or validation error"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid request body or validation error"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /inferred-connections [post]
 func (h *InferredConnectionHandler) CreateInferredConnection(c *gin.Context) {
 
@@ -70,9 +70,9 @@ func (h *InferredConnectionHandler) CreateInferredConnection(c *gin.Context) {
 // @Param entityType path string true "Type of the source entity (e.g., business, project)"
 // @Param entityID path int true "ID of the source entity"
 // @Success 200 {array} ports.InferredConnectionResponse "List of inferred connections"
-// @Failure 400 {object} gin.H "Invalid entity ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid entity ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /inferred-connections/source/{entityType}/{entityID} [get]
 func (h *InferredConnectionHandler) GetConnectionsForSource(c *gin.Context) {
 

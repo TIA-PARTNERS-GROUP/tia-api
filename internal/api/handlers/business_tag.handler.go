@@ -35,10 +35,10 @@ func NewBusinessTagHandler(s *services.BusinessTagService, routes *constants.Rou
 // @Param id path int true "Business ID to associate the tag with"
 // @Param tag body ports.CreateBusinessTagInput true "Tag details (TagType, Description)"
 // @Success 201 {object} ports.BusinessTagResponse "Tag created and associated successfully"
-// @Failure 400 {object} gin.H "Invalid business ID, request body, or validation failed"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 409 {object} gin.H "ErrBusinessTagAlreadyExists"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid business ID, request body, or validation failed"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 409 {object} map[string]interface{} "ErrBusinessTagAlreadyExists"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /businesses/{id}/tags [post]
 func (h *BusinessTagHandler) CreateBusinessTag(c *gin.Context) {
 
@@ -87,8 +87,8 @@ func (h *BusinessTagHandler) CreateBusinessTag(c *gin.Context) {
 // @Produce json
 // @Param id path int true "Business ID"
 // @Success 200 {object} ports.BusinessTagsResponse "List of business tags"
-// @Failure 400 {object} gin.H "Invalid business ID"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid business ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /businesses/{id}/tags [get]
 func (h *BusinessTagHandler) GetBusinessTags(c *gin.Context) {
 
@@ -113,10 +113,10 @@ func (h *BusinessTagHandler) GetBusinessTags(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Unique Business Tag ID (NOT the Business ID)"
 // @Success 204 "Tag deleted successfully (No Content)"
-// @Failure 400 {object} gin.H "Invalid tag ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrBusinessTagNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid tag ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrBusinessTagNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /tags/{id} [delete]
 func (h *BusinessTagHandler) DeleteBusinessTag(c *gin.Context) {
 

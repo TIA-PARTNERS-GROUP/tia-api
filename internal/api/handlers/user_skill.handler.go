@@ -66,12 +66,12 @@ func (h *UserSkillHandler) checkUserOwnership(c *gin.Context) (uint, uint, *port
 // @Param id path int true "User ID"
 // @Param skill body ports.CreateUserSkillInput true "Skill details (SkillID, ProficiencyLevel)"
 // @Success 201 {object} ports.UserSkillResponse "Skill added successfully"
-// @Failure 400 {object} gin.H "Invalid request body or validation error"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
-// @Failure 404 {object} gin.H "ErrUserNotFound or ErrSkillNotFound"
-// @Failure 409 {object} gin.H "ErrUserSkillAlreadyExists"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid request body or validation error"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the target user)"
+// @Failure 404 {object} map[string]interface{} "ErrUserNotFound or ErrSkillNotFound"
+// @Failure 409 {object} map[string]interface{} "ErrUserSkillAlreadyExists"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id}/skills [post]
 func (h *UserSkillHandler) AddUserSkill(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
@@ -113,9 +113,9 @@ func (h *UserSkillHandler) AddUserSkill(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "User ID"
 // @Success 200 {object} ports.UserSkillsResponse "List of user skills"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the target user)"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id}/skills [get]
 func (h *UserSkillHandler) GetUserSkills(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
@@ -143,11 +143,11 @@ func (h *UserSkillHandler) GetUserSkills(c *gin.Context) {
 // @Param skillID path int true "Skill ID"
 // @Param update body ports.UpdateUserSkillInput true "New proficiency level"
 // @Success 200 {object} ports.UserSkillResponse "Proficiency updated successfully"
-// @Failure 400 {object} gin.H "Invalid ID, request body, or validation error"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
-// @Failure 404 {object} gin.H "ErrUserSkillNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid ID, request body, or validation error"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the target user)"
+// @Failure 404 {object} map[string]interface{} "ErrUserSkillNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id}/skills/{skillID} [put]
 func (h *UserSkillHandler) UpdateUserSkill(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
@@ -195,11 +195,11 @@ func (h *UserSkillHandler) UpdateUserSkill(c *gin.Context) {
 // @Param id path int true "User ID"
 // @Param skillID path int true "Skill ID"
 // @Success 204 "Skill removed successfully (No Content)"
-// @Failure 400 {object} gin.H "Invalid ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
-// @Failure 404 {object} gin.H "ErrUserSkillNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the target user)"
+// @Failure 404 {object} map[string]interface{} "ErrUserSkillNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id}/skills/{skillID} [delete]
 func (h *UserSkillHandler) RemoveUserSkill(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)

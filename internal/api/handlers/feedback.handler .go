@@ -33,8 +33,8 @@ func NewFeedbackHandler(service *services.FeedbackService, routes *constants.Rou
 // @Produce json
 // @Param feedback body ports.CreateFeedbackInput true "Feedback details (Name, Email, Content)"
 // @Success 201 {object} ports.FeedbackResponse "Feedback submitted successfully"
-// @Failure 400 {object} gin.H "Invalid request body or validation failed"
-// @Failure 500 {object} gin.H "Internal server er
+// @Failure 400 {object} map[string]interface{} "Invalid request body or validation failed"
+// @Failure 500 {object} map[string]interface{} "Internal server er
 func (h *FeedbackHandler) CreateFeedback(c *gin.Context) {
 	var input ports.CreateFeedbackInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -59,8 +59,8 @@ func (h *FeedbackHandler) CreateFeedback(c *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Success 200 {array} ports.FeedbackResponse "List of feedback entries"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /feedback [get]
 func (h *FeedbackHandler) GetAllFeedback(c *gin.Context) {
 
@@ -90,10 +90,10 @@ func (h *FeedbackHandler) GetAllFeedback(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Feedback ID"
 // @Success 200 {object} ports.FeedbackResponse "Feedback entry retrieved successfully"
-// @Failure 400 {object} gin.H "Invalid feedback ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrFeedbackNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid feedback ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrFeedbackNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /feedback/{id} [get]
 func (h *FeedbackHandler) GetFeedbackByID(c *gin.Context) {
 
@@ -128,10 +128,10 @@ func (h *FeedbackHandler) GetFeedbackByID(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Feedback ID"
 // @Success 204 "Feedback deleted successfully (No Content)"
-// @Failure 400 {object} gin.H "Invalid feedback ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrFeedbackNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid feedback ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrFeedbackNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /feedback/{id} [delete]
 func (h *FeedbackHandler) DeleteFeedback(c *gin.Context) {
 

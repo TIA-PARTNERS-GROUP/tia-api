@@ -34,9 +34,9 @@ func NewEventHandler(service *services.EventService, routes *constants.Routes) *
 // @Security BearerAuth
 // @Param event body ports.CreateEventInput true "Event details (EventType, Payload)"
 // @Success 201 {object} ports.EventResponse "Event created successfully"
-// @Failure 400 {object} gin.H "Invalid input data or validation error"
-// @Failure 401 {object} gin.H "Unauthorized or missing authentication context"
-// @Failure 500 {object} gin.H "Failed to create event"
+// @Failure 400 {object} map[string]interface{} "Invalid input data or validation error"
+// @Failure 401 {object} map[string]interface{} "Unauthorized or missing authentication context"
+// @Failure 500 {object} map[string]interface{} "Failed to create event"
 // @Router /events [post]
 func (h *EventHandler) CreateEvent(c *gin.Context) {
 
@@ -74,9 +74,9 @@ func (h *EventHandler) CreateEvent(c *gin.Context) {
 // @Produce json
 // @Param id path int true "Event ID"
 // @Success 200 {object} ports.EventResponse "Event retrieved successfully"
-// @Failure 400 {object} gin.H "Invalid event ID"
-// @Failure 404 {object} gin.H "Event not found"
-// @Failure 500 {object} gin.H "Failed to retrieve event"
+// @Failure 400 {object} map[string]interface{} "Invalid event ID"
+// @Failure 404 {object} map[string]interface{} "Event not found"
+// @Failure 500 {object} map[string]interface{} "Failed to retrieve event"
 // @Router /events/{id} [get]
 func (h *EventHandler) GetEventByID(c *gin.Context) {
 
@@ -108,8 +108,8 @@ func (h *EventHandler) GetEventByID(c *gin.Context) {
 // @Param start_date query string false "Filter events created after this date (YYYY-MM-DD)"
 // @Param end_date query string false "Filter events created before this date (YYYY-MM-DD)"
 // @Success 200 {array} ports.EventResponse "List of events"
-// @Failure 400 {object} gin.H "Invalid query parameters"
-// @Failure 500 {object} gin.H "Failed to retrieve events"
+// @Failure 400 {object} map[string]interface{} "Invalid query parameters"
+// @Failure 500 {object} map[string]interface{} "Failed to retrieve events"
 // @Router /events [get]
 func (h *EventHandler) GetEvents(c *gin.Context) {
 	var filters ports.EventsFilter

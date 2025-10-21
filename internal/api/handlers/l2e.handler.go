@@ -33,9 +33,9 @@ func NewL2EHandler(service *services.L2EResponseService, routes *constants.Route
 // @Security BearerAuth
 // @Param response body ports.CreateL2EResponseInput true "L2E response data payload"
 // @Success 201 {object} ports.L2EResponseResponse "Response recorded successfully"
-// @Failure 400 {object} gin.H "Invalid request body or validation error"
-// @Failure 401 {object} gin.H "Unauthorized or invalid context"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid request body or validation error"
+// @Failure 401 {object} map[string]interface{} "Unauthorized or invalid context"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /l2e-responses [post]
 func (h *L2EHandler) CreateL2EResponse(c *gin.Context) {
 	var input ports.CreateL2EResponseInput
@@ -75,8 +75,8 @@ func (h *L2EHandler) CreateL2EResponse(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "User ID"
 // @Success 200 {array} ports.L2EResponseResponse "List of L2E responses"
-// @Failure 400 {object} gin.H "Invalid user ID"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid user ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id}/l2e-responses [get]
 func (h *L2EHandler) GetL2EResponsesForUser(c *gin.Context) {
 

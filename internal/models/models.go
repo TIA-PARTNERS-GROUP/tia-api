@@ -1,8 +1,11 @@
 package models
+
 import (
 	"time"
+
 	"gorm.io/datatypes"
 )
+
 type BusinessType string
 type BusinessCategory string
 type BusinessPhase string
@@ -19,65 +22,67 @@ type IdeaStatus string
 type IdeaVoteType string
 type BusinessTagType string
 type DailyActivityProgressStatus string
+
 const (
-	BusinessTypeConsulting    BusinessType = "Consulting"
-	BusinessTypeRetail        BusinessType = "Retail"
-	BusinessTypeTechnology    BusinessType = "Technology"
-	BusinessTypeManufacturing BusinessType = "Manufacturing"
-	BusinessTypeServices      BusinessType = "Services"
-	BusinessTypeOther         BusinessType = "Other"
-	BusinessCategoryB2B        BusinessCategory = "B2B"
-	BusinessCategoryB2C        BusinessCategory = "B2C"
-	BusinessCategoryNonProfit  BusinessCategory = "Non_Profit"
-	BusinessCategoryGovernment BusinessCategory = "Government"
-	BusinessCategoryMixed      BusinessCategory = "Mixed"
-	BusinessPhaseStartup BusinessPhase = "Startup"
-	BusinessPhaseGrowth  BusinessPhase = "Growth"
-	BusinessPhaseMature  BusinessPhase = "Mature"
-	BusinessPhaseExit    BusinessPhase = "Exit"
-	ConnectionTypePartnership   BusinessConnectionType = "Partnership"
-	ConnectionTypeSupplier      BusinessConnectionType = "Supplier"
-	ConnectionTypeClient        BusinessConnectionType = "Client"
-	ConnectionTypeReferral      BusinessConnectionType = "Referral"
-	ConnectionTypeCollaboration BusinessConnectionType = "Collaboration"
-	ConnectionStatusPending  BusinessConnectionStatus = "pending"
-	ConnectionStatusActive   BusinessConnectionStatus = "active"
-	ConnectionStatusRejected BusinessConnectionStatus = "rejected"
-	ConnectionStatusInactive BusinessConnectionStatus = "inactive"
-	ProjectStatusPlanning  ProjectStatus = "planning"
-	ProjectStatusActive    ProjectStatus = "active"
-	ProjectStatusOnHold    ProjectStatus = "on_hold"
-	ProjectStatusCompleted ProjectStatus = "completed"
-	ProjectStatusCancelled ProjectStatus = "cancelled"
-	ProjectMemberRoleManager     ProjectMemberRole = "manager"
-	ProjectMemberRoleContributor ProjectMemberRole = "contributor"
-	ProjectMemberRoleReviewer    ProjectMemberRole = "reviewer"
-	SkillImportanceRequired  ProjectSkillImportance = "required"
-	SkillImportancePreferred ProjectSkillImportance = "preferred"
-	SkillImportanceOptional  ProjectSkillImportance = "optional"
-	ProficiencyBeginner     UserSkillProficiency = "beginner"
-	ProficiencyIntermediate UserSkillProficiency = "intermediate"
-	ProficiencyAdvanced     UserSkillProficiency = "advanced"
-	ProficiencyExpert       UserSkillProficiency = "expert"
-	PublicationPost        PublicationType = "post"
-	PublicationCaseStudy   PublicationType = "case_study"
-	PublicationTestimonial PublicationType = "testimonial"
-	PublicationArticle     PublicationType = "article"
-	IdeaStatusOpen        IdeaStatus = "open"
-	IdeaStatusUnderReview IdeaStatus = "under_review"
-	IdeaStatusPlanned     IdeaStatus = "planned"
-	IdeaStatusInProgress  IdeaStatus = "in_progress"
-	IdeaStatusCompleted   IdeaStatus = "completed"
-	IdeaStatusRejected    IdeaStatus = "rejected"
-	IdeaVoteUp   IdeaVoteType = "up"
-	IdeaVoteDown IdeaVoteType = "down"
-	BusinessTagClient    BusinessTagType = "client"
-	BusinessTagService   BusinessTagType = "service"
-	BusinessTagSpecialty BusinessTagType = "specialty"
-	ProgressStatusNotStarted DailyActivityProgressStatus = "not_started"
-	ProgressStatusInProgress DailyActivityProgressStatus = "in_progress"
-	ProgressStatusCompleted  DailyActivityProgressStatus = "completed"
+	BusinessTypeConsulting       BusinessType                = "Consulting"
+	BusinessTypeRetail           BusinessType                = "Retail"
+	BusinessTypeTechnology       BusinessType                = "Technology"
+	BusinessTypeManufacturing    BusinessType                = "Manufacturing"
+	BusinessTypeServices         BusinessType                = "Services"
+	BusinessTypeOther            BusinessType                = "Other"
+	BusinessCategoryB2B          BusinessCategory            = "B2B"
+	BusinessCategoryB2C          BusinessCategory            = "B2C"
+	BusinessCategoryNonProfit    BusinessCategory            = "Non_Profit"
+	BusinessCategoryGovernment   BusinessCategory            = "Government"
+	BusinessCategoryMixed        BusinessCategory            = "Mixed"
+	BusinessPhaseStartup         BusinessPhase               = "Startup"
+	BusinessPhaseGrowth          BusinessPhase               = "Growth"
+	BusinessPhaseMature          BusinessPhase               = "Mature"
+	BusinessPhaseExit            BusinessPhase               = "Exit"
+	ConnectionTypePartnership    BusinessConnectionType      = "Partnership"
+	ConnectionTypeSupplier       BusinessConnectionType      = "Supplier"
+	ConnectionTypeClient         BusinessConnectionType      = "Client"
+	ConnectionTypeReferral       BusinessConnectionType      = "Referral"
+	ConnectionTypeCollaboration  BusinessConnectionType      = "Collaboration"
+	ConnectionStatusPending      BusinessConnectionStatus    = "pending"
+	ConnectionStatusActive       BusinessConnectionStatus    = "active"
+	ConnectionStatusRejected     BusinessConnectionStatus    = "rejected"
+	ConnectionStatusInactive     BusinessConnectionStatus    = "inactive"
+	ProjectStatusPlanning        ProjectStatus               = "planning"
+	ProjectStatusActive          ProjectStatus               = "active"
+	ProjectStatusOnHold          ProjectStatus               = "on_hold"
+	ProjectStatusCompleted       ProjectStatus               = "completed"
+	ProjectStatusCancelled       ProjectStatus               = "cancelled"
+	ProjectMemberRoleManager     ProjectMemberRole           = "manager"
+	ProjectMemberRoleContributor ProjectMemberRole           = "contributor"
+	ProjectMemberRoleReviewer    ProjectMemberRole           = "reviewer"
+	SkillImportanceRequired      ProjectSkillImportance      = "required"
+	SkillImportancePreferred     ProjectSkillImportance      = "preferred"
+	SkillImportanceOptional      ProjectSkillImportance      = "optional"
+	ProficiencyBeginner          UserSkillProficiency        = "beginner"
+	ProficiencyIntermediate      UserSkillProficiency        = "intermediate"
+	ProficiencyAdvanced          UserSkillProficiency        = "advanced"
+	ProficiencyExpert            UserSkillProficiency        = "expert"
+	PublicationPost              PublicationType             = "post"
+	PublicationCaseStudy         PublicationType             = "case_study"
+	PublicationTestimonial       PublicationType             = "testimonial"
+	PublicationArticle           PublicationType             = "article"
+	IdeaStatusOpen               IdeaStatus                  = "open"
+	IdeaStatusUnderReview        IdeaStatus                  = "under_review"
+	IdeaStatusPlanned            IdeaStatus                  = "planned"
+	IdeaStatusInProgress         IdeaStatus                  = "in_progress"
+	IdeaStatusCompleted          IdeaStatus                  = "completed"
+	IdeaStatusRejected           IdeaStatus                  = "rejected"
+	IdeaVoteUp                   IdeaVoteType                = "up"
+	IdeaVoteDown                 IdeaVoteType                = "down"
+	BusinessTagClient            BusinessTagType             = "client"
+	BusinessTagService           BusinessTagType             = "service"
+	BusinessTagSpecialty         BusinessTagType             = "specialty"
+	ProgressStatusNotStarted     DailyActivityProgressStatus = "not_started"
+	ProgressStatusInProgress     DailyActivityProgressStatus = "in_progress"
+	ProgressStatusCompleted      DailyActivityProgressStatus = "completed"
 )
+
 type User struct {
 	ID                       uint    `gorm:"primaryKey"`
 	FirstName                string  `gorm:"size:60;not null"`
@@ -93,7 +98,7 @@ type User struct {
 	Active                   bool      `gorm:"default:true;not null;index"`
 	CreatedAt                time.Time `gorm:"not null;default:current_timestamp"`
 	UpdatedAt                time.Time `gorm:"not null;default:current_timestamp"`
-	
+
 	Businesses              []Business                  `gorm:"foreignKey:OperatorUserID"`
 	ManagedProjects         []Project                   `gorm:"foreignKey:ManagedByUserID"`
 	InitiatedConnections    []BusinessConnection        `gorm:"foreignKey:InitiatedByUserID"`
@@ -120,7 +125,7 @@ type Feedback struct {
 type ProjectApplicant struct {
 	ProjectID uint `gorm:"primaryKey"`
 	UserID    uint `gorm:"primaryKey"`
-	
+
 	Project Project `gorm:"foreignKey:ProjectID"`
 	User    User    `gorm:"foreignKey:UserID"`
 }
@@ -128,33 +133,35 @@ type DailyActivity struct {
 	ID          uint   `gorm:"primaryKey"`
 	Name        string `gorm:"size:60;not null;unique"`
 	Description string `gorm:"type:text;not null"`
-	
+
 	Enrolments []DailyActivityEnrolment `gorm:"foreignKey:DailyActivityID"`
 }
 type DailyActivityEnrolment struct {
 	DailyActivityID uint `gorm:"primaryKey"`
 	UserID          uint `gorm:"primaryKey"`
-	
+
 	DailyActivity DailyActivity `gorm:"foreignKey:DailyActivityID"`
 	User          User          `gorm:"foreignKey:UserID"`
 }
 type UserDailyActivityProgress struct {
-	UserID          uint                        `gorm:"primaryKey"`
-	DailyActivityID uint                        `gorm:"primaryKey"`
-	Date            datatypes.Date              `gorm:"primaryKey;type:date"`
-	Status          DailyActivityProgressStatus `gorm:"type:enum('not_started', 'in_progress', 'completed');default:not_started"`
-	Progress        int                         `gorm:"default:0"`
-	
+	UserID          uint `gorm:"primaryKey"`
+	DailyActivityID uint `gorm:"primaryKey"`
+	// FIX: Apply swaggertype:"string"
+	Date     datatypes.Date              `gorm:"primaryKey;type:date" swaggertype:"string"`
+	Status   DailyActivityProgressStatus `gorm:"type:enum('not_started', 'in_progress', 'completed');default:not_started"`
+	Progress int                         `gorm:"default:0"`
+
 	User          User          `gorm:"foreignKey:UserID"`
 	DailyActivity DailyActivity `gorm:"foreignKey:DailyActivityID"`
 }
 type Event struct {
-	ID        uint           `gorm:"primaryKey"`
-	EventType string         `gorm:"size:100;not null;index"`
-	Payload   datatypes.JSON `gorm:"type:json"`
+	ID        uint   `gorm:"primaryKey"`
+	EventType string `gorm:"size:100;not null;index"`
+	// FIX: Apply swaggertype:"object"
+	Payload   datatypes.JSON `gorm:"type:json" swaggertype:"object"`
 	Timestamp time.Time      `gorm:"not null;default:current_timestamp;index"`
 	UserID    *uint          `gorm:"index"`
-	
+
 	User *User `gorm:"foreignKey:UserID"`
 }
 type Subscription struct {
@@ -171,24 +178,26 @@ type UserSubscription struct {
 	DateFrom       time.Time `gorm:"not null"`
 	DateTo         time.Time `gorm:"not null"`
 	IsTrial        bool      `gorm:"default:false"`
-	
+
 	User         User         `gorm:"foreignKey:UserID"`
 	Subscription Subscription `gorm:"foreignKey:SubscriptionID"`
 }
 type UserConfig struct {
-	ID         uint           `gorm:"primaryKey"`
-	UserID     uint           `gorm:"not null;uniqueIndex:uq_user_config_type"`
-	ConfigType string         `gorm:"size:50;not null;uniqueIndex:uq_user_config_type"`
-	Config     datatypes.JSON `gorm:"type:json;not null"`
-	
+	ID         uint   `gorm:"primaryKey"`
+	UserID     uint   `gorm:"not null;uniqueIndex:uq_user_config_type"`
+	ConfigType string `gorm:"size:50;not null;uniqueIndex:uq_user_config_type"`
+	// FIX: Apply swaggertype:"object" (already done, confirming for completeness)
+	Config datatypes.JSON `gorm:"type:json;not null" swaggertype:"object"`
+
 	User User `gorm:"foreignKey:UserID"`
 }
 type L2EResponse struct {
-	ID        uint           `gorm:"primaryKey"`
-	UserID    uint           `gorm:"not null"`
-	Response  datatypes.JSON `gorm:"type:json;not null"`
+	ID     uint `gorm:"primaryKey"`
+	UserID uint `gorm:"not null"`
+	// FIX: Apply swaggertype:"object"
+	Response  datatypes.JSON `gorm:"type:json;not null" swaggertype:"object"`
 	DateAdded time.Time      `gorm:"not null;default:current_timestamp"`
-	
+
 	User User `gorm:"foreignKey:UserID"`
 }
 type Business struct {
@@ -213,7 +222,7 @@ type Business struct {
 	Active           bool             `gorm:"default:true;not null;index"`
 	CreatedAt        time.Time        `gorm:"not null;default:current_timestamp"`
 	UpdatedAt        time.Time        `gorm:"not null;default:current_timestamp"`
-	
+
 	OperatorUser          User                 `gorm:"foreignKey:OperatorUserID"`
 	BusinessTags          []BusinessTag        `gorm:"foreignKey:BusinessID"`
 	Projects              []Project            `gorm:"foreignKey:BusinessID"`
@@ -224,7 +233,7 @@ type Business struct {
 type Project struct {
 	ID              uint          `gorm:"primaryKey"`
 	ManagedByUserID uint          `gorm:"not null;index"`
-	BusinessID      *uint         `gorm:"index"` 
+	BusinessID      *uint         `gorm:"index"`
 	Name            string        `gorm:"size:100;not null"`
 	Description     *string       `gorm:"type:text"`
 	ProjectStatus   ProjectStatus `gorm:"type:enum('planning', 'active', 'on_hold', 'completed', 'cancelled');default:planning;index"`
@@ -233,7 +242,7 @@ type Project struct {
 	ActualEndDate   *time.Time
 	CreatedAt       time.Time `gorm:"not null;default:current_timestamp"`
 	UpdatedAt       time.Time `gorm:"not null;default:current_timestamp"`
-	
+
 	ManagingUser   User            `gorm:"foreignKey:ManagedByUserID"`
 	Business       *Business       `gorm:"foreignKey:BusinessID"`
 	ProjectMembers []ProjectMember `gorm:"foreignKey:ProjectID"`
@@ -247,18 +256,18 @@ type Region struct {
 type ProjectRegion struct {
 	RegionID  string `gorm:"primaryKey;size:3"`
 	ProjectID uint   `gorm:"primaryKey"`
-	
+
 	Region  Region  `gorm:"foreignKey:RegionID"`
 	Project Project `gorm:"foreignKey:ProjectID"`
 }
 type InferredConnection struct {
 	ID               uint      `gorm:"primaryKey"`
-	SourceEntityType string    `gorm:"size:50;not null;index"` 
+	SourceEntityType string    `gorm:"size:50;not null;index"`
 	SourceEntityID   uint      `gorm:"not null;index"`
-	TargetEntityType string    `gorm:"size:50;not null;index"` 
+	TargetEntityType string    `gorm:"size:50;not null;index"`
 	TargetEntityID   uint      `gorm:"not null;index"`
-	ConnectionType   string    `gorm:"size:100;not null;index"` 
-	ConfidenceScore  float64   `gorm:"not null"`                
+	ConnectionType   string    `gorm:"size:100;not null;index"`
+	ConfidenceScore  float64   `gorm:"not null"`
 	ModelVersion     string    `gorm:"size:50"`
 	CreatedAt        time.Time `gorm:"not null;default:current_timestamp"`
 }
@@ -269,7 +278,7 @@ type Skill struct {
 	Description *string   `gorm:"type:text"`
 	Active      bool      `gorm:"default:true;not null;index"`
 	CreatedAt   time.Time `gorm:"not null;default:current_timestamp"`
-	
+
 	ProjectSkills []ProjectSkill `gorm:"foreignKey:SkillID"`
 	UserSkills    []UserSkill    `gorm:"foreignKey:SkillID"`
 }
@@ -288,7 +297,7 @@ type Publication struct {
 	PublishedAt     *time.Time
 	CreatedAt       time.Time `gorm:"not null;default:current_timestamp"`
 	UpdatedAt       time.Time `gorm:"not null;default:current_timestamp"`
-	
+
 	User     User      `gorm:"foreignKey:UserID"`
 	Business *Business `gorm:"foreignKey:BusinessID"`
 }
@@ -304,7 +313,7 @@ type Notification struct {
 	Read              bool      `gorm:"column:read;default:false;not null;index"`
 	ActionURL         *string   `gorm:"size:500"`
 	CreatedAt         time.Time `gorm:"not null;default:current_timestamp;index"`
-	
+
 	ReceiverUser User  `gorm:"foreignKey:ReceiverUserID"`
 	SenderUser   *User `gorm:"foreignKey:SenderUserID"`
 }
@@ -313,7 +322,7 @@ type UserSkill struct {
 	UserID           uint                 `gorm:"primaryKey;index"`
 	ProficiencyLevel UserSkillProficiency `gorm:"type:enum('beginner', 'intermediate', 'advanced', 'expert');default:intermediate"`
 	CreatedAt        time.Time            `gorm:"not null;default:current_timestamp"`
-	
+
 	Skill Skill `gorm:"foreignKey:SkillID"`
 	User  User  `gorm:"foreignKey:UserID"`
 }
@@ -321,7 +330,7 @@ type ProjectSkill struct {
 	ProjectID  uint                   `gorm:"primaryKey"`
 	SkillID    uint                   `gorm:"primaryKey;index"`
 	Importance ProjectSkillImportance `gorm:"type:enum('required', 'preferred', 'optional');default:preferred"`
-	
+
 	Project Project `gorm:"foreignKey:ProjectID"`
 	Skill   Skill   `gorm:"foreignKey:SkillID"`
 }
@@ -330,7 +339,7 @@ type ProjectMember struct {
 	UserID    uint              `gorm:"primaryKey;index"`
 	Role      ProjectMemberRole `gorm:"type:enum('manager', 'contributor', 'reviewer');default:contributor"`
 	JoinedAt  time.Time         `gorm:"not null;default:current_timestamp"`
-	
+
 	Project Project `gorm:"foreignKey:ProjectID"`
 	User    User    `gorm:"foreignKey:UserID"`
 }
@@ -344,7 +353,7 @@ type BusinessConnection struct {
 	Notes                *string                  `gorm:"type:text"`
 	CreatedAt            time.Time                `gorm:"not null;default:current_timestamp"`
 	UpdatedAt            time.Time                `gorm:"not null;default:current_timestamp"`
-	
+
 	InitiatingBusiness Business `gorm:"foreignKey:InitiatingBusinessID"`
 	ReceivingBusiness  Business `gorm:"foreignKey:ReceivingBusinessID"`
 	InitiatedByUser    User     `gorm:"foreignKey:InitiatedByUserID"`
@@ -355,7 +364,7 @@ type BusinessTag struct {
 	TagType     BusinessTagType `gorm:"type:enum('client', 'service', 'specialty');index"`
 	Description string          `gorm:"size:100;not null"`
 	CreatedAt   time.Time       `gorm:"not null;default:current_timestamp"`
-	
+
 	Business Business `gorm:"foreignKey:BusinessID"`
 }
 type UserSession struct {
@@ -367,6 +376,6 @@ type UserSession struct {
 	CreatedAt time.Time `gorm:"not null;default:current_timestamp"`
 	ExpiresAt time.Time `gorm:"not null;index"`
 	RevokedAt *time.Time
-	
+
 	User User `gorm:"foreignKey:UserID"`
 }

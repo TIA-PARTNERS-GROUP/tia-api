@@ -66,11 +66,11 @@ func (h *ProjectHandler) checkProjectManager(c *gin.Context, projectID uint) (ui
 // @Security BearerAuth
 // @Param project body ports.CreateProjectInput true "Project creation details (Name, ManagedByUserID, ProjectStatus)"
 // @Success 201 {object} ports.ProjectResponse "Project created successfully"
-// @Failure 400 {object} gin.H "Invalid request body or validation failed"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrManagerNotFound"
-// @Failure 409 {object} gin.H "ErrProjectNameExists"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid request body or validation failed"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrManagerNotFound"
+// @Failure 409 {object} map[string]interface{} "ErrProjectNameExists"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /projects [post]
 func (h *ProjectHandler) CreateProject(c *gin.Context) {
 	_, err := h.getAuthUserID(c)
@@ -109,10 +109,10 @@ func (h *ProjectHandler) CreateProject(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Project ID"
 // @Success 200 {object} ports.ProjectResponse "Project retrieved successfully"
-// @Failure 400 {object} gin.H "Invalid project ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrProjectNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid project ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrProjectNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /projects/{id} [get]
 func (h *ProjectHandler) GetProjectByID(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
@@ -151,8 +151,8 @@ func (h *ProjectHandler) GetProjectByID(c *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Success 200 {array} ports.ProjectResponse "List of projects"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 500 {object} gin.H "Failed to retrieve projects"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Failed to retrieve projects"
 // @Router /projects [get]
 func (h *ProjectHandler) GetAllProjects(c *gin.Context) {
 	_, err := h.getAuthUserID(c)
@@ -183,11 +183,11 @@ func (h *ProjectHandler) GetAllProjects(c *gin.Context) {
 // @Param id path int true "Project ID"
 // @Param project body ports.UpdateProjectInput true "Fields to update"
 // @Success 200 {object} ports.ProjectResponse "Project updated successfully"
-// @Failure 400 {object} gin.H "Invalid project ID or request body"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the project manager)"
-// @Failure 404 {object} gin.H "ErrProjectNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid project ID or request body"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the project manager)"
+// @Failure 404 {object} map[string]interface{} "ErrProjectNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /projects/{id} [put]
 func (h *ProjectHandler) UpdateProject(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
@@ -228,11 +228,11 @@ func (h *ProjectHandler) UpdateProject(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Project ID"
 // @Success 204 "Project deleted successfully (No Content)"
-// @Failure 400 {object} gin.H "Invalid project ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the project manager)"
-// @Failure 404 {object} gin.H "ErrProjectNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid project ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the project manager)"
+// @Failure 404 {object} map[string]interface{} "ErrProjectNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /projects/{id} [delete]
 func (h *ProjectHandler) DeleteProject(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)

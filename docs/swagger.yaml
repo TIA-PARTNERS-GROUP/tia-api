@@ -1,4 +1,5740 @@
+definitions:
+  models.Business:
+    properties:
+      active:
+        type: boolean
+      address:
+        type: string
+      businessCategory:
+        $ref: '#/definitions/models.BusinessCategory'
+      businessPhase:
+        $ref: '#/definitions/models.BusinessPhase'
+      businessTags:
+        items:
+          $ref: '#/definitions/models.BusinessTag'
+        type: array
+      businessType:
+        $ref: '#/definitions/models.BusinessType'
+      city:
+        type: string
+      contactEmail:
+        type: string
+      contactName:
+        type: string
+      contactPhoneNo:
+        type: string
+      country:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      initiatingConnections:
+        items:
+          $ref: '#/definitions/models.BusinessConnection'
+        type: array
+      name:
+        type: string
+      operatorUser:
+        $ref: '#/definitions/models.User'
+      operatorUserID:
+        type: integer
+      postalCode:
+        type: string
+      projects:
+        items:
+          $ref: '#/definitions/models.Project'
+        type: array
+      publications:
+        items:
+          $ref: '#/definitions/models.Publication'
+        type: array
+      receivingConnections:
+        items:
+          $ref: '#/definitions/models.BusinessConnection'
+        type: array
+      state:
+        type: string
+      tagline:
+        type: string
+      updatedAt:
+        type: string
+      value:
+        type: number
+      website:
+        type: string
+    type: object
+  models.BusinessCategory:
+    enum:
+    - B2B
+    - B2C
+    - Non_Profit
+    - Government
+    - Mixed
+    type: string
+    x-enum-varnames:
+    - BusinessCategoryB2B
+    - BusinessCategoryB2C
+    - BusinessCategoryNonProfit
+    - BusinessCategoryGovernment
+    - BusinessCategoryMixed
+  models.BusinessConnection:
+    properties:
+      connectionType:
+        $ref: '#/definitions/models.BusinessConnectionType'
+      createdAt:
+        type: string
+      id:
+        type: integer
+      initiatedByUser:
+        $ref: '#/definitions/models.User'
+      initiatedByUserID:
+        type: integer
+      initiatingBusiness:
+        $ref: '#/definitions/models.Business'
+      initiatingBusinessID:
+        type: integer
+      notes:
+        type: string
+      receivingBusiness:
+        $ref: '#/definitions/models.Business'
+      receivingBusinessID:
+        type: integer
+      status:
+        $ref: '#/definitions/models.BusinessConnectionStatus'
+      updatedAt:
+        type: string
+    type: object
+  models.BusinessConnectionStatus:
+    enum:
+    - pending
+    - active
+    - rejected
+    - inactive
+    type: string
+    x-enum-varnames:
+    - ConnectionStatusPending
+    - ConnectionStatusActive
+    - ConnectionStatusRejected
+    - ConnectionStatusInactive
+  models.BusinessConnectionType:
+    enum:
+    - Partnership
+    - Supplier
+    - Client
+    - Referral
+    - Collaboration
+    type: string
+    x-enum-varnames:
+    - ConnectionTypePartnership
+    - ConnectionTypeSupplier
+    - ConnectionTypeClient
+    - ConnectionTypeReferral
+    - ConnectionTypeCollaboration
+  models.BusinessPhase:
+    enum:
+    - Startup
+    - Growth
+    - Mature
+    - Exit
+    type: string
+    x-enum-varnames:
+    - BusinessPhaseStartup
+    - BusinessPhaseGrowth
+    - BusinessPhaseMature
+    - BusinessPhaseExit
+  models.BusinessTag:
+    properties:
+      business:
+        $ref: '#/definitions/models.Business'
+      businessID:
+        type: integer
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      tagType:
+        $ref: '#/definitions/models.BusinessTagType'
+    type: object
+  models.BusinessTagType:
+    enum:
+    - client
+    - service
+    - specialty
+    type: string
+    x-enum-varnames:
+    - BusinessTagClient
+    - BusinessTagService
+    - BusinessTagSpecialty
+  models.BusinessType:
+    enum:
+    - Consulting
+    - Retail
+    - Technology
+    - Manufacturing
+    - Services
+    - Other
+    type: string
+    x-enum-varnames:
+    - BusinessTypeConsulting
+    - BusinessTypeRetail
+    - BusinessTypeTechnology
+    - BusinessTypeManufacturing
+    - BusinessTypeServices
+    - BusinessTypeOther
+  models.DailyActivity:
+    properties:
+      description:
+        type: string
+      enrolments:
+        items:
+          $ref: '#/definitions/models.DailyActivityEnrolment'
+        type: array
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  models.DailyActivityEnrolment:
+    properties:
+      dailyActivity:
+        $ref: '#/definitions/models.DailyActivity'
+      dailyActivityID:
+        type: integer
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
+  models.DailyActivityProgressStatus:
+    enum:
+    - not_started
+    - in_progress
+    - completed
+    type: string
+    x-enum-varnames:
+    - ProgressStatusNotStarted
+    - ProgressStatusInProgress
+    - ProgressStatusCompleted
+  models.L2EResponse:
+    properties:
+      dateAdded:
+        type: string
+      id:
+        type: integer
+      response:
+        description: 'FIX: Apply swaggertype:"object"'
+        type: object
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
+  models.Notification:
+    properties:
+      actionURL:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      message:
+        type: string
+      notificationType:
+        type: string
+      read:
+        type: boolean
+      receiverUser:
+        $ref: '#/definitions/models.User'
+      receiverUserID:
+        type: integer
+      relatedEntityID:
+        type: integer
+      relatedEntityType:
+        type: string
+      senderUser:
+        $ref: '#/definitions/models.User'
+      senderUserID:
+        type: integer
+      title:
+        type: string
+    type: object
+  models.Project:
+    properties:
+      actualEndDate:
+        type: string
+      business:
+        $ref: '#/definitions/models.Business'
+      businessID:
+        type: integer
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      managedByUserID:
+        type: integer
+      managingUser:
+        $ref: '#/definitions/models.User'
+      name:
+        type: string
+      projectMembers:
+        items:
+          $ref: '#/definitions/models.ProjectMember'
+        type: array
+      projectRegions:
+        items:
+          $ref: '#/definitions/models.ProjectRegion'
+        type: array
+      projectSkills:
+        items:
+          $ref: '#/definitions/models.ProjectSkill'
+        type: array
+      projectStatus:
+        $ref: '#/definitions/models.ProjectStatus'
+      startDate:
+        type: string
+      targetEndDate:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.ProjectApplicant:
+    properties:
+      project:
+        $ref: '#/definitions/models.Project'
+      projectID:
+        type: integer
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
+  models.ProjectMember:
+    properties:
+      joinedAt:
+        type: string
+      project:
+        $ref: '#/definitions/models.Project'
+      projectID:
+        type: integer
+      role:
+        $ref: '#/definitions/models.ProjectMemberRole'
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
+  models.ProjectMemberRole:
+    enum:
+    - manager
+    - contributor
+    - reviewer
+    type: string
+    x-enum-varnames:
+    - ProjectMemberRoleManager
+    - ProjectMemberRoleContributor
+    - ProjectMemberRoleReviewer
+  models.ProjectRegion:
+    properties:
+      project:
+        $ref: '#/definitions/models.Project'
+      projectID:
+        type: integer
+      region:
+        $ref: '#/definitions/models.Region'
+      regionID:
+        type: string
+    type: object
+  models.ProjectSkill:
+    properties:
+      importance:
+        $ref: '#/definitions/models.ProjectSkillImportance'
+      project:
+        $ref: '#/definitions/models.Project'
+      projectID:
+        type: integer
+      skill:
+        $ref: '#/definitions/models.Skill'
+      skillID:
+        type: integer
+    type: object
+  models.ProjectSkillImportance:
+    enum:
+    - required
+    - preferred
+    - optional
+    type: string
+    x-enum-varnames:
+    - SkillImportanceRequired
+    - SkillImportancePreferred
+    - SkillImportanceOptional
+  models.ProjectStatus:
+    enum:
+    - planning
+    - active
+    - on_hold
+    - completed
+    - cancelled
+    type: string
+    x-enum-varnames:
+    - ProjectStatusPlanning
+    - ProjectStatusActive
+    - ProjectStatusOnHold
+    - ProjectStatusCompleted
+    - ProjectStatusCancelled
+  models.Publication:
+    properties:
+      business:
+        $ref: '#/definitions/models.Business'
+      businessID:
+        type: integer
+      content:
+        type: string
+      createdAt:
+        type: string
+      excerpt:
+        type: string
+      id:
+        type: integer
+      publicationType:
+        $ref: '#/definitions/models.PublicationType'
+      published:
+        type: boolean
+      publishedAt:
+        type: string
+      slug:
+        type: string
+      thumbnail:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+      videoURL:
+        type: string
+    type: object
+  models.PublicationType:
+    enum:
+    - post
+    - case_study
+    - testimonial
+    - article
+    type: string
+    x-enum-varnames:
+    - PublicationPost
+    - PublicationCaseStudy
+    - PublicationTestimonial
+    - PublicationArticle
+  models.Region:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  models.Skill:
+    properties:
+      active:
+        type: boolean
+      category:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      projectSkills:
+        items:
+          $ref: '#/definitions/models.ProjectSkill'
+        type: array
+      userSkills:
+        items:
+          $ref: '#/definitions/models.UserSkill'
+        type: array
+    type: object
+  models.Subscription:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      validDays:
+        type: integer
+      validMonths:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      active:
+        type: boolean
+      adkSessionID:
+        type: string
+      businesses:
+        items:
+          $ref: '#/definitions/models.Business'
+        type: array
+      contactEmail:
+        type: string
+      contactPhoneNo:
+        type: string
+      createdAt:
+        type: string
+      dailyActivityEnrolments:
+        items:
+          $ref: '#/definitions/models.DailyActivityEnrolment'
+        type: array
+      dailyActivityProgress:
+        items:
+          $ref: '#/definitions/models.UserDailyActivityProgress'
+        type: array
+      emailVerified:
+        type: boolean
+      firstName:
+        type: string
+      id:
+        type: integer
+      initiatedConnections:
+        items:
+          $ref: '#/definitions/models.BusinessConnection'
+        type: array
+      l2EResponses:
+        items:
+          $ref: '#/definitions/models.L2EResponse'
+        type: array
+      lastName:
+        type: string
+      loginEmail:
+        type: string
+      managedProjects:
+        items:
+          $ref: '#/definitions/models.Project'
+        type: array
+      passwordHash:
+        type: string
+      passwordResetRequestedAt:
+        type: string
+      passwordResetToken:
+        items:
+          format: int32
+          type: integer
+        type: array
+      projectApplicants:
+        items:
+          $ref: '#/definitions/models.ProjectApplicant'
+        type: array
+      projectMemberships:
+        items:
+          $ref: '#/definitions/models.ProjectMember'
+        type: array
+      publications:
+        items:
+          $ref: '#/definitions/models.Publication'
+        type: array
+      receivedNotifications:
+        items:
+          $ref: '#/definitions/models.Notification'
+        type: array
+      sentNotifications:
+        items:
+          $ref: '#/definitions/models.Notification'
+        type: array
+      updatedAt:
+        type: string
+      userConfigs:
+        items:
+          $ref: '#/definitions/models.UserConfig'
+        type: array
+      userSessions:
+        items:
+          $ref: '#/definitions/models.UserSession'
+        type: array
+      userSkills:
+        items:
+          $ref: '#/definitions/models.UserSkill'
+        type: array
+      userSubscriptions:
+        items:
+          $ref: '#/definitions/models.UserSubscription'
+        type: array
+    type: object
+  models.UserConfig:
+    properties:
+      config:
+        description: 'FIX: Apply swaggertype:"object" (already done, confirming for
+          completeness)'
+        type: object
+      configType:
+        type: string
+      id:
+        type: integer
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
+  models.UserDailyActivityProgress:
+    properties:
+      dailyActivity:
+        $ref: '#/definitions/models.DailyActivity'
+      dailyActivityID:
+        type: integer
+      date:
+        description: 'FIX: Apply swaggertype:"string"'
+        type: string
+      progress:
+        type: integer
+      status:
+        $ref: '#/definitions/models.DailyActivityProgressStatus'
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
+  models.UserSession:
+    properties:
+      createdAt:
+        type: string
+      expiresAt:
+        type: string
+      id:
+        type: integer
+      ipaddress:
+        type: string
+      revokedAt:
+        type: string
+      tokenHash:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userAgent:
+        type: string
+      userID:
+        type: integer
+    type: object
+  models.UserSkill:
+    properties:
+      createdAt:
+        type: string
+      proficiencyLevel:
+        $ref: '#/definitions/models.UserSkillProficiency'
+      skill:
+        $ref: '#/definitions/models.Skill'
+      skillID:
+        type: integer
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
+  models.UserSkillProficiency:
+    enum:
+    - beginner
+    - intermediate
+    - advanced
+    - expert
+    type: string
+    x-enum-varnames:
+    - ProficiencyBeginner
+    - ProficiencyIntermediate
+    - ProficiencyAdvanced
+    - ProficiencyExpert
+  models.UserSubscription:
+    properties:
+      dateFrom:
+        type: string
+      dateTo:
+        type: string
+      id:
+        type: integer
+      isTrial:
+        type: boolean
+      subscription:
+        $ref: '#/definitions/models.Subscription'
+      subscriptionID:
+        type: integer
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
+  ports.ActivityEnrolmentResponse:
+    properties:
+      daily_activity_id:
+        type: integer
+      user:
+        $ref: '#/definitions/ports.UserResponse'
+    type: object
+  ports.AddProjectMemberInput:
+    properties:
+      project_id:
+        type: integer
+      role:
+        allOf:
+        - $ref: '#/definitions/models.ProjectMemberRole'
+        enum:
+        - manager
+        - contributor
+        - reviewer
+      user_id:
+        type: integer
+    required:
+    - project_id
+    - role
+    - user_id
+    type: object
+  ports.AddProjectRegionInput:
+    properties:
+      project_id:
+        type: integer
+      region_id:
+        type: string
+    required:
+    - project_id
+    - region_id
+    type: object
+  ports.BusinessConnectionResponse:
+    properties:
+      connection_type:
+        $ref: '#/definitions/models.BusinessConnectionType'
+      created_at:
+        type: string
+      id:
+        type: integer
+      initiated_by_user:
+        $ref: '#/definitions/ports.UserResponse'
+      initiated_by_user_id:
+        type: integer
+      initiating_business:
+        $ref: '#/definitions/ports.BusinessResponse'
+      initiating_business_id:
+        type: integer
+      notes:
+        type: string
+      receiving_business:
+        $ref: '#/definitions/ports.BusinessResponse'
+      receiving_business_id:
+        type: integer
+      status:
+        $ref: '#/definitions/models.BusinessConnectionStatus'
+      updated_at:
+        type: string
+    type: object
+  ports.BusinessConnectionsResponse:
+    properties:
+      connections:
+        items:
+          $ref: '#/definitions/ports.BusinessConnectionResponse'
+        type: array
+      count:
+        type: integer
+    type: object
+  ports.BusinessResponse:
+    properties:
+      active:
+        type: boolean
+      address:
+        type: string
+      business_category:
+        $ref: '#/definitions/models.BusinessCategory'
+      business_phase:
+        $ref: '#/definitions/models.BusinessPhase'
+      business_type:
+        $ref: '#/definitions/models.BusinessType'
+      city:
+        type: string
+      contact_email:
+        type: string
+      contact_name:
+        type: string
+      contact_phone_no:
+        type: string
+      country:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      operator_user:
+        $ref: '#/definitions/ports.UserResponse'
+      operator_user_id:
+        type: integer
+      postal_code:
+        type: string
+      state:
+        type: string
+      tagline:
+        type: string
+      updated_at:
+        type: string
+      value:
+        type: number
+      website:
+        type: string
+    type: object
+  ports.BusinessTagResponse:
+    properties:
+      business:
+        $ref: '#/definitions/ports.BusinessResponse'
+      business_id:
+        type: integer
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      tag_type:
+        $ref: '#/definitions/models.BusinessTagType'
+    type: object
+  ports.BusinessTagsResponse:
+    properties:
+      count:
+        type: integer
+      tags:
+        items:
+          $ref: '#/definitions/ports.BusinessTagResponse'
+        type: array
+    type: object
+  ports.CreateBusinessConnectionInput:
+    properties:
+      connection_type:
+        allOf:
+        - $ref: '#/definitions/models.BusinessConnectionType'
+        enum:
+        - Partnership
+        - Supplier
+        - Client
+        - Referral
+        - Collaboration
+      initiated_by_user_id:
+        type: integer
+      initiating_business_id:
+        type: integer
+      notes:
+        type: string
+      receiving_business_id:
+        type: integer
+    required:
+    - connection_type
+    - initiated_by_user_id
+    - initiating_business_id
+    - receiving_business_id
+    type: object
+  ports.CreateBusinessInput:
+    properties:
+      address:
+        maxLength: 100
+        type: string
+      business_category:
+        $ref: '#/definitions/models.BusinessCategory'
+      business_phase:
+        $ref: '#/definitions/models.BusinessPhase'
+      business_type:
+        $ref: '#/definitions/models.BusinessType'
+      city:
+        maxLength: 60
+        type: string
+      contact_email:
+        type: string
+      contact_name:
+        maxLength: 60
+        type: string
+      contact_phone_no:
+        maxLength: 20
+        type: string
+      country:
+        maxLength: 60
+        type: string
+      description:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 2
+        type: string
+      operator_user_id:
+        type: integer
+      postal_code:
+        maxLength: 20
+        type: string
+      state:
+        maxLength: 60
+        type: string
+      tagline:
+        maxLength: 100
+        type: string
+      value:
+        type: number
+      website:
+        type: string
+    required:
+    - business_category
+    - business_phase
+    - business_type
+    - name
+    - operator_user_id
+    type: object
+  ports.CreateBusinessTagInput:
+    properties:
+      business_id:
+        type: integer
+      description:
+        maxLength: 100
+        minLength: 1
+        type: string
+      tag_type:
+        allOf:
+        - $ref: '#/definitions/models.BusinessTagType'
+        enum:
+        - client
+        - service
+        - specialty
+    required:
+    - business_id
+    - description
+    - tag_type
+    type: object
+  ports.CreateDailyActivityInput:
+    properties:
+      description:
+        type: string
+      name:
+        maxLength: 60
+        minLength: 2
+        type: string
+    required:
+    - description
+    - name
+    type: object
+  ports.CreateEventInput:
+    properties:
+      event_type:
+        maxLength: 100
+        type: string
+      payload:
+        type: object
+      user_id:
+        type: integer
+    required:
+    - event_type
+    - payload
+    type: object
+  ports.CreateFeedbackInput:
+    properties:
+      content:
+        type: string
+      email:
+        type: string
+      name:
+        maxLength: 120
+        minLength: 2
+        type: string
+    required:
+    - content
+    - email
+    - name
+    type: object
+  ports.CreateInferredConnectionInput:
+    properties:
+      confidence_score:
+        type: number
+      connection_type:
+        type: string
+      model_version:
+        type: string
+      source_entity_id:
+        type: integer
+      source_entity_type:
+        type: string
+      target_entity_id:
+        type: integer
+      target_entity_type:
+        type: string
+    required:
+    - confidence_score
+    - connection_type
+    - source_entity_id
+    - source_entity_type
+    - target_entity_id
+    - target_entity_type
+    type: object
+  ports.CreateL2EResponseInput:
+    properties:
+      response:
+        type: object
+    required:
+    - response
+    type: object
+  ports.CreateNotificationInput:
+    properties:
+      action_url:
+        type: string
+      message:
+        type: string
+      notification_type:
+        type: string
+      receiver_user_id:
+        type: integer
+      related_entity_id:
+        type: integer
+      related_entity_type:
+        type: string
+      sender_user_id:
+        type: integer
+      title:
+        maxLength: 255
+        type: string
+    required:
+    - message
+    - notification_type
+    - receiver_user_id
+    - title
+    type: object
+  ports.CreateProjectInput:
+    properties:
+      business_id:
+        type: integer
+      description:
+        type: string
+      managed_by_user_id:
+        type: integer
+      name:
+        maxLength: 100
+        minLength: 2
+        type: string
+      project_status:
+        $ref: '#/definitions/models.ProjectStatus'
+      region_ids:
+        items:
+          type: string
+        type: array
+      start_date:
+        type: string
+      target_end_date:
+        type: string
+    required:
+    - managed_by_user_id
+    - name
+    - project_status
+    type: object
+  ports.CreateProjectSkillInput:
+    properties:
+      importance:
+        allOf:
+        - $ref: '#/definitions/models.ProjectSkillImportance'
+        enum:
+        - required
+        - preferred
+        - optional
+      project_id:
+        type: integer
+      skill_id:
+        type: integer
+    required:
+    - importance
+    - project_id
+    - skill_id
+    type: object
+  ports.CreatePublicationInput:
+    properties:
+      business_id:
+        type: integer
+      content:
+        type: string
+      excerpt:
+        type: string
+      publication_type:
+        $ref: '#/definitions/models.PublicationType'
+      published:
+        type: boolean
+      thumbnail:
+        type: string
+      title:
+        maxLength: 255
+        minLength: 2
+        type: string
+      user_id:
+        type: integer
+      video_url:
+        type: string
+    required:
+    - content
+    - publication_type
+    - title
+    - user_id
+    type: object
+  ports.CreateSkillInput:
+    properties:
+      active:
+        type: boolean
+      category:
+        maxLength: 100
+        type: string
+      description:
+        type: string
+      name:
+        maxLength: 100
+        type: string
+    required:
+    - category
+    - name
+    type: object
+  ports.CreateSubscriptionInput:
+    properties:
+      name:
+        maxLength: 100
+        type: string
+      price:
+        minimum: 0
+        type: number
+      valid_days:
+        type: integer
+      valid_months:
+        type: integer
+    required:
+    - name
+    - price
+    type: object
+  ports.CreateUserSkillInput:
+    properties:
+      proficiency_level:
+        allOf:
+        - $ref: '#/definitions/models.UserSkillProficiency'
+        enum:
+        - beginner
+        - intermediate
+        - advanced
+        - expert
+      skill_id:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - proficiency_level
+    - skill_id
+    - user_id
+    type: object
+  ports.DailyActivityResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  ports.EventResponse:
+    properties:
+      event_type:
+        type: string
+      id:
+        type: integer
+      payload:
+        type: object
+      timestamp:
+        type: string
+      user:
+        $ref: '#/definitions/ports.UserResponse'
+      user_id:
+        type: integer
+    type: object
+  ports.FeedbackResponse:
+    properties:
+      content:
+        type: string
+      date_submitted:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  ports.InferredConnectionResponse:
+    properties:
+      confidence_score:
+        type: number
+      connection_type:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      model_version:
+        type: string
+      source_entity_id:
+        type: integer
+      source_entity_type:
+        type: string
+      target_entity_id:
+        type: integer
+      target_entity_type:
+        type: string
+    type: object
+  ports.L2EResponseResponse:
+    properties:
+      date_added:
+        type: string
+      id:
+        type: integer
+      response:
+        type: object
+      user_id:
+        type: integer
+    type: object
+  ports.LoginInput:
+    properties:
+      login_email:
+        type: string
+      password:
+        type: string
+    required:
+    - login_email
+    - password
+    type: object
+  ports.LoginResponse:
+    properties:
+      expires_at:
+        type: string
+      session_id:
+        type: integer
+      token:
+        type: string
+      token_type:
+        type: string
+      user:
+        $ref: '#/definitions/ports.UserResponse'
+    type: object
+  ports.NotificationResponse:
+    properties:
+      action_url:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      message:
+        type: string
+      notification_type:
+        type: string
+      read:
+        type: boolean
+      receiver:
+        $ref: '#/definitions/ports.UserResponse'
+      related_entity_id:
+        type: integer
+      related_entity_type:
+        type: string
+      sender:
+        $ref: '#/definitions/ports.UserResponse'
+      title:
+        type: string
+    type: object
+  ports.ProjectApplicantResponse:
+    properties:
+      project_id:
+        type: integer
+      user:
+        $ref: '#/definitions/ports.UserResponse'
+      user_id:
+        type: integer
+    type: object
+  ports.ProjectMemberResponse:
+    properties:
+      joined_at:
+        type: string
+      project:
+        $ref: '#/definitions/ports.ProjectResponse'
+      project_id:
+        type: integer
+      role:
+        $ref: '#/definitions/models.ProjectMemberRole'
+      user:
+        $ref: '#/definitions/ports.UserResponse'
+      user_id:
+        type: integer
+    type: object
+  ports.ProjectMembersResponse:
+    properties:
+      count:
+        type: integer
+      members:
+        items:
+          $ref: '#/definitions/ports.ProjectMemberResponse'
+        type: array
+    type: object
+  ports.ProjectRegionResponse:
+    properties:
+      project_id:
+        type: integer
+      region:
+        $ref: '#/definitions/ports.RegionResponse'
+      region_id:
+        type: string
+    type: object
+  ports.ProjectResponse:
+    properties:
+      actual_end_date:
+        type: string
+      business:
+        $ref: '#/definitions/ports.BusinessResponse'
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      manager:
+        $ref: '#/definitions/ports.UserResponse'
+      members:
+        items:
+          $ref: '#/definitions/ports.ProjectMemberResponse'
+        type: array
+      name:
+        type: string
+      project_status:
+        $ref: '#/definitions/models.ProjectStatus'
+      regions:
+        items:
+          $ref: '#/definitions/ports.RegionResponse'
+        type: array
+      start_date:
+        type: string
+      target_end_date:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  ports.ProjectSkillResponse:
+    properties:
+      importance:
+        $ref: '#/definitions/models.ProjectSkillImportance'
+      project:
+        $ref: '#/definitions/ports.ProjectResponse'
+      project_id:
+        type: integer
+      skill:
+        $ref: '#/definitions/ports.SkillResponse'
+      skill_id:
+        type: integer
+    type: object
+  ports.ProjectSkillsResponse:
+    properties:
+      count:
+        type: integer
+      skills:
+        items:
+          $ref: '#/definitions/ports.ProjectSkillResponse'
+        type: array
+    type: object
+  ports.PublicationResponse:
+    properties:
+      author:
+        $ref: '#/definitions/ports.UserResponse'
+      business:
+        $ref: '#/definitions/ports.BusinessResponse'
+      content:
+        type: string
+      created_at:
+        type: string
+      excerpt:
+        type: string
+      id:
+        type: integer
+      publication_type:
+        $ref: '#/definitions/models.PublicationType'
+      published:
+        type: boolean
+      published_at:
+        type: string
+      slug:
+        type: string
+      thumbnail:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      video_url:
+        type: string
+    type: object
+  ports.RegionResponse:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  ports.SetUserConfigInput:
+    properties:
+      config:
+        type: object
+      config_type:
+        type: string
+    required:
+    - config
+    - config_type
+    type: object
+  ports.SkillResponse:
+    properties:
+      active:
+        type: boolean
+      category:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  ports.SubscriptionResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      valid_days:
+        type: integer
+      valid_months:
+        type: integer
+    type: object
+  ports.UpdateBusinessConnectionInput:
+    properties:
+      connection_type:
+        allOf:
+        - $ref: '#/definitions/models.BusinessConnectionType'
+        enum:
+        - Partnership
+        - Supplier
+        - Client
+        - Referral
+        - Collaboration
+      notes:
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/models.BusinessConnectionStatus'
+        enum:
+        - pending
+        - active
+        - rejected
+        - inactive
+    type: object
+  ports.UpdateBusinessInput:
+    properties:
+      active:
+        type: boolean
+      address:
+        maxLength: 100
+        type: string
+      business_category:
+        $ref: '#/definitions/models.BusinessCategory'
+      business_phase:
+        $ref: '#/definitions/models.BusinessPhase'
+      business_type:
+        $ref: '#/definitions/models.BusinessType'
+      city:
+        maxLength: 60
+        type: string
+      contact_email:
+        type: string
+      contact_name:
+        maxLength: 60
+        type: string
+      contact_phone_no:
+        maxLength: 20
+        type: string
+      country:
+        maxLength: 60
+        type: string
+      description:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 2
+        type: string
+      postal_code:
+        maxLength: 20
+        type: string
+      state:
+        maxLength: 60
+        type: string
+      tagline:
+        maxLength: 100
+        type: string
+      value:
+        type: number
+      website:
+        type: string
+    type: object
+  ports.UpdateProjectInput:
+    properties:
+      actual_end_date:
+        type: string
+      business_id:
+        type: integer
+      description:
+        type: string
+      managed_by_user_id:
+        type: integer
+      name:
+        maxLength: 100
+        minLength: 2
+        type: string
+      project_status:
+        $ref: '#/definitions/models.ProjectStatus'
+      region_ids:
+        items:
+          type: string
+        type: array
+      start_date:
+        type: string
+      target_end_date:
+        type: string
+    type: object
+  ports.UpdateProjectMemberRoleInput:
+    properties:
+      role:
+        allOf:
+        - $ref: '#/definitions/models.ProjectMemberRole'
+        enum:
+        - manager
+        - contributor
+        - reviewer
+    required:
+    - role
+    type: object
+  ports.UpdateProjectSkillInput:
+    properties:
+      importance:
+        allOf:
+        - $ref: '#/definitions/models.ProjectSkillImportance'
+        enum:
+        - required
+        - preferred
+        - optional
+    type: object
+  ports.UpdatePublicationInput:
+    properties:
+      content:
+        type: string
+      excerpt:
+        type: string
+      published:
+        type: boolean
+      thumbnail:
+        type: string
+      title:
+        maxLength: 255
+        minLength: 2
+        type: string
+      video_url:
+        type: string
+    type: object
+  ports.UpdateSkillInput:
+    properties:
+      active:
+        type: boolean
+      category:
+        maxLength: 100
+        type: string
+      description:
+        type: string
+      name:
+        maxLength: 100
+        type: string
+    type: object
+  ports.UpdateUserSkillInput:
+    properties:
+      proficiency_level:
+        allOf:
+        - $ref: '#/definitions/models.UserSkillProficiency'
+        enum:
+        - beginner
+        - intermediate
+        - advanced
+        - expert
+    type: object
+  ports.UserApplicationResponse:
+    properties:
+      project:
+        $ref: '#/definitions/ports.ProjectResponse'
+      project_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  ports.UserConfigResponse:
+    properties:
+      config:
+        type: object
+      config_type:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  ports.UserCreationSchema:
+    properties:
+      adk_session_id:
+        maxLength: 128
+        type: string
+      contact_email:
+        type: string
+      contact_phone_no:
+        maxLength: 20
+        type: string
+      first_name:
+        maxLength: 60
+        minLength: 2
+        type: string
+      last_name:
+        maxLength: 60
+        minLength: 2
+        type: string
+      login_email:
+        type: string
+      password:
+        maxLength: 72
+        minLength: 8
+        type: string
+    required:
+    - first_name
+    - login_email
+    - password
+    type: object
+  ports.UserEnrolmentResponse:
+    properties:
+      daily_activity:
+        $ref: '#/definitions/ports.DailyActivityResponse'
+      user_id:
+        type: integer
+    type: object
+  ports.UserResponse:
+    properties:
+      active:
+        type: boolean
+      contact_email:
+        type: string
+      contact_phone_no:
+        type: string
+      created_at:
+        type: string
+      email_verified:
+        type: boolean
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      login_email:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  ports.UserSkillResponse:
+    properties:
+      created_at:
+        type: string
+      proficiency_level:
+        $ref: '#/definitions/models.UserSkillProficiency'
+      skill:
+        $ref: '#/definitions/ports.SkillResponse'
+      skill_id:
+        type: integer
+      user:
+        $ref: '#/definitions/ports.UserResponse'
+      user_id:
+        type: integer
+    type: object
+  ports.UserSkillsResponse:
+    properties:
+      count:
+        type: integer
+      skills:
+        items:
+          $ref: '#/definitions/ports.UserSkillResponse'
+        type: array
+    type: object
+  ports.UserSubscribeInput:
+    properties:
+      subscription_id:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - subscription_id
+    - user_id
+    type: object
+  ports.UserSubscriptionResponse:
+    properties:
+      date_from:
+        type: string
+      date_to:
+        type: string
+      id:
+        type: integer
+      is_trial:
+        type: boolean
+      subscription:
+        $ref: '#/definitions/ports.SubscriptionResponse'
+      user:
+        $ref: '#/definitions/ports.UserResponse'
+    type: object
+  ports.UserUpdateSchema:
+    properties:
+      active:
+        type: boolean
+      adk_session_id:
+        maxLength: 128
+        type: string
+      contact_email:
+        type: string
+      contact_phone_no:
+        maxLength: 20
+        type: string
+      email_verified:
+        type: boolean
+      first_name:
+        maxLength: 60
+        minLength: 2
+        type: string
+      last_name:
+        maxLength: 60
+        minLength: 2
+        type: string
+      login_email:
+        type: string
+      password:
+        maxLength: 72
+        minLength: 8
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user with email and password, creating a new session
+        and returning a JWT token.
+      parameters:
+      - description: Login Credentials
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/ports.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful login, returns user data and token
+          schema:
+            $ref: '#/definitions/ports.LoginResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Invalid email/password or account deactivated
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User Login
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      description: Invalidates the current user session (token).
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully logged out (No Content)
+        "401":
+          description: Unauthorized or missing token
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: User Logout
+      tags:
+      - auth
+  /auth/me:
+    get:
+      description: Retrieves the profile of the currently authenticated user based
+        on the provided JWT token.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          schema:
+            $ref: '#/definitions/ports.UserResponse'
+        "401":
+          description: Unauthorized or token missing/invalid
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error or invalid context
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Current User
+      tags:
+      - auth
+  /businesses:
+    get:
+      description: Retrieves a list of all business profiles with optional filtering.
+      parameters:
+      - description: Filter by Operator User ID
+        in: query
+        name: operator_user_id
+        type: integer
+      - description: Filter by business type
+        in: query
+        name: business_type
+        type: string
+      - description: Filter by business category
+        in: query
+        name: business_category
+        type: string
+      - description: Filter by business phase
+        in: query
+        name: business_phase
+        type: string
+      - description: Search by name or description
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of businesses
+          schema:
+            items:
+              $ref: '#/definitions/ports.BusinessResponse'
+            type: array
+        "400":
+          description: Invalid query parameters
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: List All Businesses
+      tags:
+      - businesses
+    post:
+      consumes:
+      - application/json
+      description: Creates a new business profile, restricted to the authenticated
+        user (OperatorUserID must match Auth UserID).
+      parameters:
+      - description: Business creation details
+        in: body
+        name: business
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateBusinessInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Business created successfully
+          schema:
+            $ref: '#/definitions/ports.BusinessResponse'
+        "400":
+          description: Invalid request body, validation failed
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 'Forbidden: OperatorUserID mismatch'
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create New Business
+      tags:
+      - businesses
+  /businesses/{id}:
+    delete:
+      description: Deletes a business profile. Only the designated OperatorUserID
+        can perform this action.
+      parameters:
+      - description: Business ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Business deleted successfully (No Content)
+        "400":
+          description: Invalid business ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 'Forbidden: Not the operator user or business is in use'
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Business not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Business Profile
+      tags:
+      - businesses
+    get:
+      description: Retrieves a business profile by its unique ID.
+      parameters:
+      - description: Business ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Business retrieved successfully
+          schema:
+            $ref: '#/definitions/ports.BusinessResponse'
+        "400":
+          description: Invalid business ID
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Business not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Business by ID
+      tags:
+      - businesses
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing business profile. Only the designated OperatorUserID
+        can perform this action.
+      parameters:
+      - description: Business ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Fields to update
+        in: body
+        name: business
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UpdateBusinessInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Business updated successfully
+          schema:
+            $ref: '#/definitions/ports.BusinessResponse'
+        "400":
+          description: Invalid request body, validation failed
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 'Forbidden: Not the operator user'
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Business not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Business Profile
+      tags:
+      - businesses
+  /businesses/{id}/connections:
+    get:
+      description: Retrieves a list of all connections (initiated and received) associated
+        with a specific business ID.
+      parameters:
+      - description: Business ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Filter by connection status (pending, active, rejected, inactive)
+        in: query
+        name: status
+        type: string
+      - description: Filter by connection type (Partnership, Client, Supplier, etc.)
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of connections
+          schema:
+            $ref: '#/definitions/ports.BusinessConnectionsResponse'
+        "400":
+          description: Invalid business ID or query parameters
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List Connections for a Business
+      tags:
+      - business_connections
+  /businesses/{id}/tags:
+    get:
+      description: Retrieves all tags associated with a specific business.
+      parameters:
+      - description: Business ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of business tags
+          schema:
+            $ref: '#/definitions/ports.BusinessTagsResponse'
+        "400":
+          description: Invalid business ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get All Tags for a Business
+      tags:
+      - businesses
+      - tags
+    post:
+      consumes:
+      - application/json
+      description: Creates a new tag (e.g., 'client', 'service') and associates it
+        with a specific business.
+      parameters:
+      - description: Business ID to associate the tag with
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Tag details (TagType, Description)
+        in: body
+        name: tag
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateBusinessTagInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Tag created and associated successfully
+          schema:
+            $ref: '#/definitions/ports.BusinessTagResponse'
+        "400":
+          description: Invalid business ID, request body, or validation failed
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrBusinessTagAlreadyExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add Tag to Business
+      tags:
+      - businesses
+      - tags
+  /connections:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new connection request between two businesses. The initiating
+        user is taken from the auth context.
+      parameters:
+      - description: Connection request details (InitiatingBusinessID, ReceivingBusinessID,
+          ConnectionType)
+        in: body
+        name: connection
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateBusinessConnectionInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Connection request created successfully
+          schema:
+            $ref: '#/definitions/ports.BusinessConnectionResponse'
+        "400":
+          description: Invalid request body, validation failed, or ErrCannotConnectToSelf
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrBusinessConnectionAlreadyExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Initiate Business Connection Request
+      tags:
+      - business_connections
+  /connections/{id}:
+    delete:
+      description: Deletes a specific connection record. Restricted to the initiating
+        user or the receiving business's operator.
+      parameters:
+      - description: Connection ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Connection deleted successfully (No Content)
+        "400":
+          description: Invalid connection ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not authorized to delete)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrBusinessConnectionNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Business Connection
+      tags:
+      - business_connections
+    get:
+      description: Retrieves a specific connection record by its unique ID.
+      parameters:
+      - description: Connection ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Connection retrieved successfully
+          schema:
+            $ref: '#/definitions/ports.BusinessConnectionResponse'
+        "400":
+          description: Invalid connection ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrBusinessConnectionNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Business Connection by ID
+      tags:
+      - business_connections
+    put:
+      consumes:
+      - application/json
+      description: Updates modifiable fields of an existing connection (e.g., Notes,
+        Type). This is typically restricted to the initiating user.
+      parameters:
+      - description: Connection ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Fields to update (e.g., ConnectionType, Notes)
+        in: body
+        name: connection
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UpdateBusinessConnectionInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Connection updated successfully
+          schema:
+            $ref: '#/definitions/ports.BusinessConnectionResponse'
+        "400":
+          description: Invalid request body or connection ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not authorized to update)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrBusinessConnectionNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Business Connection Details
+      tags:
+      - business_connections
+  /connections/{id}/accept:
+    patch:
+      description: Updates the status of a specific connection request to 'active'.
+        Restricted to the receiving business's operator.
+      parameters:
+      - description: Connection ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Connection successfully accepted and set to active
+          schema:
+            $ref: '#/definitions/ports.BusinessConnectionResponse'
+        "400":
+          description: Invalid connection ID or ErrConnectionNotPending
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the receiving business's operator)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrBusinessConnectionNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Accept Pending Connection
+      tags:
+      - business_connections
+  /connections/{id}/reject:
+    patch:
+      description: Updates the status of a specific connection request to 'rejected'.
+        Restricted to the receiving business's operator.
+      parameters:
+      - description: Connection ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Connection successfully rejected
+          schema:
+            $ref: '#/definitions/ports.BusinessConnectionResponse'
+        "400":
+          description: Invalid connection ID or ErrConnectionNotPending
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the receiving business's operator)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrBusinessConnectionNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Reject Pending Connection
+      tags:
+      - business_connections
+  /daily-activities:
+    get:
+      description: Retrieves a list of all defined daily activities.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of daily activities
+          schema:
+            items:
+              $ref: '#/definitions/models.DailyActivity'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get All Daily Activities
+      tags:
+      - daily_activities
+    post:
+      consumes:
+      - application/json
+      description: Creates a new daily activity definition (e.g., "30-minute meditation").
+      parameters:
+      - description: Activity details (Name, Description)
+        in: body
+        name: activity
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateDailyActivityInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Activity created successfully
+          schema:
+            $ref: '#/definitions/models.DailyActivity'
+        "400":
+          description: Invalid request body or validation failed
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrActivityNameExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create Daily Activity
+      tags:
+      - daily_activities
+  /daily-activities/{id}:
+    get:
+      description: Retrieves a specific daily activity definition by its unique ID.
+      parameters:
+      - description: Activity ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Activity retrieved successfully
+          schema:
+            $ref: '#/definitions/models.DailyActivity'
+        "400":
+          description: Invalid activity ID
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrDailyActivityNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Daily Activity by ID
+      tags:
+      - daily_activities
+  /daily-activities/{id}/enrolments:
+    delete:
+      description: Withdraws the authenticated user from a specified daily activity.
+      parameters:
+      - description: Daily Activity ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Withdrawal successful (No Content)
+        "400":
+          description: Invalid activity ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrEnrolmentNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Withdraw User from Daily Activity
+      tags:
+      - daily_activities
+      - enrolments
+    get:
+      description: Retrieves a list of all users currently enrolled in a specified
+        daily activity.
+      parameters:
+      - description: Daily Activity ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of user enrolments
+          schema:
+            items:
+              $ref: '#/definitions/ports.ActivityEnrolmentResponse'
+            type: array
+        "400":
+          description: Invalid activity ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get All Enrolments for Activity
+      tags:
+      - daily_activities
+      - enrolments
+    post:
+      consumes:
+      - application/json
+      description: Enrols the authenticated user in a specified daily activity.
+      parameters:
+      - description: Daily Activity ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Enrolment successful
+          schema:
+            $ref: '#/definitions/ports.ActivityEnrolmentResponse'
+        "400":
+          description: Invalid activity ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Activity or user not found
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrAlreadyEnrolled
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Enrol User in Daily Activity
+      tags:
+      - daily_activities
+      - enrolments
+  /events:
+    get:
+      description: Retrieves a list of all events with optional filtering.
+      parameters:
+      - description: Filter by User ID
+        in: query
+        name: user_id
+        type: integer
+      - description: Filter by event type
+        in: query
+        name: event_type
+        type: string
+      - description: Filter events created after this date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        type: string
+      - description: Filter events created before this date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of events
+          schema:
+            items:
+              $ref: '#/definitions/ports.EventResponse'
+            type: array
+        "400":
+          description: Invalid query parameters
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve events
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get All Events
+      tags:
+      - events
+    post:
+      consumes:
+      - application/json
+      description: Creates a new internal system event record. The UserID is automatically
+        injected from the authenticated context.
+      parameters:
+      - description: Event details (EventType, Payload)
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateEventInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Event created successfully
+          schema:
+            $ref: '#/definitions/ports.EventResponse'
+        "400":
+          description: Invalid input data or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized or missing authentication context
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to create event
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create New Event Record
+      tags:
+      - events
+  /events/{id}:
+    get:
+      description: Retrieves a specific event record by its unique ID.
+      parameters:
+      - description: Event ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Event retrieved successfully
+          schema:
+            $ref: '#/definitions/ports.EventResponse'
+        "400":
+          description: Invalid event ID
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Event not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve event
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Event by ID
+      tags:
+      - events
+  /feedback:
+    get:
+      description: Retrieves a list of all submitted feedback. Requires authentication.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of feedback entries
+          schema:
+            items:
+              $ref: '#/definitions/ports.FeedbackResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get All Feedback
+      tags:
+      - feedback
+  /feedback/{id}:
+    delete:
+      description: Deletes a specific feedback entry by its unique ID. Requires authentication.
+      parameters:
+      - description: Feedback ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Feedback deleted successfully (No Content)
+        "400":
+          description: Invalid feedback ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrFeedbackNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Feedback
+      tags:
+      - feedback
+    get:
+      description: Retrieves a specific feedback entry by its unique ID. Requires
+        authentication.
+      parameters:
+      - description: Feedback ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Feedback entry retrieved successfully
+          schema:
+            $ref: '#/definitions/ports.FeedbackResponse'
+        "400":
+          description: Invalid feedback ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrFeedbackNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Feedback by ID
+      tags:
+      - feedback
+  /inferred-connections:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new record for a potential connection inferred by a model.
+        Intended for internal/system use.
+      parameters:
+      - description: Inferred connection details
+        in: body
+        name: connection
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateInferredConnectionInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Connection record created successfully
+          schema:
+            $ref: '#/definitions/ports.InferredConnectionResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create Inferred Connection Record
+      tags:
+      - inferred_connections
+  /inferred-connections/source/{entityType}/{entityID}:
+    get:
+      description: Retrieves all potential connections inferred from a specific source
+        entity (e.g., a Project or Business).
+      parameters:
+      - description: Type of the source entity (e.g., business, project)
+        in: path
+        name: entityType
+        required: true
+        type: string
+      - description: ID of the source entity
+        in: path
+        name: entityID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of inferred connections
+          schema:
+            items:
+              $ref: '#/definitions/ports.InferredConnectionResponse'
+            type: array
+        "400":
+          description: Invalid entity ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Inferred Connections by Source Entity
+      tags:
+      - inferred_connections
+  /l2e-responses:
+    post:
+      consumes:
+      - application/json
+      description: Submits a user's response or data payload for a Learn-to-Earn (L2E)
+        module. The UserID is taken from the auth context.
+      parameters:
+      - description: L2E response data payload
+        in: body
+        name: response
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateL2EResponseInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Response recorded successfully
+          schema:
+            $ref: '#/definitions/ports.L2EResponseResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized or invalid context
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Submit New L2E Response
+      tags:
+      - l2e
+  /notifications:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new notification record. Requires authentication, typically
+        used by system services.
+      parameters:
+      - description: Notification details (ReceiverUserID, Title, Message, Type)
+        in: body
+        name: notification
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateNotificationInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Notification created successfully
+          schema:
+            $ref: '#/definitions/ports.NotificationResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrReceiverNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create Notification (Internal/System Use)
+      tags:
+      - notifications
+  /projects:
+    get:
+      description: Retrieves a list of all project records.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of projects
+          schema:
+            items:
+              $ref: '#/definitions/ports.ProjectResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve projects
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get All Projects
+      tags:
+      - projects
+    post:
+      consumes:
+      - application/json
+      description: Creates a new project record. Requires authentication.
+      parameters:
+      - description: Project creation details (Name, ManagedByUserID, ProjectStatus)
+        in: body
+        name: project
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateProjectInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Project created successfully
+          schema:
+            $ref: '#/definitions/ports.ProjectResponse'
+        "400":
+          description: Invalid request body or validation failed
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrManagerNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrProjectNameExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create New Project
+      tags:
+      - projects
+  /projects/{id}:
+    delete:
+      description: Deletes a project record and all related data (members, regions,
+        skills). Only the Project Manager can perform this action.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Project deleted successfully (No Content)
+        "400":
+          description: Invalid project ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the project manager)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Project
+      tags:
+      - projects
+    get:
+      description: Retrieves a specific project record by its unique ID.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Project retrieved successfully
+          schema:
+            $ref: '#/definitions/ports.ProjectResponse'
+        "400":
+          description: Invalid project ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Project by ID
+      tags:
+      - projects
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing project record. Only the Project Manager can
+        perform this action.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Fields to update
+        in: body
+        name: project
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UpdateProjectInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Project updated successfully
+          schema:
+            $ref: '#/definitions/ports.ProjectResponse'
+        "400":
+          description: Invalid project ID or request body
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the project manager)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Project Details
+      tags:
+      - projects
+  /projects/{id}/applicants:
+    get:
+      description: Retrieves a list of all users who have applied to a specific project.
+        Only accessible by the **Project Manager**.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of applicants
+          schema:
+            items:
+              $ref: '#/definitions/ports.ProjectApplicantResponse'
+            type: array
+        "400":
+          description: Invalid project ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the project manager)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Applicants for Project
+      tags:
+      - projects
+      - applicants
+  /projects/{id}/apply:
+    delete:
+      description: Withdraws the authenticated user's application from a project.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Application withdrawn successfully (No Content)
+        "400":
+          description: Invalid project ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrApplicationNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Withdraw Application
+      tags:
+      - projects
+      - applicants
+    post:
+      description: Submits an application for the authenticated user to join a project.
+        The UserID is taken from the auth context.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Application submitted successfully (Created)
+        "400":
+          description: Invalid project ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectNotFound or user not found
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrAlreadyApplied
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Apply to Project
+      tags:
+      - projects
+      - applicants
+  /projects/{id}/members:
+    get:
+      description: Retrieves a list of all members associated with a project. Accessible
+        by any authenticated user.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of project members
+          schema:
+            $ref: '#/definitions/ports.ProjectMembersResponse'
+        "400":
+          description: Invalid project ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get All Project Members
+      tags:
+      - projects
+      - members
+    post:
+      consumes:
+      - application/json
+      description: Adds a user to a project with a specified role. Only accessible
+        by the **Project Manager**.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Member details (UserID, Role)
+        in: body
+        name: member
+        required: true
+        schema:
+          $ref: '#/definitions/ports.AddProjectMemberInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Member added successfully
+          schema:
+            $ref: '#/definitions/ports.ProjectMemberResponse'
+        "400":
+          description: Invalid project ID, request body, or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the project manager)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectNotFound or ErrUserNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrProjectMemberAlreadyExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add Project Member
+      tags:
+      - projects
+      - members
+  /projects/{id}/members/{userID}:
+    delete:
+      description: Removes a user from a project. Allowed for the **Project Manager**
+        (to remove anyone) or the **User** (to remove self).
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID of the member to remove
+        in: path
+        name: userID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Member removed successfully (No Content)
+        "400":
+          description: Invalid ID or ErrCannotRemoveManager
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the manager and not the user)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectMemberNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Remove Project Member
+      tags:
+      - projects
+      - members
+    get:
+      description: Retrieves a specific project member record by Project ID and User
+        ID.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID of the member
+        in: path
+        name: userID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Member retrieved successfully
+          schema:
+            $ref: '#/definitions/ports.ProjectMemberResponse'
+        "400":
+          description: Invalid ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectMemberNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Specific Project Member
+      tags:
+      - projects
+      - members
+    put:
+      consumes:
+      - application/json
+      description: Updates the role of an existing project member. Only accessible
+        by the **Project Manager**.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID of the member
+        in: path
+        name: userID
+        required: true
+        type: integer
+      - description: New role for the member
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UpdateProjectMemberRoleInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Member role updated successfully
+          schema:
+            $ref: '#/definitions/ports.ProjectMemberResponse'
+        "400":
+          description: Invalid ID, request body, or ErrInvalidRole
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the project manager)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectMemberNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Project Member Role
+      tags:
+      - projects
+      - members
+  /projects/{id}/regions:
+    get:
+      description: Retrieves all geographical regions associated with a specific project.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of regions
+          schema:
+            items:
+              $ref: '#/definitions/ports.ProjectRegionResponse'
+            type: array
+        "400":
+          description: Invalid project ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Regions for Project
+      tags:
+      - projects
+      - regions
+    post:
+      consumes:
+      - application/json
+      description: Associates a geographical region (identified by its short code/ID)
+        with a project. Only accessible by the **Project Manager**.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Region details (RegionID)
+        in: body
+        name: region
+        required: true
+        schema:
+          $ref: '#/definitions/ports.AddProjectRegionInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Region associated successfully
+          schema:
+            $ref: '#/definitions/ports.ProjectRegionResponse'
+        "400":
+          description: Invalid project ID, request body, or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the project manager)
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrRegionAlreadyAdded
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add Region to Project
+      tags:
+      - projects
+      - regions
+  /projects/{id}/regions/{regionID}:
+    delete:
+      description: Dissociates a geographical region from a project. Only accessible
+        by the **Project Manager**.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Region ID (e.g., USA, AUS)
+        in: path
+        name: regionID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Region removed successfully (No Content)
+        "400":
+          description: Invalid project ID or missing regionID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the project manager)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectRegionNotFound or ErrProjectNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Remove Region from Project
+      tags:
+      - projects
+      - regions
+  /projects/{id}/skills:
+    get:
+      description: Retrieves all skill requirements for a specific project.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of required skills
+          schema:
+            $ref: '#/definitions/ports.ProjectSkillsResponse'
+        "400":
+          description: Invalid project ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Skills Required by Project
+      tags:
+      - projects
+      - skills
+    post:
+      consumes:
+      - application/json
+      description: Associates a specific skill (by Skill ID) with a project and sets
+        its importance level. Only accessible by the **Project Manager**.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Skill details (SkillID, Importance)
+        in: body
+        name: skill
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateProjectSkillInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Skill requirement added successfully
+          schema:
+            $ref: '#/definitions/ports.ProjectSkillResponse'
+        "400":
+          description: Invalid project ID, skill ID, request body, or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the project manager)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectNotFound or ErrSkillNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrProjectSkillAlreadyExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add Skill Requirement to Project
+      tags:
+      - projects
+      - skills
+  /projects/{id}/skills/{skillID}:
+    delete:
+      description: Removes a skill requirement association from a project. Only accessible
+        by the **Project Manager**.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Skill ID
+        in: path
+        name: skillID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Skill requirement removed successfully (No Content)
+        "400":
+          description: Invalid ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the project manager)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectSkillNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Remove Skill Requirement from Project
+      tags:
+      - projects
+      - skills
+    put:
+      consumes:
+      - application/json
+      description: Updates the importance level (required, preferred, optional) for
+        an existing project skill. Only accessible by the **Project Manager**.
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Skill ID
+        in: path
+        name: skillID
+        required: true
+        type: integer
+      - description: New importance level
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UpdateProjectSkillInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Skill importance updated successfully
+          schema:
+            $ref: '#/definitions/ports.ProjectSkillResponse'
+        "400":
+          description: Invalid ID, request body, or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the project manager)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrProjectSkillNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Project Skill Importance
+      tags:
+      - projects
+      - skills
+  /publications:
+    get:
+      description: Retrieves a list of all publication records.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of publications
+          schema:
+            items:
+              $ref: '#/definitions/ports.PublicationResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve publications
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get All Publications
+      tags:
+      - publications
+    post:
+      consumes:
+      - application/json
+      description: Creates a new publication (post, article, case study, etc.). The
+        UserID in the body must match the authenticated user.
+      parameters:
+      - description: Publication creation details (Title, UserID, Content, Type)
+        in: body
+        name: publication
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreatePublicationInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Publication created successfully
+          schema:
+            $ref: '#/definitions/ports.PublicationResponse'
+        "400":
+          description: Invalid request body or validation failed
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 'Forbidden: Cannot create publication for another user'
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrPublicationSlugExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create New Publication
+      tags:
+      - publications
+  /publications/{id}:
+    delete:
+      description: Deletes a publication record. Only the Author (UserID) can perform
+        this action.
+      parameters:
+      - description: Publication ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Publication deleted successfully (No Content)
+        "400":
+          description: Invalid publication ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the author)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrPublicationNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Publication
+      tags:
+      - publications
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing publication record. Only the Author (UserID)
+        can perform this action.
+      parameters:
+      - description: Publication ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Fields to update (Title, Content, Published, etc.)
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UpdatePublicationInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Publication updated successfully
+          schema:
+            $ref: '#/definitions/ports.PublicationResponse'
+        "400":
+          description: Invalid publication ID or request body
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the author)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrPublicationNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrPublicationSlugExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Publication
+      tags:
+      - publications
+  /publications/id/{id}:
+    get:
+      description: Retrieves a specific publication record by its unique ID.
+      parameters:
+      - description: Publication ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Publication retrieved successfully
+          schema:
+            $ref: '#/definitions/ports.PublicationResponse'
+        "400":
+          description: Invalid publication ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrPublicationNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Publication by ID
+      tags:
+      - publications
+  /publications/slug/{slug}:
+    get:
+      description: Retrieves a specific publication record by its unique URL slug.
+      parameters:
+      - description: Publication URL Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Publication retrieved successfully
+          schema:
+            $ref: '#/definitions/ports.PublicationResponse'
+        "400":
+          description: Missing slug
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrPublicationNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Publication by Slug
+      tags:
+      - publications
+  /skills:
+    get:
+      description: Retrieves a list of all skills, with options to filter by category,
+        activity status, or search term.
+      parameters:
+      - description: Filter by skill category
+        in: query
+        name: category
+        type: string
+      - description: Filter by active status (true/false)
+        in: query
+        name: active
+        type: boolean
+      - description: Search by name, category, or description
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of skills
+          schema:
+            items:
+              $ref: '#/definitions/ports.SkillResponse'
+            type: array
+        "400":
+          description: Invalid query parameters
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get All Skills with Filters
+      tags:
+      - skills
+    post:
+      consumes:
+      - application/json
+      description: Creates a new global skill record.
+      parameters:
+      - description: Skill creation details (Name, Category)
+        in: body
+        name: skill
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateSkillInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Skill created successfully
+          schema:
+            $ref: '#/definitions/ports.SkillResponse'
+        "400":
+          description: Invalid request body or validation failed
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrSkillNameExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create New Skill
+      tags:
+      - skills
+  /skills/{id}:
+    delete:
+      description: Deletes a specific skill record. Fails if the skill is currently
+        in use by a user or project.
+      parameters:
+      - description: Skill ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Skill deleted successfully (No Content)
+        "400":
+          description: Invalid skill ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrSkillNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrSkillInUse
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Skill
+      tags:
+      - skills
+    get:
+      description: Retrieves a specific skill record by its unique ID.
+      parameters:
+      - description: Skill ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Skill retrieved successfully
+          schema:
+            $ref: '#/definitions/ports.SkillResponse'
+        "400":
+          description: Invalid skill ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrSkillNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Skill by ID
+      tags:
+      - skills
+    put:
+      consumes:
+      - application/json
+      description: Updates the details of an existing skill (e.g., category, name).
+      parameters:
+      - description: Skill ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Fields to update (Category, Name, Active)
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UpdateSkillInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Skill updated successfully
+          schema:
+            $ref: '#/definitions/ports.SkillResponse'
+        "400":
+          description: Invalid skill ID or request body
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrSkillNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrSkillNameExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Skill
+      tags:
+      - skills
+  /skills/{id}/toggle-status:
+    patch:
+      description: Toggles the active status of a skill (Active -> Inactive, or vice
+        versa).
+      parameters:
+      - description: Skill ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Skill status toggled successfully
+          schema:
+            $ref: '#/definitions/ports.SkillResponse'
+        "400":
+          description: Invalid skill ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrSkillNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Toggle Skill Status
+      tags:
+      - skills
+  /subscriptions:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new recurring subscription plan definition. Requires
+        authentication (implies admin/privileged access).
+      parameters:
+      - description: Subscription plan details (Name, Price, ValidDays/ValidMonths)
+        in: body
+        name: plan
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateSubscriptionInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Subscription plan created successfully
+          schema:
+            $ref: '#/definitions/ports.SubscriptionResponse'
+        "400":
+          description: Invalid request body or validation failed
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrSubscriptionNameExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create New Subscription Plan
+      tags:
+      - subscriptions
+  /subscriptions/{id}:
+    get:
+      description: Retrieves a specific subscription plan definition by its unique
+        ID.
+      parameters:
+      - description: Subscription Plan ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Subscription plan retrieved successfully
+          schema:
+            $ref: '#/definitions/ports.SubscriptionResponse'
+        "400":
+          description: Invalid subscription ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrSubscriptionNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Subscription Plan by ID
+      tags:
+      - subscriptions
+  /subscriptions/subscribe:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new UserSubscription record for the authenticated user,
+        starting their access to a plan. Enforces self-subscription.
+      parameters:
+      - description: Subscription details (UserID and SubscriptionID)
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UserSubscribeInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User subscribed successfully
+          schema:
+            $ref: '#/definitions/ports.UserSubscriptionResponse'
+        "400":
+          description: Invalid request body or validation failed
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 'Forbidden: Cannot subscribe for another user'
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrSubscriptionNotFound or ErrUserNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Subscribe User to a Plan
+      tags:
+      - subscriptions
+  /tags/{id}:
+    delete:
+      description: Deletes a specific business tag entry by its unique Tag ID.
+      parameters:
+      - description: Unique Business Tag ID (NOT the Business ID)
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Tag deleted successfully (No Content)
+        "400":
+          description: Invalid tag ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrBusinessTagNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Business Tag
+      tags:
+      - businesses
+      - tags
+  /users:
+    get:
+      description: Retrieves a list of all user profiles. Requires authentication.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of users
+          schema:
+            items:
+              $ref: '#/definitions/ports.UserResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List All Users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Registers a new user account. Does not require prior authentication.
+      parameters:
+      - description: User registration details (Name, Email, Password)
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UserCreationSchema'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            $ref: '#/definitions/ports.UserResponse'
+        "400":
+          description: Invalid request body or validation failed
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrUserAlreadyExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register New User
+      tags:
+      - users
+      - auth
+  /users/{id}:
+    delete:
+      description: Deletes the authenticated user's account. Requires self-management.
+      parameters:
+      - description: User ID (must match authenticated user)
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Account deleted successfully (No Content)
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 'Forbidden: Cannot delete another user''s profile'
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrUserNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete User Account
+      tags:
+      - users
+    get:
+      description: Retrieves a user's profile by their unique ID. Requires authentication.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User retrieved successfully
+          schema:
+            $ref: '#/definitions/ports.UserResponse'
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrUserNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get User by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Updates the authenticated user's profile information. Requires
+        self-management.
+      parameters:
+      - description: User ID (must match authenticated user)
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Fields to update (e.g., FirstName, ContactEmail)
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UserUpdateSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profile updated successfully
+          schema:
+            $ref: '#/definitions/ports.UserResponse'
+        "400":
+          description: Invalid user ID or request body
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 'Forbidden: Cannot update another user''s profile'
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrUserNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update User Profile
+      tags:
+      - users
+  /users/{id}/applications:
+    get:
+      description: Retrieves a list of all projects the specified user has applied
+        to. Requires authentication and self-management.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of user applications
+          schema:
+            items:
+              $ref: '#/definitions/ports.UserApplicationResponse'
+            type: array
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the target user)
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Applications for User
+      tags:
+      - users
+      - applicants
+  /users/{id}/config:
+    put:
+      consumes:
+      - application/json
+      description: Creates a new configuration entry for a user, or updates an existing
+        one for the given config_type. Enforces self-management.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Configuration Data
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/ports.SetUserConfigInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Configuration successfully saved/updated
+          schema:
+            $ref: '#/definitions/ports.UserConfigResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 'Forbidden: Cannot modify another user''s config'
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Database error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Set or Update User Configuration
+      tags:
+      - users
+      - config
+  /users/{id}/config/{configType}:
+    delete:
+      description: Deletes a specific configuration entry for a user. Enforces self-management.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Configuration Type (e.g., notification_settings)
+        in: path
+        name: configType
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Configuration successfully deleted (No Content)
+        "400":
+          description: Invalid user ID or missing configType
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 'Forbidden: Cannot delete another user''s config'
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrUserConfigNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Database error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete User Configuration by Type
+      tags:
+      - users
+      - config
+    get:
+      description: Retrieves a specific configuration entry for a user. Enforces self-management.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Configuration Type (e.g., user_preferences)
+        in: path
+        name: configType
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Configuration successfully retrieved
+          schema:
+            $ref: '#/definitions/ports.UserConfigResponse'
+        "400":
+          description: Invalid user ID or missing configType
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 'Forbidden: Cannot view another user''s config'
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrUserConfigNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Database error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get User Configuration by Type
+      tags:
+      - users
+      - config
+  /users/{id}/enrolments:
+    get:
+      description: Retrieves a list of all daily activities a specific user is currently
+        enrolled in.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of activity enrolments for the user
+          schema:
+            items:
+              $ref: '#/definitions/ports.UserEnrolmentResponse'
+            type: array
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get All Enrolments for User
+      tags:
+      - daily_activities
+      - enrolments
+  /users/{id}/l2e-responses:
+    get:
+      description: Retrieves all L2E responses submitted by a specific user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of L2E responses
+          schema:
+            items:
+              $ref: '#/definitions/ports.L2EResponseResponse'
+            type: array
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get All L2E Responses for User
+      tags:
+      - l2e
+  /users/{id}/notifications:
+    get:
+      description: Retrieves all notifications for the specified user. Requires authentication
+        and self-management.
+      parameters:
+      - description: Target User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Filter by read status (true/false)
+        in: query
+        name: read
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of notifications
+          schema:
+            items:
+              $ref: '#/definitions/ports.NotificationResponse'
+            type: array
+        "400":
+          description: Invalid user ID or query parameter
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the target user)
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Notifications for User
+      tags:
+      - notifications
+      - users
+  /users/{id}/notifications/{notificationID}:
+    delete:
+      description: Deletes a specific notification for the user. Requires authentication
+        and self-management.
+      parameters:
+      - description: Target User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Notification ID
+        in: path
+        name: notificationID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Notification deleted successfully (No Content)
+        "400":
+          description: Invalid user/notification ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the target user)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Notification not found for this user
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Single Notification
+      tags:
+      - notifications
+      - users
+  /users/{id}/notifications/{notificationID}/read:
+    patch:
+      description: Marks a specific notification as read. Requires authentication
+        and self-management.
+      parameters:
+      - description: Target User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Notification ID
+        in: path
+        name: notificationID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Notification marked as read
+          schema:
+            $ref: '#/definitions/ports.NotificationResponse'
+        "400":
+          description: Invalid user/notification ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the target user)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Notification not found for this user
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Mark Single Notification as Read
+      tags:
+      - notifications
+      - users
+  /users/{id}/notifications/read-all:
+    patch:
+      description: Marks all unread notifications for the specified user as read.
+        Requires authentication and self-management.
+      parameters:
+      - description: Target User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Count of notifications marked as read
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the target user)
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Mark All Notifications as Read
+      tags:
+      - notifications
+      - users
+  /users/{id}/project-memberships:
+    get:
+      description: Retrieves a list of all projects the specified user is a member
+        of. Requires self-management.
+      parameters:
+      - description: Target User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Filter by member role (manager, contributor, reviewer)
+        in: query
+        name: role
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of project memberships
+          schema:
+            $ref: '#/definitions/ports.ProjectMembersResponse'
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the target user)
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Projects by User
+      tags:
+      - users
+      - members
+  /users/{id}/skills:
+    get:
+      description: Retrieves all skills and proficiency levels associated with the
+        user. Enforces self-management.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of user skills
+          schema:
+            $ref: '#/definitions/ports.UserSkillsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the target user)
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get User Skills
+      tags:
+      - users
+      - skills
+    post:
+      consumes:
+      - application/json
+      description: Adds a new skill and its proficiency level to the authenticated
+        user's profile. Enforces self-management.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Skill details (SkillID, ProficiencyLevel)
+        in: body
+        name: skill
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateUserSkillInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Skill added successfully
+          schema:
+            $ref: '#/definitions/ports.UserSkillResponse'
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the target user)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrUserNotFound or ErrSkillNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: ErrUserSkillAlreadyExists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add User Skill
+      tags:
+      - users
+      - skills
+  /users/{id}/skills/{skillID}:
+    delete:
+      description: Removes a skill association from the user's profile. Enforces self-management.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Skill ID
+        in: path
+        name: skillID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Skill removed successfully (No Content)
+        "400":
+          description: Invalid ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the target user)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrUserSkillNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Remove User Skill
+      tags:
+      - users
+      - skills
+    put:
+      consumes:
+      - application/json
+      description: Updates the proficiency level for an existing skill associated
+        with the user. Enforces self-management.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Skill ID
+        in: path
+        name: skillID
+        required: true
+        type: integer
+      - description: New proficiency level
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UpdateUserSkillInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Proficiency updated successfully
+          schema:
+            $ref: '#/definitions/ports.UserSkillResponse'
+        "400":
+          description: Invalid ID, request body, or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden (Not the target user)
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrUserSkillNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update User Skill Proficiency
+      tags:
+      - users
+      - skills
+  /users/{id}/subscriptions:
+    get:
+      description: Retrieves all currently active user subscription records (those
+        not yet expired). Enforces self-management.
+      parameters:
+      - description: Target User ID (must match authenticated user)
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of active user subscriptions
+          schema:
+            items:
+              $ref: '#/definitions/ports.UserSubscriptionResponse'
+            type: array
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 'Forbidden: Cannot view another user''s subscriptions'
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Active Subscriptions for User
+      tags:
+      - users
+      - subscriptions
+  /users/{id}/subscriptions/{userSubscriptionID}:
+    delete:
+      description: Cancels a specific user subscription record by deleting it from
+        the database. Enforces self-management and ownership of the record.
+      parameters:
+      - description: Target User ID (must match authenticated user)
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User Subscription Record ID to cancel
+        in: path
+        name: userSubscriptionID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Subscription cancelled successfully (No Content)
+        "400":
+          description: Invalid user or subscription ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: 'Forbidden: You are not the owner of this record'
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: ErrUserSubscriptionNotFound
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal error during cancellation
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Cancel User Subscription
+      tags:
+      - users
+      - subscriptions
 swagger: "2.0"

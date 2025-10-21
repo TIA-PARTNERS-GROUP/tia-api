@@ -33,9 +33,9 @@ func NewUserHandler(userService *services.UserService, routes *constants.Routes)
 // @Produce json
 // @Param user body ports.UserCreationSchema true "User registration details (Name, Email, Password)"
 // @Success 201 {object} ports.UserResponse "User created successfully"
-// @Failure 400 {object} gin.H "Invalid request body or validation failed"
-// @Failure 409 {object} gin.H "ErrUserAlreadyExists"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid request body or validation failed"
+// @Failure 409 {object} map[string]interface{} "ErrUserAlreadyExists"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users [post]
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	var input ports.UserCreationSchema
@@ -67,10 +67,10 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "User ID"
 // @Success 200 {object} ports.UserResponse "User retrieved successfully"
-// @Failure 400 {object} gin.H "Invalid user ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrUserNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid user ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrUserNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id} [get]
 func (h *UserHandler) GetUserByID(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
@@ -111,8 +111,8 @@ func (h *UserHandler) GetUserByID(c *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Success 200 {array} ports.UserResponse "List of users"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users [get]
 func (h *UserHandler) GetAllUsers(c *gin.Context) {
 
@@ -143,11 +143,11 @@ func (h *UserHandler) GetAllUsers(c *gin.Context) {
 // @Param id path int true "User ID (must match authenticated user)"
 // @Param update body ports.UserUpdateSchema true "Fields to update (e.g., FirstName, ContactEmail)"
 // @Success 200 {object} ports.UserResponse "Profile updated successfully"
-// @Failure 400 {object} gin.H "Invalid user ID or request body"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden: Cannot update another user's profile"
-// @Failure 404 {object} gin.H "ErrUserNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid user ID or request body"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden: Cannot update another user's profile"
+// @Failure 404 {object} map[string]interface{} "ErrUserNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id} [put]
 func (h *UserHandler) UpdateUser(c *gin.Context) {
 
@@ -196,11 +196,11 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "User ID (must match authenticated user)"
 // @Success 204 "Account deleted successfully (No Content)"
-// @Failure 400 {object} gin.H "Invalid user ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden: Cannot delete another user's profile"
-// @Failure 404 {object} gin.H "ErrUserNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid user ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden: Cannot delete another user's profile"
+// @Failure 404 {object} map[string]interface{} "ErrUserNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id} [delete]
 func (h *UserHandler) DeleteUser(c *gin.Context) {
 

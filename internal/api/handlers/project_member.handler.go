@@ -74,12 +74,12 @@ func (h *ProjectMemberHandler) checkProjectManager(c *gin.Context, projectID uin
 // @Param id path int true "Project ID"
 // @Param member body ports.AddProjectMemberInput true "Member details (UserID, Role)"
 // @Success 201 {object} ports.ProjectMemberResponse "Member added successfully"
-// @Failure 400 {object} gin.H "Invalid project ID, request body, or validation error"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the project manager)"
-// @Failure 404 {object} gin.H "ErrProjectNotFound or ErrUserNotFound"
-// @Failure 409 {object} gin.H "ErrProjectMemberAlreadyExists"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid project ID, request body, or validation error"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the project manager)"
+// @Failure 404 {object} map[string]interface{} "ErrProjectNotFound or ErrUserNotFound"
+// @Failure 409 {object} map[string]interface{} "ErrProjectMemberAlreadyExists"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /projects/{id}/members [post]
 func (h *ProjectMemberHandler) AddProjectMember(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
@@ -127,9 +127,9 @@ func (h *ProjectMemberHandler) AddProjectMember(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Project ID"
 // @Success 200 {object} ports.ProjectMembersResponse "List of project members"
-// @Failure 400 {object} gin.H "Invalid project ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid project ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /projects/{id}/members [get]
 func (h *ProjectMemberHandler) GetProjectMembers(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
@@ -160,10 +160,10 @@ func (h *ProjectMemberHandler) GetProjectMembers(c *gin.Context) {
 // @Param id path int true "Project ID"
 // @Param userID path int true "User ID of the member"
 // @Success 200 {object} ports.ProjectMemberResponse "Member retrieved successfully"
-// @Failure 400 {object} gin.H "Invalid ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrProjectMemberNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrProjectMemberNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /projects/{id}/members/{userID} [get]
 func (h *ProjectMemberHandler) GetProjectMember(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
@@ -205,10 +205,10 @@ func (h *ProjectMemberHandler) GetProjectMember(c *gin.Context) {
 // @Param id path int true "Target User ID"
 // @Param role query string false "Filter by member role (manager, contributor, reviewer)"
 // @Success 200 {object} ports.ProjectMembersResponse "List of project memberships"
-// @Failure 400 {object} gin.H "Invalid user ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid user ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the target user)"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id}/project-memberships [get]
 func (h *ProjectMemberHandler) GetProjectsByUser(c *gin.Context) {
 	targetUserIDStr := c.Param(h.routes.ParamKeyID)
@@ -256,11 +256,11 @@ func (h *ProjectMemberHandler) GetProjectsByUser(c *gin.Context) {
 // @Param userID path int true "User ID of the member"
 // @Param role body ports.UpdateProjectMemberRoleInput true "New role for the member"
 // @Success 200 {object} ports.ProjectMemberResponse "Member role updated successfully"
-// @Failure 400 {object} gin.H "Invalid ID, request body, or ErrInvalidRole"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the project manager)"
-// @Failure 404 {object} gin.H "ErrProjectMemberNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid ID, request body, or ErrInvalidRole"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the project manager)"
+// @Failure 404 {object} map[string]interface{} "ErrProjectMemberNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /projects/{id}/members/{userID} [put]
 func (h *ProjectMemberHandler) UpdateProjectMemberRole(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
@@ -312,11 +312,11 @@ func (h *ProjectMemberHandler) UpdateProjectMemberRole(c *gin.Context) {
 // @Param id path int true "Project ID"
 // @Param userID path int true "User ID of the member to remove"
 // @Success 204 "Member removed successfully (No Content)"
-// @Failure 400 {object} gin.H "Invalid ID or ErrCannotRemoveManager"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the manager and not the user)"
-// @Failure 404 {object} gin.H "ErrProjectMemberNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid ID or ErrCannotRemoveManager"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the manager and not the user)"
+// @Failure 404 {object} map[string]interface{} "ErrProjectMemberNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /projects/{id}/members/{userID} [delete]
 func (h *ProjectMemberHandler) RemoveProjectMember(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)

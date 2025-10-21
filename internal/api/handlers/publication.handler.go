@@ -66,11 +66,11 @@ func (h *PublicationHandler) checkPublicationOwnership(c *gin.Context, pubID uin
 // @Security BearerAuth
 // @Param publication body ports.CreatePublicationInput true "Publication creation details (Title, UserID, Content, Type)"
 // @Success 201 {object} ports.PublicationResponse "Publication created successfully"
-// @Failure 400 {object} gin.H "Invalid request body or validation failed"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden: Cannot create publication for another user"
-// @Failure 409 {object} gin.H "ErrPublicationSlugExists"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid request body or validation failed"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden: Cannot create publication for another user"
+// @Failure 409 {object} map[string]interface{} "ErrPublicationSlugExists"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /publications [post]
 func (h *PublicationHandler) CreatePublication(c *gin.Context) {
 	authUserID, err := h.getAuthUserID(c)
@@ -115,10 +115,10 @@ func (h *PublicationHandler) CreatePublication(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Publication ID"
 // @Success 200 {object} ports.PublicationResponse "Publication retrieved successfully"
-// @Failure 400 {object} gin.H "Invalid publication ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrPublicationNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid publication ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrPublicationNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /publications/id/{id} [get]
 func (h *PublicationHandler) GetPublicationByID(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
@@ -153,10 +153,10 @@ func (h *PublicationHandler) GetPublicationByID(c *gin.Context) {
 // @Security BearerAuth
 // @Param slug path string true "Publication URL Slug"
 // @Success 200 {object} ports.PublicationResponse "Publication retrieved successfully"
-// @Failure 400 {object} gin.H "Missing slug"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrPublicationNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Missing slug"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrPublicationNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /publications/slug/{slug} [get]
 func (h *PublicationHandler) GetPublicationBySlug(c *gin.Context) {
 	slug := c.Param(h.routes.ParamKeySlug)
@@ -189,8 +189,8 @@ func (h *PublicationHandler) GetPublicationBySlug(c *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Success 200 {array} ports.PublicationResponse "List of publications"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 500 {object} gin.H "Failed to retrieve publications"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Failed to retrieve publications"
 // @Router /publications [get]
 func (h *PublicationHandler) GetAllPublications(c *gin.Context) {
 	if _, err := h.getAuthUserID(c); err != nil {
@@ -220,12 +220,12 @@ func (h *PublicationHandler) GetAllPublications(c *gin.Context) {
 // @Param id path int true "Publication ID"
 // @Param update body ports.UpdatePublicationInput true "Fields to update (Title, Content, Published, etc.)"
 // @Success 200 {object} ports.PublicationResponse "Publication updated successfully"
-// @Failure 400 {object} gin.H "Invalid publication ID or request body"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the author)"
-// @Failure 404 {object} gin.H "ErrPublicationNotFound"
-// @Failure 409 {object} gin.H "ErrPublicationSlugExists"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid publication ID or request body"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the author)"
+// @Failure 404 {object} map[string]interface{} "ErrPublicationNotFound"
+// @Failure 409 {object} map[string]interface{} "ErrPublicationSlugExists"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /publications/{id} [put]
 func (h *PublicationHandler) UpdatePublication(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
@@ -270,11 +270,11 @@ func (h *PublicationHandler) UpdatePublication(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Publication ID"
 // @Success 204 "Publication deleted successfully (No Content)"
-// @Failure 400 {object} gin.H "Invalid publication ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the author)"
-// @Failure 404 {object} gin.H "ErrPublicationNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid publication ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the author)"
+// @Failure 404 {object} map[string]interface{} "ErrPublicationNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /publications/{id} [delete]
 func (h *PublicationHandler) DeletePublication(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)

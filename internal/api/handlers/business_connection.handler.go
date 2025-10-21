@@ -35,10 +35,10 @@ func NewBusinessConnectionHandler(service *services.BusinessConnectionService, r
 // @Security BearerAuth
 // @Param connection body ports.CreateBusinessConnectionInput true "Connection request details (InitiatingBusinessID, ReceivingBusinessID, ConnectionType)"
 // @Success 201 {object} ports.BusinessConnectionResponse "Connection request created successfully"
-// @Failure 400 {object} gin.H "Invalid request body, validation failed, or ErrCannotConnectToSelf"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 409 {object} gin.H "ErrBusinessConnectionAlreadyExists"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid request body, validation failed, or ErrCannotConnectToSelf"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 409 {object} map[string]interface{} "ErrBusinessConnectionAlreadyExists"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /connections [post]
 func (h *BusinessConnectionHandler) CreateBusinessConnection(c *gin.Context) {
 	var input ports.CreateBusinessConnectionInput
@@ -78,10 +78,10 @@ func (h *BusinessConnectionHandler) CreateBusinessConnection(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Connection ID"
 // @Success 200 {object} ports.BusinessConnectionResponse "Connection retrieved successfully"
-// @Failure 400 {object} gin.H "Invalid connection ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrBusinessConnectionNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid connection ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrBusinessConnectionNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /connections/{id} [get]
 func (h *BusinessConnectionHandler) GetBusinessConnection(c *gin.Context) {
 
@@ -121,9 +121,9 @@ func (h *BusinessConnectionHandler) GetBusinessConnection(c *gin.Context) {
 // @Param status query string false "Filter by connection status (pending, active, rejected, inactive)"
 // @Param type query string false "Filter by connection type (Partnership, Client, Supplier, etc.)"
 // @Success 200 {object} ports.BusinessConnectionsResponse "List of connections"
-// @Failure 400 {object} gin.H "Invalid business ID or query parameters"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid business ID or query parameters"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /businesses/{id}/connections [get]
 func (h *BusinessConnectionHandler) GetBusinessConnections(c *gin.Context) {
 
@@ -169,11 +169,11 @@ func (h *BusinessConnectionHandler) GetBusinessConnections(c *gin.Context) {
 // @Param id path int true "Connection ID"
 // @Param connection body ports.UpdateBusinessConnectionInput true "Fields to update (e.g., ConnectionType, Notes)"
 // @Success 200 {object} ports.BusinessConnectionResponse "Connection updated successfully"
-// @Failure 400 {object} gin.H "Invalid request body or connection ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not authorized to update)"
-// @Failure 404 {object} gin.H "ErrBusinessConnectionNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid request body or connection ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not authorized to update)"
+// @Failure 404 {object} map[string]interface{} "ErrBusinessConnectionNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /connections/{id} [put]
 func (h *BusinessConnectionHandler) UpdateBusinessConnection(c *gin.Context) {
 
@@ -219,11 +219,11 @@ func (h *BusinessConnectionHandler) UpdateBusinessConnection(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Connection ID"
 // @Success 200 {object} ports.BusinessConnectionResponse "Connection successfully accepted and set to active"
-// @Failure 400 {object} gin.H "Invalid connection ID or ErrConnectionNotPending"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the receiving business's operator)"
-// @Failure 404 {object} gin.H "ErrBusinessConnectionNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid connection ID or ErrConnectionNotPending"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the receiving business's operator)"
+// @Failure 404 {object} map[string]interface{} "ErrBusinessConnectionNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /connections/{id}/accept [patch]
 func (h *BusinessConnectionHandler) AcceptBusinessConnection(c *gin.Context) {
 
@@ -260,11 +260,11 @@ func (h *BusinessConnectionHandler) AcceptBusinessConnection(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Connection ID"
 // @Success 200 {object} ports.BusinessConnectionResponse "Connection successfully rejected"
-// @Failure 400 {object} gin.H "Invalid connection ID or ErrConnectionNotPending"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the receiving business's operator)"
-// @Failure 404 {object} gin.H "ErrBusinessConnectionNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid connection ID or ErrConnectionNotPending"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the receiving business's operator)"
+// @Failure 404 {object} map[string]interface{} "ErrBusinessConnectionNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /connections/{id}/reject [patch]
 func (h *BusinessConnectionHandler) RejectBusinessConnection(c *gin.Context) {
 
@@ -301,11 +301,11 @@ func (h *BusinessConnectionHandler) RejectBusinessConnection(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Connection ID"
 // @Success 204 "Connection deleted successfully (No Content)"
-// @Failure 400 {object} gin.H "Invalid connection ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not authorized to delete)"
-// @Failure 404 {object} gin.H "ErrBusinessConnectionNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid connection ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not authorized to delete)"
+// @Failure 404 {object} map[string]interface{} "ErrBusinessConnectionNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /connections/{id} [delete]
 func (h *BusinessConnectionHandler) DeleteBusinessConnection(c *gin.Context) {
 

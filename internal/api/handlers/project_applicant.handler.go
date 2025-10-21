@@ -71,11 +71,11 @@ func (h *ProjectApplicantHandler) checkProjectManager(c *gin.Context, projectID 
 // @Security BearerAuth
 // @Param id path int true "Project ID"
 // @Success 201 "Application submitted successfully (Created)"
-// @Failure 400 {object} gin.H "Invalid project ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrProjectNotFound or user not found"
-// @Failure 409 {object} gin.H "ErrAlreadyApplied"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid project ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrProjectNotFound or user not found"
+// @Failure 409 {object} map[string]interface{} "ErrAlreadyApplied"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /projects/{id}/apply [post]
 func (h *ProjectApplicantHandler) ApplyToProject(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
@@ -117,10 +117,10 @@ func (h *ProjectApplicantHandler) ApplyToProject(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Project ID"
 // @Success 204 "Application withdrawn successfully (No Content)"
-// @Failure 400 {object} gin.H "Invalid project ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrApplicationNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid project ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrApplicationNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /projects/{id}/apply [delete]
 func (h *ProjectApplicantHandler) WithdrawApplication(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
@@ -157,11 +157,11 @@ func (h *ProjectApplicantHandler) WithdrawApplication(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Project ID"
 // @Success 200 {array} ports.ProjectApplicantResponse "List of applicants"
-// @Failure 400 {object} gin.H "Invalid project ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the project manager)"
-// @Failure 404 {object} gin.H "ErrProjectNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid project ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the project manager)"
+// @Failure 404 {object} map[string]interface{} "ErrProjectNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /projects/{id}/applicants [get]
 func (h *ProjectApplicantHandler) GetApplicantsForProject(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
@@ -197,10 +197,10 @@ func (h *ProjectApplicantHandler) GetApplicantsForProject(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "User ID"
 // @Success 200 {array} ports.UserApplicationResponse "List of user applications"
-// @Failure 400 {object} gin.H "Invalid user ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid user ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the target user)"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id}/applications [get]
 func (h *ProjectApplicantHandler) GetApplicationsForUser(c *gin.Context) {
 	targetUserIDStr := c.Param(h.routes.ParamKeyID)

@@ -34,10 +34,10 @@ func NewDailyActivityHandler(service *services.DailyActivityService, routes *con
 // @Security BearerAuth
 // @Param activity body ports.CreateDailyActivityInput true "Activity details (Name, Description)"
 // @Success 201 {object} models.DailyActivity "Activity created successfully"
-// @Failure 400 {object} gin.H "Invalid request body or validation failed"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 409 {object} gin.H "ErrActivityNameExists"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid request body or validation failed"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 409 {object} map[string]interface{} "ErrActivityNameExists"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /daily-activities [post]
 func (h *DailyActivityHandler) CreateDailyActivity(c *gin.Context) {
 	var input ports.CreateDailyActivityInput
@@ -74,7 +74,7 @@ func (h *DailyActivityHandler) CreateDailyActivity(c *gin.Context) {
 // @Tags daily_activities
 // @Produce json
 // @Success 200 {array} models.DailyActivity "List of daily activities"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /daily-activities [get]
 func (h *DailyActivityHandler) GetAllDailyActivities(c *gin.Context) {
 	activities, err := h.service.GetAllDailyActivities(c.Request.Context())
@@ -91,9 +91,9 @@ func (h *DailyActivityHandler) GetAllDailyActivities(c *gin.Context) {
 // @Produce json
 // @Param id path int true "Activity ID"
 // @Success 200 {object} models.DailyActivity "Activity retrieved successfully"
-// @Failure 400 {object} gin.H "Invalid activity ID"
-// @Failure 404 {object} gin.H "ErrDailyActivityNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid activity ID"
+// @Failure 404 {object} map[string]interface{} "ErrDailyActivityNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /daily-activities/{id} [get]
 func (h *DailyActivityHandler) GetDailyActivityByID(c *gin.Context) {
 

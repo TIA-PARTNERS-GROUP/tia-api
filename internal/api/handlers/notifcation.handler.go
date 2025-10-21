@@ -34,10 +34,10 @@ func NewNotificationHandler(service *services.NotificationService, routes *const
 // @Security BearerAuth
 // @Param notification body ports.CreateNotificationInput true "Notification details (ReceiverUserID, Title, Message, Type)"
 // @Success 201 {object} ports.NotificationResponse "Notification created successfully"
-// @Failure 400 {object} gin.H "Invalid request body or validation error"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrReceiverNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid request body or validation error"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrReceiverNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /notifications [post]
 func (h *NotificationHandler) CreateNotification(c *gin.Context) {
 
@@ -75,10 +75,10 @@ func (h *NotificationHandler) CreateNotification(c *gin.Context) {
 // @Param id path int true "Target User ID"
 // @Param read query bool false "Filter by read status (true/false)"
 // @Success 200 {array} ports.NotificationResponse "List of notifications"
-// @Failure 400 {object} gin.H "Invalid user ID or query parameter"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid user ID or query parameter"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the target user)"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id}/notifications [get]
 func (h *NotificationHandler) GetNotificationsForUser(c *gin.Context) {
 
@@ -130,11 +130,11 @@ func (h *NotificationHandler) GetNotificationsForUser(c *gin.Context) {
 // @Param id path int true "Target User ID"
 // @Param notificationID path int true "Notification ID"
 // @Success 200 {object} ports.NotificationResponse "Notification marked as read"
-// @Failure 400 {object} gin.H "Invalid user/notification ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
-// @Failure 404 {object} gin.H "Notification not found for this user"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid user/notification ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the target user)"
+// @Failure 404 {object} map[string]interface{} "Notification not found for this user"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id}/notifications/{notificationID}/read [patch]
 func (h *NotificationHandler) MarkAsRead(c *gin.Context) {
 
@@ -181,11 +181,11 @@ func (h *NotificationHandler) MarkAsRead(c *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Param id path int true "Target User ID"
-// @Success 200 {object} gin.H "Count of notifications marked as read"
-// @Failure 400 {object} gin.H "Invalid user ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Success 200 {object} map[string]interface{} "Count of notifications marked as read"
+// @Failure 400 {object} map[string]interface{} "Invalid user ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the target user)"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id}/notifications/read-all [patch]
 func (h *NotificationHandler) MarkAllAsRead(c *gin.Context) {
 
@@ -223,11 +223,11 @@ func (h *NotificationHandler) MarkAllAsRead(c *gin.Context) {
 // @Param id path int true "Target User ID"
 // @Param notificationID path int true "Notification ID"
 // @Success 204 "Notification deleted successfully (No Content)"
-// @Failure 400 {object} gin.H "Invalid user/notification ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
-// @Failure 404 {object} gin.H "Notification not found for this user"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid user/notification ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Forbidden (Not the target user)"
+// @Failure 404 {object} map[string]interface{} "Notification not found for this user"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id}/notifications/{notificationID} [delete]
 func (h *NotificationHandler) DeleteNotification(c *gin.Context) {
 

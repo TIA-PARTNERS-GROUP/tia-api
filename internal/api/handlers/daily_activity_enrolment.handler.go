@@ -34,11 +34,11 @@ func NewDailyActivityEnrolmentHandler(service *services.DailyActivityEnrolmentSe
 // @Security BearerAuth
 // @Param id path int true "Daily Activity ID"
 // @Success 201 {object} ports.ActivityEnrolmentResponse "Enrolment successful"
-// @Failure 400 {object} gin.H "Invalid activity ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "Activity or user not found"
-// @Failure 409 {object} gin.H "ErrAlreadyEnrolled"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid activity ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "Activity or user not found"
+// @Failure 409 {object} map[string]interface{} "ErrAlreadyEnrolled"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /daily-activities/{id}/enrolments [post]
 func (h *DailyActivityEnrolmentHandler) EnrolUser(c *gin.Context) {
 
@@ -89,10 +89,10 @@ func (h *DailyActivityEnrolmentHandler) EnrolUser(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "Daily Activity ID"
 // @Success 204 "Withdrawal successful (No Content)"
-// @Failure 400 {object} gin.H "Invalid activity ID"
-// @Failure 401 {object} gin.H "Unauthorized"
-// @Failure 404 {object} gin.H "ErrEnrolmentNotFound"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid activity ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "ErrEnrolmentNotFound"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /daily-activities/{id}/enrolments [delete]
 func (h *DailyActivityEnrolmentHandler) WithdrawUser(c *gin.Context) {
 
@@ -132,8 +132,8 @@ func (h *DailyActivityEnrolmentHandler) WithdrawUser(c *gin.Context) {
 // @Produce json
 // @Param id path int true "Daily Activity ID"
 // @Success 200 {array} ports.ActivityEnrolmentResponse "List of user enrolments"
-// @Failure 400 {object} gin.H "Invalid activity ID"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid activity ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /daily-activities/{id}/enrolments [get]
 func (h *DailyActivityEnrolmentHandler) GetEnrolmentsForActivity(c *gin.Context) {
 
@@ -162,8 +162,8 @@ func (h *DailyActivityEnrolmentHandler) GetEnrolmentsForActivity(c *gin.Context)
 // @Produce json
 // @Param id path int true "User ID"
 // @Success 200 {array} ports.UserEnrolmentResponse "List of activity enrolments for the user"
-// @Failure 400 {object} gin.H "Invalid user ID"
-// @Failure 500 {object} gin.H "Internal server error"
+// @Failure 400 {object} map[string]interface{} "Invalid user ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /users/{id}/enrolments [get]
 func (h *DailyActivityEnrolmentHandler) GetEnrolmentsForUser(c *gin.Context) {
 
