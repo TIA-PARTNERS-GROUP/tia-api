@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   models.Business:
     properties:
@@ -1734,8 +1735,12 @@ definitions:
         minLength: 8
         type: string
     type: object
+host: localhost:8080
 info:
   contact: {}
+  description: API documentation for the TIA Partner platform.
+  title: TIA Partner API
+  version: "1.0"
 paths:
   /auth/login:
     post:
@@ -5737,4 +5742,12 @@ paths:
       tags:
       - users
       - subscriptions
+schemes:
+- http
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and your JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

@@ -18,6 +18,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// @title TIA Partner API
+// @version 1.0
+// @description API documentation for the TIA Partner platform.
+
+// @host localhost:8080
+// @BasePath /api/v1
+// @schemes http
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and your JWT token.
 func main() {
 	config := configs.LoadConfig()
 	db, err := gorm.Open(mysql.Open(config.DatabaseURL), &gorm.Config{})
