@@ -80,7 +80,7 @@ Integration tests validate the service layer interaction with the database (file
 ./scripts/tests/run_api_integration.sh
 ```
 
-#### 3. Test Visualization (Advanced)
+#### 3. Test Visualization
 
 Generate a visualization graph of the integration test dependencies using the `vgt` and `vizb` tools.
 
