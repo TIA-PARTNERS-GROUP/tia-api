@@ -10,6 +10,7 @@ import (
 
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports" // <-- IMPORT PORTS
 	testutil "github.com/TIA-PARTNERS-GROUP/tia-api/test/test_util"
 	"github.com/stretchr/testify/assert"
 )
@@ -25,19 +26,16 @@ func TestDailyActivityEnrolmentAPI_Integration_Lifecycle(t *testing.T) {
 	testutil.TestDB.Create(&activity)
 	assert.NotZero(t, activity.ID)
 
-	// --- DEFINE ALL PATHS USING CONSTANTS ---
-
-	// Path 1: /api/v1/daily-activities/:id/enrolments
+	// Paths using constants
 	actBasePath := constants.AppRoutes.APIPrefix + constants.AppRoutes.DailyActBase
 	actSubPath := strings.Replace(constants.AppRoutes.DailyActEnrol, ":id", fmt.Sprintf("%d", activity.ID), 1)
 	activityEnrolmentURL := actBasePath + actSubPath
 
-	// Path 2: /api/v1/users/:id/enrolments (for User A)
 	userBasePath := constants.AppRoutes.APIPrefix + constants.AppRoutes.UsersBase
 	userASubPath := strings.Replace(constants.AppRoutes.UserEnrolments, ":id", fmt.Sprintf("%d", userA.ID), 1)
 	userAEnrolmentsURL := userBasePath + userASubPath
 
-	// --- TEST FLOW ---
+	// --- Test Flow ---
 
 	// 1. User A enrols
 	req, _ := http.NewRequest(http.MethodPost, activityEnrolmentURL, nil)
@@ -59,11 +57,13 @@ func TestDailyActivityEnrolmentAPI_Integration_Lifecycle(t *testing.T) {
 	router.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusOK, w.Code, "Should be able to get activity enrolments - got response: %s", w.Body.String())
 
-	var activityEnrolments []models.DailyActivityEnrolment
+	// --- FIX: Unmarshal into ActivityEnrolmentResponse DTO ---
+	var activityEnrolmentsDTO []ports.ActivityEnrolmentResponse
 	if w.Code == http.StatusOK {
-		json.Unmarshal(w.Body.Bytes(), &activityEnrolments)
+		err := json.Unmarshal(w.Body.Bytes(), &activityEnrolmentsDTO)
+		assert.NoError(t, err)
 	}
-	assert.Len(t, activityEnrolments, 2, "Should be two enrolments for the activity")
+	assert.Len(t, activityEnrolmentsDTO, 2, "Should be two enrolments for the activity")
 
 	// 4. Get enrolments for USER A (should be 1)
 	req, _ = http.NewRequest(http.MethodGet, userAEnrolmentsURL, nil)
@@ -71,13 +71,19 @@ func TestDailyActivityEnrolmentAPI_Integration_Lifecycle(t *testing.T) {
 	router.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusOK, w.Code, "Should be able to get user A's enrolments - got response: %s", w.Body.String())
 
-	var userAEnrols []models.DailyActivityEnrolment // Use a new variable
+	// --- FIX: Unmarshal into UserEnrolmentResponse DTO ---
+	var userAEnrolsDTO []ports.UserEnrolmentResponse // Use DTO type
 	if w.Code == http.StatusOK {
-		json.Unmarshal(w.Body.Bytes(), &userAEnrols)
+		err := json.Unmarshal(w.Body.Bytes(), &userAEnrolsDTO)
+		assert.NoError(t, err)
 	}
 
-	if assert.Len(t, userAEnrols, 1, "User A should have one enrolment") {
-		assert.Equal(t, activity.ID, userAEnrols[0].DailyActivityID)
+	// --- FIX: Assert against fields in the DTO ---
+	if assert.Len(t, userAEnrolsDTO, 1, "User A should have one enrolment") {
+		// Assert based on the UserEnrolmentResponse structure
+		assert.Equal(t, userA.ID, userAEnrolsDTO[0].UserID)
+		assert.Equal(t, activity.ID, userAEnrolsDTO[0].DailyActivity.ID)     // Check ID within nested struct
+		assert.Equal(t, activity.Name, userAEnrolsDTO[0].DailyActivity.Name) // Check name within nested struct
 	}
 
 	// 5. User A withdraws
@@ -93,14 +99,15 @@ func TestDailyActivityEnrolmentAPI_Integration_Lifecycle(t *testing.T) {
 	router.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusOK, w.Code, "Should be able to get updated activity enrolments")
 
-	activityEnrolments = []models.DailyActivityEnrolment{} // Re-init slice
+	activityEnrolmentsDTO = []ports.ActivityEnrolmentResponse{} // Re-init slice
 	if w.Code == http.StatusOK {
-		json.Unmarshal(w.Body.Bytes(), &activityEnrolments)
+		err := json.Unmarshal(w.Body.Bytes(), &activityEnrolmentsDTO)
+		assert.NoError(t, err)
 	}
 
-	assert.Len(t, activityEnrolments, 1, "Should now be only one enrolment")
-	if len(activityEnrolments) > 0 {
-		assert.Equal(t, userB.ID, activityEnrolments[0].User.ID, "Remaining user should be User B")
+	assert.Len(t, activityEnrolmentsDTO, 1, "Should now be only one enrolment")
+	if len(activityEnrolmentsDTO) > 0 {
+		assert.Equal(t, userB.ID, activityEnrolmentsDTO[0].User.ID, "Remaining user should be User B") // Check ID within nested struct
 	}
 
 	// 7. Get enrolments for USER A again (should be 0)
@@ -109,9 +116,10 @@ func TestDailyActivityEnrolmentAPI_Integration_Lifecycle(t *testing.T) {
 	router.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusOK, w.Code, "Should be able to get user A's enrolments after withdrawal")
 
-	userAEnrols = []models.DailyActivityEnrolment{} // Re-init slice
+	userAEnrolsDTO = []ports.UserEnrolmentResponse{} // Re-init slice
 	if w.Code == http.StatusOK {
-		json.Unmarshal(w.Body.Bytes(), &userAEnrols)
+		err := json.Unmarshal(w.Body.Bytes(), &userAEnrolsDTO)
+		assert.NoError(t, err)
 	}
-	assert.Len(t, userAEnrols, 0, "User A should have zero enrolments after withdrawing")
+	assert.Len(t, userAEnrolsDTO, 0, "User A should have zero enrolments after withdrawing")
 }

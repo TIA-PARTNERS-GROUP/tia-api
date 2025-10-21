@@ -23,6 +23,7 @@ import (
 
 func SetupRouter() *gin.Engine {
 	// --- This part remains the same ---
+
 	userService := services.NewUserService(testutil.TestDB)
 	authService := services.NewAuthService(testutil.TestDB)
 	businessService := services.NewBusinessService(testutil.TestDB)
@@ -36,18 +37,18 @@ func SetupRouter() *gin.Engine {
 	l2eResponseService := services.NewL2EResponseService(testutil.TestDB)
 	notificationService := services.NewNotificationService(testutil.TestDB)
 
-	userHandler := handlers.NewUserHandler(userService)
-	authHandler := handlers.NewAuthHandler(authService, &constants.AppRoutes)
-	businessHandler := handlers.NewBusinessHandler(businessService)
-	businessConnectionHandler := handlers.NewBusinessConnectionHandler(businessConnectionService)
-	businessTagHandler := handlers.NewBusinessTagHandler(businessTagService)
-	dailyActivityHandler := handlers.NewDailyActivityHandler(dailyActivityService)
-	dailyActivityEnrolmentHandler := handlers.NewDailyActivityEnrolmentHandler(dailyActivityEnrolmentService)
-	eventHandler := handlers.NewEventHandler(eventService)
-	feedbackHandler := handlers.NewFeedbackHandler(feedbackService)
-	inferredConnectionHandler := handlers.NewInferredConnectionHandler(inferredConnectionService)
-	l2eHandler := handlers.NewL2EHandler(l2eResponseService)
-	notificationHandler := handlers.NewNotificationHandler(notificationService)
+	userHandler := handlers.NewUserHandler(userService, &constants.AppRoutes)                                                       // <-- Pass routes
+	authHandler := handlers.NewAuthHandler(authService, &constants.AppRoutes)                                                       // <-- Pass routes
+	businessHandler := handlers.NewBusinessHandler(businessService, &constants.AppRoutes)                                           // <-- Pass routes
+	businessConnectionHandler := handlers.NewBusinessConnectionHandler(businessConnectionService, &constants.AppRoutes)             // <-- Pass routes
+	businessTagHandler := handlers.NewBusinessTagHandler(businessTagService, &constants.AppRoutes)                                  // <-- Pass routes
+	dailyActivityHandler := handlers.NewDailyActivityHandler(dailyActivityService, &constants.AppRoutes)                            // <-- Pass routes
+	dailyActivityEnrolmentHandler := handlers.NewDailyActivityEnrolmentHandler(dailyActivityEnrolmentService, &constants.AppRoutes) // <-- Pass routes
+	eventHandler := handlers.NewEventHandler(eventService, &constants.AppRoutes)                                                    // <-- Pass routes
+	feedbackHandler := handlers.NewFeedbackHandler(feedbackService, &constants.AppRoutes)                                           // <-- Pass routes
+	inferredConnectionHandler := handlers.NewInferredConnectionHandler(inferredConnectionService, &constants.AppRoutes)             // <-- Pass routes
+	l2eHandler := handlers.NewL2EHandler(l2eResponseService, &constants.AppRoutes)                                                  // <-- Pass routes
+	notificationHandler := handlers.NewNotificationHandler(notificationService, &constants.AppRoutes)                               // <-- Pass routes
 
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()

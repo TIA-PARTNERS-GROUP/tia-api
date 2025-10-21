@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants" // <-- IMPORT
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"github.com/gin-gonic/gin"
@@ -14,12 +15,15 @@ import (
 type NotificationHandler struct {
 	service  *services.NotificationService
 	validate *validator.Validate
+	routes   *constants.Routes // <-- ADDED
 }
 
-func NewNotificationHandler(service *services.NotificationService) *NotificationHandler {
+// Updated constructor
+func NewNotificationHandler(service *services.NotificationService, routes *constants.Routes) *NotificationHandler {
 	return &NotificationHandler{
 		service:  service,
 		validate: validator.New(),
+		routes:   routes, // <-- ADDED
 	}
 }
 
@@ -37,21 +41,24 @@ func NewNotificationHandler(service *services.NotificationService) *Notification
 // @Failure      500 {object} map[string]string "Internal server error"
 // @Router       /notifications [post]
 func (h *NotificationHandler) CreateNotification(c *gin.Context) {
+	// Optional: Check auth user ID for logging or if sender validation is needed
+	// --- USE CONSTANT ---
+	_, exists := c.Get(h.routes.ContextKeyUserID)
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
 	var input ports.CreateNotificationInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body: " + err.Error()})
 		return
 	}
 
-	// Basic validation based on DTO tags
 	if err := h.validate.Struct(input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	// Optional: Add logic here to verify SenderUserID if provided,
-	// e.g., check if it matches the authenticated user or if the user has permission.
-	// For now, we trust the input or allow nil for system messages.
 
 	notification, err := h.service.CreateNotification(c.Request.Context(), input)
 	if err != nil {
@@ -80,7 +87,8 @@ func (h *NotificationHandler) CreateNotification(c *gin.Context) {
 // @Failure      500 {object} map[string]string "Internal server error"
 // @Router       /users/{id}/notifications [get]
 func (h *NotificationHandler) GetNotificationsForUser(c *gin.Context) {
-	userIDParam := c.Param("id")
+	// --- USE CONSTANT ---
+	userIDParam := c.Param(h.routes.ParamKeyID) // Use ParamKeyID
 	targetUserID, err := strconv.ParseUint(userIDParam, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
@@ -88,10 +96,13 @@ func (h *NotificationHandler) GetNotificationsForUser(c *gin.Context) {
 	}
 
 	// --- Authorization Check ---
-	authUserIDVal, _ := c.Get("userID")
-	authUserID, _ := authUserIDVal.(uint)
-	// Simple check: User can only get their own notifications.
-	// TODO: Implement admin role check if needed.
+	// --- USE CONSTANT ---
+	authUserIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	authUserID, ok := authUserIDVal.(uint)
+	if !ok || authUserID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
+		return
+	}
 	if authUserID != uint(targetUserID) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
 		return
@@ -128,7 +139,7 @@ func (h *NotificationHandler) GetNotificationsForUser(c *gin.Context) {
 // @Tags         Notifications
 // @Security     BearerAuth
 // @Produce      json
-// @Param        userID path int true "User ID"
+// @Param        id path int true "User ID (from /users/:id/)" // Changed param name description
 // @Param        notificationID path int true "Notification ID"
 // @Success      200 {object} ports.NotificationResponse
 // @Failure      400 {object} map[string]string "Invalid User ID or Notification ID"
@@ -136,16 +147,18 @@ func (h *NotificationHandler) GetNotificationsForUser(c *gin.Context) {
 // @Failure      403 {object} map[string]string "Forbidden - Cannot modify another user's notification"
 // @Failure      404 {object} map[string]string "Notification not found for this user"
 // @Failure      500 {object} map[string]string "Internal server error"
-// @Router       /users/{userID}/notifications/{notificationID}/read [patch]
+// @Router       /users/{id}/notifications/{notificationID}/read [patch] // Changed path param name
 func (h *NotificationHandler) MarkAsRead(c *gin.Context) {
-	userIDParam := c.Param("userID")
+	// --- USE CONSTANT ---
+	userIDParam := c.Param(h.routes.ParamKeyID) // Use ParamKeyID
 	targetUserID, err := strconv.ParseUint(userIDParam, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
-	notificationIDParam := c.Param("notificationID")
+	// --- USE CONSTANT ---
+	notificationIDParam := c.Param(h.routes.ParamKeyNotificationID) // Use ParamKeyNotificationID
 	notificationID, err := strconv.ParseUint(notificationIDParam, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid notification ID"})
@@ -153,8 +166,13 @@ func (h *NotificationHandler) MarkAsRead(c *gin.Context) {
 	}
 
 	// --- Authorization Check ---
-	authUserIDVal, _ := c.Get("userID")
-	authUserID, _ := authUserIDVal.(uint)
+	// --- USE CONSTANT ---
+	authUserIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	authUserID, ok := authUserIDVal.(uint)
+	if !ok || authUserID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
+		return
+	}
 	if authUserID != uint(targetUserID) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
 		return
@@ -164,7 +182,6 @@ func (h *NotificationHandler) MarkAsRead(c *gin.Context) {
 	notification, err := h.service.MarkAsRead(c.Request.Context(), uint(notificationID), authUserID)
 	if err != nil {
 		if errors.Is(err, ports.ErrNotificationNotFound) {
-			// Service returns this if ID doesn't exist OR user doesn't match
 			c.JSON(http.StatusNotFound, gin.H{"error": "Notification not found for this user"})
 			return
 		}
@@ -180,15 +197,16 @@ func (h *NotificationHandler) MarkAsRead(c *gin.Context) {
 // @Tags         Notifications
 // @Security     BearerAuth
 // @Produce      json
-// @Param        userID path int true "User ID"
+// @Param        id path int true "User ID (from /users/:id/)" // Changed param name description
 // @Success      200 {object} map[string]int64 "Returns the count of notifications marked as read"
 // @Failure      400 {object} map[string]string "Invalid User ID"
 // @Failure      401 {object} map[string]string "Unauthorized"
 // @Failure      403 {object} map[string]string "Forbidden - Cannot modify another user's notifications"
 // @Failure      500 {object} map[string]string "Internal server error"
-// @Router       /users/{userID}/notifications/read-all [patch]
+// @Router       /users/{id}/notifications/read-all [patch] // Changed path param name
 func (h *NotificationHandler) MarkAllAsRead(c *gin.Context) {
-	userIDParam := c.Param("userID")
+	// --- USE CONSTANT ---
+	userIDParam := c.Param(h.routes.ParamKeyID) // Use ParamKeyID
 	targetUserID, err := strconv.ParseUint(userIDParam, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
@@ -196,8 +214,13 @@ func (h *NotificationHandler) MarkAllAsRead(c *gin.Context) {
 	}
 
 	// --- Authorization Check ---
-	authUserIDVal, _ := c.Get("userID")
-	authUserID, _ := authUserIDVal.(uint)
+	// --- USE CONSTANT ---
+	authUserIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	authUserID, ok := authUserIDVal.(uint)
+	if !ok || authUserID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
+		return
+	}
 	if authUserID != uint(targetUserID) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
 		return
@@ -218,7 +241,7 @@ func (h *NotificationHandler) MarkAllAsRead(c *gin.Context) {
 // @Tags         Notifications
 // @Security     BearerAuth
 // @Produce      json
-// @Param        userID path int true "User ID"
+// @Param        id path int true "User ID (from /users/:id/)" // Changed param name description
 // @Param        notificationID path int true "Notification ID"
 // @Success      204 "No Content"
 // @Failure      400 {object} map[string]string "Invalid User ID or Notification ID"
@@ -226,16 +249,18 @@ func (h *NotificationHandler) MarkAllAsRead(c *gin.Context) {
 // @Failure      403 {object} map[string]string "Forbidden - Cannot delete another user's notification"
 // @Failure      404 {object} map[string]string "Notification not found for this user"
 // @Failure      500 {object} map[string]string "Internal server error"
-// @Router       /users/{userID}/notifications/{notificationID} [delete]
+// @Router       /users/{id}/notifications/{notificationID} [delete] // Changed path param name
 func (h *NotificationHandler) DeleteNotification(c *gin.Context) {
-	userIDParam := c.Param("userID")
+	// --- USE CONSTANT ---
+	userIDParam := c.Param(h.routes.ParamKeyID) // Use ParamKeyID
 	targetUserID, err := strconv.ParseUint(userIDParam, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
-	notificationIDParam := c.Param("notificationID")
+	// --- USE CONSTANT ---
+	notificationIDParam := c.Param(h.routes.ParamKeyNotificationID) // Use ParamKeyNotificationID
 	notificationID, err := strconv.ParseUint(notificationIDParam, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid notification ID"})
@@ -243,8 +268,13 @@ func (h *NotificationHandler) DeleteNotification(c *gin.Context) {
 	}
 
 	// --- Authorization Check ---
-	authUserIDVal, _ := c.Get("userID")
-	authUserID, _ := authUserIDVal.(uint)
+	// --- USE CONSTANT ---
+	authUserIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	authUserID, ok := authUserIDVal.(uint)
+	if !ok || authUserID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
+		return
+	}
 	if authUserID != uint(targetUserID) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
 		return
@@ -254,7 +284,6 @@ func (h *NotificationHandler) DeleteNotification(c *gin.Context) {
 	err = h.service.DeleteNotification(c.Request.Context(), uint(notificationID), authUserID)
 	if err != nil {
 		if errors.Is(err, ports.ErrNotificationNotFound) {
-			// Service returns this if ID doesn't exist OR user doesn't match
 			c.JSON(http.StatusNotFound, gin.H{"error": "Notification not found for this user"})
 			return
 		}

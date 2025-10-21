@@ -5,7 +5,6 @@ import (
 
 	"github.com/TIA-PARTNERS-GROUP/tia-api/configs"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/handlers"
-	handler "github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/handlers"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/middleware"
 	routes "github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/routes"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"
@@ -87,38 +86,42 @@ func main() {
 	l2eResponseService := services.NewL2EResponseService(db)
 	notificationService := services.NewNotificationService(db)
 
-	userHandler := handler.NewUserHandler(userService)
-	authHandler := handlers.NewAuthHandler(authService, &constants.AppRoutes)
-	businessHandler := handlers.NewBusinessHandler(businessService)
-	businessConnectionHandler := handlers.NewBusinessConnectionHandler(businessConnectionService)
-	businessTagHandler := handlers.NewBusinessTagHandler(businessTagService)
-	dailyActivityHandler := handlers.NewDailyActivityHandler(dailyActivityService)
-	dailyActivityEnrolmentHandler := handlers.NewDailyActivityEnrolmentHandler(dailyActivityEnrolmentService)
-	eventHandler := handlers.NewEventHandler(eventService)
-	feedbackHandler := handlers.NewFeedbackHandler(feedbackService)
-	inferredConnectionHandler := handlers.NewInferredConnectionHandler(inferredConnectionService)
-	l2eHandler := handlers.NewL2EHandler(l2eResponseService)
-	notificationHandler := handlers.NewNotificationHandler(notificationService)
+	userHandler := handlers.NewUserHandler(userService, &constants.AppRoutes)                                                       // <-- Pass routes
+	authHandler := handlers.NewAuthHandler(authService, &constants.AppRoutes)                                                       // <-- Pass routes
+	businessHandler := handlers.NewBusinessHandler(businessService, &constants.AppRoutes)                                           // <-- Pass routes
+	businessConnectionHandler := handlers.NewBusinessConnectionHandler(businessConnectionService, &constants.AppRoutes)             // <-- Pass routes
+	businessTagHandler := handlers.NewBusinessTagHandler(businessTagService, &constants.AppRoutes)                                  // <-- Pass routes
+	dailyActivityHandler := handlers.NewDailyActivityHandler(dailyActivityService, &constants.AppRoutes)                            // <-- Pass routes
+	dailyActivityEnrolmentHandler := handlers.NewDailyActivityEnrolmentHandler(dailyActivityEnrolmentService, &constants.AppRoutes) // <-- Pass routes
+	eventHandler := handlers.NewEventHandler(eventService, &constants.AppRoutes)                                                    // <-- Pass routes
+	feedbackHandler := handlers.NewFeedbackHandler(feedbackService, &constants.AppRoutes)                                           // <-- Pass routes
+	inferredConnectionHandler := handlers.NewInferredConnectionHandler(inferredConnectionService, &constants.AppRoutes)             // <-- Pass routes
+	l2eHandler := handlers.NewL2EHandler(l2eResponseService, &constants.AppRoutes)                                                  // <-- Pass routes
+	notificationHandler := handlers.NewNotificationHandler(notificationService, &constants.AppRoutes)                               // <-- Pass routes
 
-	authMiddleware := middleware.AuthMiddleware(authService)
+	authMiddleware := middleware.AuthMiddleware(authService, &constants.AppRoutes) // <-- Pass routes
+
+	// --- Setup RouterDependencies ---
+	deps := &routes.RouterDependencies{
+		AuthMiddleware:                authMiddleware,
+		UserHandler:                   userHandler,
+		AuthHandler:                   authHandler,
+		BusinessHandler:               businessHandler,
+		BusinessConnectionHandler:     businessConnectionHandler,
+		BusinessTagHandler:            businessTagHandler,
+		DailyActivityHandler:          dailyActivityHandler,
+		DailyActivityEnrolmentHandler: dailyActivityEnrolmentHandler,
+		EventHandler:                  eventHandler,
+		FeedbackHandler:               feedbackHandler,
+		InferredConnectionHandler:     inferredConnectionHandler,
+		L2EHandler:                    l2eHandler,
+		NotificationHandler:           notificationHandler,
+		Routes:                        constants.AppRoutes, // Pass the struct itself
+	}
 
 	router := gin.Default()
-	routes.RegisterRoutes(
-		router,
-		authMiddleware,
-		userHandler,
-		authHandler,
-		businessHandler,
-		businessConnectionHandler,
-		businessTagHandler,
-		dailyActivityHandler,
-		dailyActivityEnrolmentHandler,
-		eventHandler,
-		feedbackHandler,
-		inferredConnectionHandler,
-		l2eHandler,
-		notificationHandler,
-	)
+	// --- Pass the single deps struct ---
+	routes.RegisterRoutes(router, deps)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"     // <-- IMPORT
-	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services" // <-- IMPORT
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants" // <-- IMPORT
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"github.com/gin-gonic/gin"
@@ -15,26 +15,19 @@ import (
 type AuthHandler struct {
 	authService *services.AuthService
 	validate    *validator.Validate
-	routes      *constants.Routes // <-- ADD THIS
+	routes      *constants.Routes // <-- ADD
 }
 
-func NewAuthHandler(authService *services.AuthService) *AuthHandler {
+// Update constructor
+func NewAuthHandler(authService *services.AuthService, routes *constants.Routes) *AuthHandler {
 	return &AuthHandler{
 		authService: authService,
 		validate:    validator.New(),
+		routes:      routes, // <-- ADD
 	}
 }
 
-// @Summary      User Login
-// @Description  Authenticates a user with email and password, returning a JWT and session details.
-// @Tags         Auth
-// @Accept       json
-// @Produce      json
-// @Param        credentials body ports.LoginInput true "User Login Credentials"
-// @Success      200 {object} ports.LoginResponse
-// @Failure      400 {object} map[string]string "Validation error"
-// @Failure      401 {object} map[string]string "Invalid credentials or deactivated account"
-// @Router       /auth/login [post]
+// Login (no changes)
 func (h *AuthHandler) Login(c *gin.Context) {
 	var input ports.LoginInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -64,14 +57,6 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// @Summary      User Logout
-// @Description  Revokes the current user's session token.
-// @Tags         Auth
-// @Security     BearerAuth
-// @Produce      json
-// @Success      204 "No Content"
-// @Failure      401 {object} map[string]string "Unauthorized"
-// @Router       /auth/logout [post]
 func (h *AuthHandler) Logout(c *gin.Context) {
 	// --- USE CONSTANTS ---
 	userIDVal, _ := c.Get(h.routes.ContextKeyUserID)
@@ -94,14 +79,6 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// @Summary      Get Current User
-// @Description  Retrieves the details of the currently authenticated user.
-// @Tags         Auth
-// @Security     BearerAuth
-// @Produce      json
-// @Success      200 {object} ports.UserResponse
-// @Failure      401 {object} map[string]string "Unauthorized"
-// @Router       /auth/me [get]
 func (h *AuthHandler) GetCurrentUser(c *gin.Context) {
 	// --- USE CONSTANT ---
 	userVal, exists := c.Get(h.routes.ContextKeyUser)

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants" // <-- IMPORT
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"github.com/gin-gonic/gin"
@@ -13,12 +14,15 @@ import (
 type InferredConnectionHandler struct {
 	service  *services.InferredConnectionService
 	validate *validator.Validate
+	routes   *constants.Routes // <-- ADDED
 }
 
-func NewInferredConnectionHandler(service *services.InferredConnectionService) *InferredConnectionHandler {
+// Updated constructor
+func NewInferredConnectionHandler(service *services.InferredConnectionService, routes *constants.Routes) *InferredConnectionHandler {
 	return &InferredConnectionHandler{
 		service:  service,
 		validate: validator.New(),
+		routes:   routes, // <-- ADDED
 	}
 }
 
@@ -35,6 +39,15 @@ func NewInferredConnectionHandler(service *services.InferredConnectionService) *
 // @Failure      500 {object} map[string]string "Internal server error"
 // @Router       /inferred-connections [post]
 func (h *InferredConnectionHandler) CreateInferredConnection(c *gin.Context) {
+	// Optional: Check auth user ID if needed for logging/permissions
+	// --- USE CONSTANT ---
+	_, exists := c.Get(h.routes.ContextKeyUserID)
+	if !exists {
+		// Should not happen if middleware ran successfully
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
 	var input ports.CreateInferredConnectionInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body: " + err.Error()})
@@ -68,8 +81,18 @@ func (h *InferredConnectionHandler) CreateInferredConnection(c *gin.Context) {
 // @Failure      500 {object} map[string]string "Internal server error"
 // @Router       /inferred-connections/source/{entityType}/{entityID} [get]
 func (h *InferredConnectionHandler) GetConnectionsForSource(c *gin.Context) {
-	entityType := c.Param("entityType")
-	entityID, err := strconv.ParseUint(c.Param("entityID"), 10, 32)
+	// Optional: Check auth user ID if needed
+	// --- USE CONSTANT ---
+	_, exists := c.Get(h.routes.ContextKeyUserID)
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	// --- USE CONSTANTS ---
+	entityType := c.Param(h.routes.ParamKeyEntityType)
+	entityIDStr := c.Param(h.routes.ParamKeyEntityID)
+	entityID, err := strconv.ParseUint(entityIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid entity ID"})
 		return

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants" // <-- IMPORT
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"github.com/gin-gonic/gin"
@@ -13,12 +14,15 @@ import (
 type L2EHandler struct {
 	service  *services.L2EResponseService
 	validate *validator.Validate
+	routes   *constants.Routes // <-- ADDED
 }
 
-func NewL2EHandler(service *services.L2EResponseService) *L2EHandler {
+// Updated constructor
+func NewL2EHandler(service *services.L2EResponseService, routes *constants.Routes) *L2EHandler {
 	return &L2EHandler{
 		service:  service,
 		validate: validator.New(),
+		routes:   routes, // <-- ADDED
 	}
 }
 
@@ -41,7 +45,8 @@ func (h *L2EHandler) CreateL2EResponse(c *gin.Context) {
 		return
 	}
 
-	userIDVal, exists := c.Get("userID")
+	// --- USE CONSTANT ---
+	userIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
 		return
@@ -59,11 +64,8 @@ func (h *L2EHandler) CreateL2EResponse(c *gin.Context) {
 		return
 	}
 
-	// The service checks if the user exists implicitly now
 	response, err := h.service.CreateL2EResponse(c.Request.Context(), input)
 	if err != nil {
-		// Service only returns UserNotFound if DB query fails differently now,
-		// mostly we'll get ErrDatabase
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create L2E response"})
 		return
 	}
@@ -72,26 +74,33 @@ func (h *L2EHandler) CreateL2EResponse(c *gin.Context) {
 }
 
 // @Summary      Get L2E Responses For User
-// @Description  Retrieves all L2E responses submitted by a specific user. (Protected)
+// @Description  Retrieves all L2E responses submitted by a specific user. (This route seems public based on user.routes.go, but GetL2EResponsesForUser might need auth check internally if sensitive)
 // @Tags         L2EResponses
-// @Security     BearerAuth
 // @Produce      json
 // @Param        id path int true "User ID"
 // @Success      200 {array} ports.L2EResponseResponse
 // @Failure      400 {object} map[string]string "Invalid User ID"
-// @Failure      401 {object} map[string]string "Unauthorized"
 // @Failure      500 {object} map[string]string "Internal server error"
 // @Router       /users/{id}/l2e-responses [get]
 func (h *L2EHandler) GetL2EResponsesForUser(c *gin.Context) {
-	userID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	// --- USE CONSTANT ---
+	userIDStr := c.Param(h.routes.ParamKeyID)
+	userID, err := strconv.ParseUint(userIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
+	// Optional: Add Authorization Check here if this endpoint should be protected
+	// authUserIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	// authUserID, _ := authUserIDVal.(uint)
+	// if authUserID != uint(userID) { // && !IsAdmin(authUserID) {
+	// 	c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
+	// 	return
+	// }
+
 	responses, err := h.service.GetL2EResponsesForUser(c.Request.Context(), uint(userID))
 	if err != nil {
-		// Check if user exists? Service currently doesn't error on empty results.
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve L2E responses"})
 		return
 	}

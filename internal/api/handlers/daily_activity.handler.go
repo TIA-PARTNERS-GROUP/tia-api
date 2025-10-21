@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"github.com/gin-gonic/gin"
@@ -14,12 +15,15 @@ import (
 type DailyActivityHandler struct {
 	service  *services.DailyActivityService
 	validate *validator.Validate
+	routes   *constants.Routes // <-- ADDED
 }
 
-func NewDailyActivityHandler(service *services.DailyActivityService) *DailyActivityHandler {
+// Updated constructor
+func NewDailyActivityHandler(service *services.DailyActivityService, routes *constants.Routes) *DailyActivityHandler {
 	return &DailyActivityHandler{
 		service:  service,
 		validate: validator.New(),
+		routes:   routes, // <-- ADDED
 	}
 }
 
@@ -47,6 +51,16 @@ func (h *DailyActivityHandler) CreateDailyActivity(c *gin.Context) {
 		return
 	}
 
+	// Assuming only admins/authorized users can create. Get user ID for service layer check.
+	// --- USE CONSTANT ---
+	authUserIDVal, exists := c.Get(h.routes.ContextKeyUserID)
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+	authUserID, _ := authUserIDVal.(uint)
+	_ = authUserID // Placeholder - Pass to service if needed for permission checks
+
 	activity, err := h.service.CreateDailyActivity(c.Request.Context(), input)
 	if err != nil {
 		if errors.Is(err, ports.ErrActivityNameExists) {
@@ -57,7 +71,7 @@ func (h *DailyActivityHandler) CreateDailyActivity(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, activity)
+	c.JSON(http.StatusCreated, activity) // Returning the model directly seems fine here
 }
 
 // @Summary      Get All Daily Activities
@@ -74,7 +88,7 @@ func (h *DailyActivityHandler) GetAllDailyActivities(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, activities)
+	c.JSON(http.StatusOK, activities) // Returning models directly
 }
 
 // @Summary      Get Daily Activity By ID
@@ -87,7 +101,9 @@ func (h *DailyActivityHandler) GetAllDailyActivities(c *gin.Context) {
 // @Failure      500 {object} map[string]string "Internal server error"
 // @Router       /daily-activities/{id} [get]
 func (h *DailyActivityHandler) GetDailyActivityByID(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	// --- USE CONSTANT ---
+	idStr := c.Param(h.routes.ParamKeyID)
+	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
 		return
@@ -103,91 +119,9 @@ func (h *DailyActivityHandler) GetDailyActivityByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, activity)
+	c.JSON(http.StatusOK, activity) // Returning model directly
 }
 
-// @Summary      Enrol in Daily Activity
-// @Description  Enrols the authenticated user in a daily activity.
-// @Tags         DailyActivities
-// @Security     BearerAuth
-// @Produce      json
-// @Param        id path int true "Daily Activity ID"
-// @Success      201 {object} models.DailyActivityEnrolment
-// @Failure      401 {object} map[string]string "Unauthorized"
-// @Failure      404 {object} map[string]string "Activity or user not found"
-// @Failure      409 {object} map[string]string "User already enrolled"
-// @Failure      500 {object} map[string]string "Internal server error"
-// @Router       /daily-activities/{id}/enrol [post]
-func (h *DailyActivityHandler) EnrolUserInActivity(c *gin.Context) {
-	userIDVal, _ := c.Get("userID")
-	userID, _ := userIDVal.(uint)
-	if userID == 0 {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
-		return
-	}
-
-	activityID, err := strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
-		return
-	}
-
-	input := ports.EnrolInActivityInput{
-		DailyActivityID: uint(activityID),
-		UserID:          userID,
-	}
-
-	enrolment, err := h.service.EnrolUserInActivity(c.Request.Context(), input)
-	if err != nil {
-		if errors.Is(err, ports.ErrAlreadyEnrolled) {
-			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
-			return
-		}
-		if errors.Is(err, ports.ErrProjectOrUserNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Activity or user not found"})
-			return
-		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to enrol in activity"})
-		return
-	}
-
-	c.JSON(http.StatusCreated, enrolment)
-}
-
-// @Summary      Withdraw from Daily Activity
-// @Description  Withdraws the authenticated user from a daily activity.
-// @Tags         DailyActivities
-// @Security     BearerAuth
-// @Produce      json
-// @Param        id path int true "Daily Activity ID"
-// @Success      204 "No Content"
-// @Failure      401 {object} map[string]string "Unauthorized"
-// @Failure      404 {object} map[string]string "Enrolment not found"
-// @Failure      500 {object} map[string]string "Internal server error"
-// @Router       /daily-activities/{id}/enrol [delete]
-func (h *DailyActivityHandler) WithdrawUserFromActivity(c *gin.Context) {
-	userIDVal, _ := c.Get("userID")
-	userID, _ := userIDVal.(uint)
-	if userID == 0 {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
-		return
-	}
-
-	activityID, err := strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
-		return
-	}
-
-	err = h.service.WithdrawUserFromActivity(c.Request.Context(), uint(activityID), userID)
-	if err != nil {
-		if errors.Is(err, ports.ErrEnrolmentNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
-		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to withdraw from activity"})
-		return
-	}
-
-	c.Status(http.StatusNoContent)
-}
+// --- REMOVED EnrolUserInActivity and WithdrawUserFromActivity ---
+// These functions were duplicated from daily_activity_enrolment.handler.go
+// and were not used by the routes defined for DailyActivityHandler.

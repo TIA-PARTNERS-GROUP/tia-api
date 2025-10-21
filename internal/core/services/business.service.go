@@ -97,98 +97,153 @@ func (s *BusinessService) CreateBusiness(ctx context.Context, data ports.CreateB
 	return &business, nil
 }
 
-func (s *BusinessService) UpdateBusiness(ctx context.Context, id uint, data ports.UpdateBusinessInput) (*models.Business, error) {
-	business, err := s.GetBusinessByID(ctx, id)
-	if err != nil {
-		return nil, err
-	}
+// In internal/core/services/business.service.go
 
-	updateData := make(map[string]interface{})
-	if data.Name != nil {
-		updateData["name"] = *data.Name
-	}
-	if data.Tagline != nil {
-		updateData["tagline"] = *data.Tagline
-	}
-	if data.Website != nil {
-		updateData["website"] = *data.Website
-	}
-	if data.ContactName != nil {
-		updateData["contact_name"] = *data.ContactName
-	}
-	if data.ContactPhoneNo != nil {
-		updateData["contact_phone_no"] = *data.ContactPhoneNo
-	}
-	if data.ContactEmail != nil {
-		updateData["contact_email"] = *data.ContactEmail
-	}
-	if data.Description != nil {
-		updateData["description"] = *data.Description
-	}
-	if data.Address != nil {
-		updateData["address"] = *data.Address
-	}
-	if data.City != nil {
-		updateData["city"] = *data.City
-	}
-	if data.State != nil {
-		updateData["state"] = *data.State
-	}
-	if data.Country != nil {
-		updateData["country"] = *data.Country
-	}
-	if data.PostalCode != nil {
-		updateData["postal_code"] = *data.PostalCode
-	}
-	if data.Value != nil {
-		updateData["value"] = *data.Value
-	}
-	if data.BusinessType != nil {
-		updateData["business_type"] = *data.BusinessType
-	}
-	if data.BusinessCategory != nil {
-		updateData["business_category"] = *data.BusinessCategory
-	}
-	if data.BusinessPhase != nil {
-		updateData["business_phase"] = *data.BusinessPhase
-	}
-	if data.Active != nil {
-		updateData["active"] = *data.Active
-	}
-
-	if len(updateData) == 0 {
-		return nil, ports.ErrNoUpdateData
-	}
-
-	if err := s.db.WithContext(ctx).Model(business).Updates(updateData).Error; err != nil {
+func (s *BusinessService) UpdateBusiness(ctx context.Context, id uint, authUserID uint, input ports.UpdateBusinessInput) (*models.Business, error) {
+	// 1. Fetch the business record first
+	var business models.Business
+	if err := s.db.WithContext(ctx).First(&business, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ports.ErrBusinessNotFound
+		}
 		return nil, ports.ErrDatabase
 	}
 
+	// 2. Perform Authorization Check
+	if business.OperatorUserID != authUserID {
+		// Optional: Add admin role check here if needed in the future
+		// if !IsAdmin(authUserID) { ... }
+		return nil, ports.ErrForbidden
+	}
+
+	// 3. Map the input DTO to the model struct for updating
+	// This approach is safer and cleaner than building a map manually.
+	updated := false
+	if input.Name != nil {
+		business.Name = *input.Name
+		updated = true
+	}
+	if input.Tagline != nil {
+		business.Tagline = input.Tagline // This is a pointer field, direct assignment is fine
+		updated = true
+	}
+	if input.Website != nil {
+		business.Website = input.Website
+		updated = true
+	}
+	if input.ContactName != nil {
+		business.ContactName = input.ContactName
+		updated = true
+	}
+	if input.ContactPhoneNo != nil {
+		business.ContactPhoneNo = input.ContactPhoneNo
+		updated = true
+	}
+	if input.ContactEmail != nil {
+		business.ContactEmail = input.ContactEmail
+		updated = true
+	}
+	if input.Description != nil {
+		business.Description = input.Description
+		updated = true
+	}
+	if input.Address != nil {
+		business.Address = input.Address
+		updated = true
+	}
+	if input.City != nil {
+		business.City = input.City
+		updated = true
+	}
+	if input.State != nil {
+		business.State = input.State
+		updated = true
+	}
+	if input.Country != nil {
+		business.Country = input.Country
+		updated = true
+	}
+	if input.PostalCode != nil {
+		business.PostalCode = input.PostalCode
+		updated = true
+	}
+	if input.Value != nil {
+		business.Value = input.Value
+		updated = true
+	}
+	if input.BusinessType != nil {
+		business.BusinessType = *input.BusinessType
+		updated = true
+	}
+	if input.BusinessCategory != nil {
+		business.BusinessCategory = *input.BusinessCategory
+		updated = true
+	}
+	if input.BusinessPhase != nil {
+		business.BusinessPhase = *input.BusinessPhase
+		updated = true
+	}
+	if input.Active != nil {
+		business.Active = *input.Active
+		updated = true
+	}
+
+	// 4. Check if any data was actually provided for the update
+	if !updated {
+		return nil, ports.ErrNoUpdateData
+	}
+
+	// 5. Save the updated business model
+	if err := s.db.WithContext(ctx).Save(&business).Error; err != nil {
+		return nil, ports.ErrDatabase
+	}
+
+	// 6. Return the fully updated and preloaded business record
 	return s.GetBusinessByID(ctx, id)
 }
 
-func (s *BusinessService) DeleteBusiness(ctx context.Context, id uint) error {
+func (s *BusinessService) DeleteBusiness(ctx context.Context, id uint, authUserID uint) error { // Added authUserID parameter
+
+	// --- Authorization Check ---
+	var business models.Business
+	if err := s.db.WithContext(ctx).Select("operator_user_id").First(&business, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ports.ErrBusinessNotFound // Return specific not found error
+		}
+		return ports.ErrDatabase // Return general database error for other issues
+	}
+
+	if business.OperatorUserID != authUserID {
+		// Optional: Add admin role check here if needed
+		return ports.ErrForbidden // Return specific forbidden error
+	}
+	// --- End Authorization Check ---
+
+	// Check if the business is in use (existing logic)
 	var projectCount int64
-	s.db.Model(&models.Project{}).Where("business_id = ?", id).Count(&projectCount)
+	if err := s.db.Model(&models.Project{}).Where("business_id = ?", id).Count(&projectCount).Error; err != nil {
+		return ports.ErrDatabase // Return db error if count fails
+	}
 
 	var pubCount int64
-	s.db.Model(&models.Publication{}).Where("business_id = ?", id).Count(&pubCount)
+	if err := s.db.Model(&models.Publication{}).Where("business_id = ?", id).Count(&pubCount).Error; err != nil {
+		return ports.ErrDatabase // Return db error if count fails
+	}
 
 	if projectCount > 0 || pubCount > 0 {
 		return ports.ErrBusinessInUse
 	}
 
+	// Proceed with deletion
 	result := s.db.WithContext(ctx).Delete(&models.Business{}, id)
 	if result.Error != nil {
 		return ports.ErrDatabase
 	}
-	if result.RowsAffected == 0 {
-		return ports.ErrBusinessNotFound
-	}
+	// No need to check RowsAffected here because the initial fetch already confirmed existence.
+	// If the record vanished between the check and delete (unlikely), GORM handles it gracefully.
 
 	return nil
 }
-
 func (s *BusinessService) GetUserBusinesses(ctx context.Context, userID uint) ([]models.Business, error) {
 	var businesses []models.Business
 	if err := s.db.WithContext(ctx).Where("operator_user_id = ?", userID).Order("name asc").Find(&businesses).Error; err != nil {

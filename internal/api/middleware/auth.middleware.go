@@ -4,11 +4,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"     // <-- IMPORT
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services" // <-- IMPORT
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware(authService *services.AuthService) gin.HandlerFunc {
+func AuthMiddleware(authService *services.AuthService, routes *constants.Routes) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
@@ -29,9 +30,9 @@ func AuthMiddleware(authService *services.AuthService) gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user", user)
-		c.Set("userID", user.ID)
-		c.Set("sessionID", session.ID)
+		c.Set(routes.ContextKeyUser, user)
+		c.Set(routes.ContextKeyUserID, user.ID)
+		c.Set(routes.ContextKeySessionID, session.ID)
 
 		c.Next()
 	}

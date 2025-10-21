@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
@@ -15,12 +16,15 @@ import (
 type BusinessConnectionHandler struct {
 	service  *services.BusinessConnectionService
 	validate *validator.Validate
+	routes   *constants.Routes // <-- ADDED
 }
 
-func NewBusinessConnectionHandler(s *services.BusinessConnectionService) *BusinessConnectionHandler {
+// Updated constructor
+func NewBusinessConnectionHandler(service *services.BusinessConnectionService, routes *constants.Routes) *BusinessConnectionHandler {
 	return &BusinessConnectionHandler{
-		service:  s,
+		service:  service,
 		validate: validator.New(),
+		routes:   routes, // <-- ADDED
 	}
 }
 
@@ -48,8 +52,14 @@ func (h *BusinessConnectionHandler) CreateBusinessConnection(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("userID")
-	input.InitiatedByUserID = userID.(uint)
+	// --- USE CONSTANT ---
+	userIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	userID, ok := userIDVal.(uint)
+	if !ok || userID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
+		return
+	}
+	input.InitiatedByUserID = userID // Set from context
 
 	connection, err := h.service.CreateBusinessConnection(c.Request.Context(), input)
 	if err != nil {
@@ -76,13 +86,25 @@ func (h *BusinessConnectionHandler) CreateBusinessConnection(c *gin.Context) {
 // @Failure      404 {object} map[string]string "Connection not found"
 // @Router       /connections/{id} [get]
 func (h *BusinessConnectionHandler) GetBusinessConnection(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	// --- USE CONSTANT ---
+	idStr := c.Param(h.routes.ParamKeyID)
+	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil || id == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid connection ID"})
 		return
 	}
 
-	connection, err := h.service.GetBusinessConnection(c.Request.Context(), uint(id))
+	// Retrieve auth user ID for potential service layer checks
+	// --- USE CONSTANT ---
+	authUserIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	authUserID, _ := authUserIDVal.(uint)
+	if authUserID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
+		return
+	}
+
+	// Pass authUserID to service if it needs to check permissions
+	connection, err := h.service.GetBusinessConnection(c.Request.Context(), uint(id)) // Modify service if needed
 	if err != nil {
 		var apiErr *ports.ApiError
 		if errors.As(err, &apiErr) {
@@ -108,7 +130,9 @@ func (h *BusinessConnectionHandler) GetBusinessConnection(c *gin.Context) {
 // @Failure      400 {object} map[string]string "Invalid Business ID format"
 // @Router       /businesses/{id}/connections [get]
 func (h *BusinessConnectionHandler) GetBusinessConnections(c *gin.Context) {
-	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	// --- USE CONSTANT ---
+	businessIDStr := c.Param(h.routes.ParamKeyID)
+	businessID, err := strconv.ParseUint(businessIDStr, 10, 32)
 	if err != nil || businessID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
 		return
@@ -117,16 +141,27 @@ func (h *BusinessConnectionHandler) GetBusinessConnections(c *gin.Context) {
 	var status *models.BusinessConnectionStatus
 	if s := c.Query("status"); s != "" {
 		tempStatus := models.BusinessConnectionStatus(s)
+		// TODO: Add validation for enum values if needed
 		status = &tempStatus
 	}
 
 	var connType *models.BusinessConnectionType
 	if ct := c.Query("type"); ct != "" {
 		tempType := models.BusinessConnectionType(ct)
+		// TODO: Add validation for enum values if needed
 		connType = &tempType
 	}
 
-	connections, err := h.service.GetBusinessConnections(c.Request.Context(), uint(businessID), connType, status)
+	// Pass authUserID to service if it needs to check permissions
+	// --- USE CONSTANT ---
+	authUserIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	authUserID, _ := authUserIDVal.(uint)
+	if authUserID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
+		return
+	}
+
+	connections, err := h.service.GetBusinessConnections(c.Request.Context(), uint(businessID), connType, status) // Modify service if needed
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve connections"})
 		return
@@ -148,7 +183,9 @@ func (h *BusinessConnectionHandler) GetBusinessConnections(c *gin.Context) {
 // @Failure      404 {object} map[string]string "Connection not found"
 // @Router       /connections/{id} [put]
 func (h *BusinessConnectionHandler) UpdateBusinessConnection(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	// --- USE CONSTANT ---
+	idStr := c.Param(h.routes.ParamKeyID)
+	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil || id == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid connection ID"})
 		return
@@ -165,7 +202,16 @@ func (h *BusinessConnectionHandler) UpdateBusinessConnection(c *gin.Context) {
 		return
 	}
 
-	connection, err := h.service.UpdateBusinessConnection(c.Request.Context(), uint(id), input)
+	// Pass authUserID to service if it needs to check permissions
+	// --- USE CONSTANT ---
+	authUserIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	authUserID, _ := authUserIDVal.(uint)
+	if authUserID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
+		return
+	}
+
+	connection, err := h.service.UpdateBusinessConnection(c.Request.Context(), uint(id), input) // Modify service if needed
 	if err != nil {
 		var apiErr *ports.ApiError
 		if errors.As(err, &apiErr) {
@@ -190,13 +236,24 @@ func (h *BusinessConnectionHandler) UpdateBusinessConnection(c *gin.Context) {
 // @Failure      404 {object} map[string]string "Connection not found or not pending"
 // @Router       /connections/{id}/accept [post]
 func (h *BusinessConnectionHandler) AcceptBusinessConnection(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	// --- USE CONSTANT ---
+	idStr := c.Param(h.routes.ParamKeyID)
+	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil || id == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid connection ID"})
 		return
 	}
 
-	connection, err := h.service.AcceptBusinessConnection(c.Request.Context(), uint(id))
+	// Pass authUserID to service if it needs to check permissions
+	// --- USE CONSTANT ---
+	authUserIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	authUserID, _ := authUserIDVal.(uint)
+	if authUserID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
+		return
+	}
+
+	connection, err := h.service.AcceptBusinessConnection(c.Request.Context(), uint(id)) // Modify service if needed
 	if err != nil {
 		var apiErr *ports.ApiError
 		if errors.As(err, &apiErr) {
@@ -220,13 +277,24 @@ func (h *BusinessConnectionHandler) AcceptBusinessConnection(c *gin.Context) {
 // @Failure      404 {object} map[string]string "Connection not found or not pending"
 // @Router       /connections/{id}/reject [post]
 func (h *BusinessConnectionHandler) RejectBusinessConnection(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	// --- USE CONSTANT ---
+	idStr := c.Param(h.routes.ParamKeyID)
+	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil || id == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid connection ID"})
 		return
 	}
 
-	connection, err := h.service.RejectBusinessConnection(c.Request.Context(), uint(id))
+	// Pass authUserID to service if it needs to check permissions
+	// --- USE CONSTANT ---
+	authUserIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	authUserID, _ := authUserIDVal.(uint)
+	if authUserID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
+		return
+	}
+
+	connection, err := h.service.RejectBusinessConnection(c.Request.Context(), uint(id)) // Modify service if needed
 	if err != nil {
 		var apiErr *ports.ApiError
 		if errors.As(err, &apiErr) {
@@ -250,13 +318,24 @@ func (h *BusinessConnectionHandler) RejectBusinessConnection(c *gin.Context) {
 // @Failure      404 {object} map[string]string "Connection not found"
 // @Router       /connections/{id} [delete]
 func (h *BusinessConnectionHandler) DeleteBusinessConnection(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	// --- USE CONSTANT ---
+	idStr := c.Param(h.routes.ParamKeyID)
+	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil || id == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid connection ID"})
 		return
 	}
 
-	if err := h.service.DeleteBusinessConnection(c.Request.Context(), uint(id)); err != nil {
+	// Pass authUserID to service if it needs to check permissions
+	// --- USE CONSTANT ---
+	authUserIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	authUserID, _ := authUserIDVal.(uint)
+	if authUserID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
+		return
+	}
+
+	if err := h.service.DeleteBusinessConnection(c.Request.Context(), uint(id)); err != nil { // Modify service if needed
 		var apiErr *ports.ApiError
 		if errors.As(err, &apiErr) {
 			c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})

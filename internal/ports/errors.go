@@ -128,6 +128,8 @@ var (
 	ErrProjectRegionNotFound   = &ApiError{StatusCode: 404, Message: "This project is not associated with the specified region"}
 	ErrProjectOrRegionNotFound = &ApiError{StatusCode: 400, Message: "Project or Region not found"}
 
+	ErrForbidden = &ApiError{StatusCode: 403, Message: "Forbidden"}
+
 	// Generic errors
 	ErrDatabase     = &ApiError{StatusCode: 500, Message: "A database error occurred"}
 	ErrNoUpdateData = &ApiError{StatusCode: 400, Message: "No valid fields provided for update"}
