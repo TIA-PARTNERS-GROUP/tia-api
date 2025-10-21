@@ -1,8 +1,6 @@
 package main
-
 import (
 	"log"
-
 	"github.com/TIA-PARTNERS-GROUP/tia-api/configs"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/handlers"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/middleware"
@@ -13,33 +11,17 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-
 	_ "github.com/TIA-PARTNERS-GROUP/tia-api/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
-
-// @title           TIA API
-// @version         1.0
-// @description     This is the API server for the TIA platform.
-// @license.name  Apache 2.0
-// @host      localhost:8080
-// @BasePath  /api/v1
-//
-// @securityDefinitions.apikey BearerAuth
-// @in header
-// @name Authorization
-// @bearerFormat JWT
-// @alias datatypes.JSON = interface{}
 func main() {
 	config := configs.LoadConfig()
-
 	db, err := gorm.Open(mysql.Open(config.DatabaseURL), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 	log.Println("Database connection successful.")
-
 	log.Println("Running database migrations...")
 	err = db.AutoMigrate(
 		&models.User{},
@@ -72,7 +54,6 @@ func main() {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}
 	log.Println("Database migration successful.")
-
 	userService := services.NewUserService(db)
 	authService := services.NewAuthService(db)
 	businessService := services.NewBusinessService(db)
@@ -85,23 +66,20 @@ func main() {
 	inferredConnectionService := services.NewInferredConnectionService(db)
 	l2eResponseService := services.NewL2EResponseService(db)
 	notificationService := services.NewNotificationService(db)
-
-	userHandler := handlers.NewUserHandler(userService, &constants.AppRoutes)                                                       // <-- Pass routes
-	authHandler := handlers.NewAuthHandler(authService, &constants.AppRoutes)                                                       // <-- Pass routes
-	businessHandler := handlers.NewBusinessHandler(businessService, &constants.AppRoutes)                                           // <-- Pass routes
-	businessConnectionHandler := handlers.NewBusinessConnectionHandler(businessConnectionService, &constants.AppRoutes)             // <-- Pass routes
-	businessTagHandler := handlers.NewBusinessTagHandler(businessTagService, &constants.AppRoutes)                                  // <-- Pass routes
-	dailyActivityHandler := handlers.NewDailyActivityHandler(dailyActivityService, &constants.AppRoutes)                            // <-- Pass routes
-	dailyActivityEnrolmentHandler := handlers.NewDailyActivityEnrolmentHandler(dailyActivityEnrolmentService, &constants.AppRoutes) // <-- Pass routes
-	eventHandler := handlers.NewEventHandler(eventService, &constants.AppRoutes)                                                    // <-- Pass routes
-	feedbackHandler := handlers.NewFeedbackHandler(feedbackService, &constants.AppRoutes)                                           // <-- Pass routes
-	inferredConnectionHandler := handlers.NewInferredConnectionHandler(inferredConnectionService, &constants.AppRoutes)             // <-- Pass routes
-	l2eHandler := handlers.NewL2EHandler(l2eResponseService, &constants.AppRoutes)                                                  // <-- Pass routes
-	notificationHandler := handlers.NewNotificationHandler(notificationService, &constants.AppRoutes)                               // <-- Pass routes
-
-	authMiddleware := middleware.AuthMiddleware(authService, &constants.AppRoutes) // <-- Pass routes
-
-	// --- Setup RouterDependencies ---
+	userHandler := handlers.NewUserHandler(userService, &constants.AppRoutes)                                                       
+	authHandler := handlers.NewAuthHandler(authService, &constants.AppRoutes)                                                       
+	businessHandler := handlers.NewBusinessHandler(businessService, &constants.AppRoutes)                                           
+	businessConnectionHandler := handlers.NewBusinessConnectionHandler(businessConnectionService, &constants.AppRoutes)             
+	businessTagHandler := handlers.NewBusinessTagHandler(businessTagService, &constants.AppRoutes)                                  
+	dailyActivityHandler := handlers.NewDailyActivityHandler(dailyActivityService, &constants.AppRoutes)                            
+	dailyActivityEnrolmentHandler := handlers.NewDailyActivityEnrolmentHandler(dailyActivityEnrolmentService, &constants.AppRoutes) 
+	eventHandler := handlers.NewEventHandler(eventService, &constants.AppRoutes)                                                    
+	feedbackHandler := handlers.NewFeedbackHandler(feedbackService, &constants.AppRoutes)                                           
+	inferredConnectionHandler := handlers.NewInferredConnectionHandler(inferredConnectionService, &constants.AppRoutes)             
+	l2eHandler := handlers.NewL2EHandler(l2eResponseService, &constants.AppRoutes)                                                  
+	notificationHandler := handlers.NewNotificationHandler(notificationService, &constants.AppRoutes)                               
+	authMiddleware := middleware.AuthMiddleware(authService, &constants.AppRoutes) 
+	
 	deps := &routes.RouterDependencies{
 		AuthMiddleware:                authMiddleware,
 		UserHandler:                   userHandler,
@@ -116,15 +94,12 @@ func main() {
 		InferredConnectionHandler:     inferredConnectionHandler,
 		L2EHandler:                    l2eHandler,
 		NotificationHandler:           notificationHandler,
-		Routes:                        constants.AppRoutes, // Pass the struct itself
+		Routes:                        constants.AppRoutes, 
 	}
-
 	router := gin.Default()
-	// --- Pass the single deps struct ---
+	
 	routes.RegisterRoutes(router, deps)
-
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
 	log.Println("Starting server on http://localhost:8080")
 	log.Println("Swagger UI available on http://localhost:8080/swagger/index.html")
 	if err := router.Run(":8080"); err != nil {

@@ -1,12 +1,9 @@
 package ports
-
 import "time"
-
 type LoginInput struct {
 	LoginEmail string `json:"login_email" validate:"required,email"`
 	Password   string `json:"password" validate:"required"`
 }
-
 type LoginResponse struct {
 	User      UserResponse `json:"user"`
 	Token     string       `json:"token"`

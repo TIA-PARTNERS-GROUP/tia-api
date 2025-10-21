@@ -1,12 +1,9 @@
 package utils
-
 import (
 	"fmt"
 	"unicode"
-
 	"golang.org/x/crypto/bcrypt"
 )
-
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -14,23 +11,19 @@ func HashPassword(password string) (string, error) {
 	}
 	return string(bytes), nil
 }
-
 func VerifyPassword(password, hash string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
-
 func ValidatePasswordComplexity(password string) error {
 	if len(password) < 8 {
 		return fmt.Errorf("password must be at least 8 characters long")
 	}
-
 	var (
 		hasUpper   bool
 		hasLower   bool
 		hasNumber  bool
 		hasSpecial bool
 	)
-
 	for _, char := range password {
 		switch {
 		case unicode.IsUpper(char):
@@ -43,7 +36,6 @@ func ValidatePasswordComplexity(password string) error {
 			hasSpecial = true
 		}
 	}
-
 	if !hasUpper {
 		return fmt.Errorf("password must contain at least one uppercase letter")
 	}
@@ -56,6 +48,5 @@ func ValidatePasswordComplexity(password string) error {
 	if !hasSpecial {
 		return fmt.Errorf("password must contain at least one special character")
 	}
-
 	return nil
 }

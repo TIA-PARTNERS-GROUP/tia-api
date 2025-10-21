@@ -1,17 +1,13 @@
 package ports
-
 import (
 	"time"
-
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 )
-
 type CreateUserSubscriptionInput struct {
 	UserID         uint `json:"user_id" validate:"required"`
 	SubscriptionID uint `json:"subscription_id" validate:"required"`
 	IsTrial        bool `json:"is_trial"`
 }
-
 type UserSubscriptionResponse struct {
 	ID           uint                 `json:"id"`
 	DateFrom     time.Time            `json:"date_from"`
@@ -20,7 +16,6 @@ type UserSubscriptionResponse struct {
 	User         UserResponse         `json:"user"`
 	Subscription SubscriptionResponse `json:"subscription"`
 }
-
 func MapUserSubscriptionToResponse(us *models.UserSubscription) UserSubscriptionResponse {
 	resp := UserSubscriptionResponse{
 		ID:       us.ID,

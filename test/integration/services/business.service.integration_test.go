@@ -1,24 +1,18 @@
 package main
-
 import (
 	"context"
 	"testing"
-
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	testutil "github.com/TIA-PARTNERS-GROUP/tia-api/test/test_util"
 	"github.com/stretchr/testify/assert"
 )
-
 func TestBusinessService_Integration_CreateAndGet(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
-
 	businessService := services.NewBusinessService(testutil.TestDB)
 	operator := models.User{FirstName: "Biz", LoginEmail: "biz@owner.com", Active: true}
-
 	testutil.TestDB.Create(&operator)
-
 	createDTO := ports.CreateBusinessInput{
 		OperatorUserID:   operator.ID,
 		Name:             "My New Business",
@@ -31,167 +25,131 @@ func TestBusinessService_Integration_CreateAndGet(t *testing.T) {
 	assert.NotNil(t, createdBusiness)
 	assert.Equal(t, "My New Business", createdBusiness.Name)
 	assert.Equal(t, operator.ID, createdBusiness.OperatorUserID)
-
 	fetchedBusiness, err := businessService.GetBusinessByID(context.Background(), createdBusiness.ID)
 	assert.NoError(t, err)
 	assert.NotNil(t, fetchedBusiness)
 	assert.Equal(t, "My New Business", fetchedBusiness.Name)
-
 	assert.NotZero(t, fetchedBusiness.OperatorUser.ID)
 	assert.Equal(t, "Biz", fetchedBusiness.OperatorUser.FirstName)
 }
-
 func TestBusinessService_Integration_DeleteBusiness(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	businessService := services.NewBusinessService(testutil.TestDB)
-
 	operator := models.User{FirstName: "BizDel", LoginEmail: "bizdel@owner.com", Active: true}
 	testutil.TestDB.Create(&operator)
-
 	otherUser := models.User{FirstName: "Other", LoginEmail: "other@user.com", Active: true}
 	testutil.TestDB.Create(&otherUser)
-
 	t.Run("Success - Delete Own Business", func(t *testing.T) {
 		businessToDelete := models.Business{Name: "Deletable", OperatorUserID: operator.ID, BusinessType: models.BusinessTypeOther, BusinessCategory: models.BusinessCategoryMixed, BusinessPhase: models.BusinessPhaseGrowth}
 		testutil.TestDB.Create(&businessToDelete)
-
-		// --- FIX: Pass operator.ID as authUserID ---
+		
 		err := businessService.DeleteBusiness(context.Background(), businessToDelete.ID, operator.ID)
 		assert.NoError(t, err)
-
-		// Verify deletion
+		
 		_, err = businessService.GetBusinessByID(context.Background(), businessToDelete.ID)
 		assert.Error(t, err)
 		assert.Equal(t, ports.ErrBusinessNotFound, err)
 	})
-
 	t.Run("Failure - Business In Use", func(t *testing.T) {
 		businessInUse := models.Business{Name: "In Use", OperatorUserID: operator.ID, BusinessType: models.BusinessTypeOther, BusinessCategory: models.BusinessCategoryMixed, BusinessPhase: models.BusinessPhaseGrowth}
 		testutil.TestDB.Create(&businessInUse)
-		// Use pointers for foreign keys if nullable in model
+		
 		project := models.Project{Name: "Test Project", ManagedByUserID: operator.ID, BusinessID: &businessInUse.ID}
 		testutil.TestDB.Create(&project)
-
-		// --- FIX: Pass operator.ID as authUserID ---
+		
 		err := businessService.DeleteBusiness(context.Background(), businessInUse.ID, operator.ID)
 		assert.Error(t, err)
 		assert.Equal(t, ports.ErrBusinessInUse, err)
 	})
-
 	t.Run("Failure - Not Found", func(t *testing.T) {
 		nonExistentID := uint(99999)
-		// --- FIX: Pass operator.ID as authUserID ---
+		
 		err := businessService.DeleteBusiness(context.Background(), nonExistentID, operator.ID)
 		assert.Error(t, err)
 		assert.Equal(t, ports.ErrBusinessNotFound, err)
 	})
-
 	t.Run("Failure - Forbidden", func(t *testing.T) {
 		businessToDelete := models.Business{Name: "Forbidden Delete", OperatorUserID: operator.ID, BusinessType: models.BusinessTypeOther, BusinessCategory: models.BusinessCategoryMixed, BusinessPhase: models.BusinessPhaseGrowth}
 		testutil.TestDB.Create(&businessToDelete)
-
-		// --- FIX: Pass otherUser.ID as authUserID ---
+		
 		err := businessService.DeleteBusiness(context.Background(), businessToDelete.ID, otherUser.ID)
 		assert.Error(t, err)
 		assert.Equal(t, ports.ErrForbidden, err)
 	})
 }
-
-// --- NEW TEST ---
 func TestBusinessService_Integration_UpdateBusiness(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	businessService := services.NewBusinessService(testutil.TestDB)
-
 	operator := models.User{FirstName: "BizUpd", LoginEmail: "bizupd@owner.com", Active: true}
 	testutil.TestDB.Create(&operator)
-
 	otherUser := models.User{FirstName: "OtherUpd", LoginEmail: "otherupd@user.com", Active: true}
 	testutil.TestDB.Create(&otherUser)
-
 	t.Run("Success - Update Own Business", func(t *testing.T) {
 		businessToUpdate := models.Business{Name: "Updatable", OperatorUserID: operator.ID, BusinessType: models.BusinessTypeOther, BusinessCategory: models.BusinessCategoryMixed, BusinessPhase: models.BusinessPhaseGrowth}
 		testutil.TestDB.Create(&businessToUpdate)
-
 		newName := "Updated Name"
 		newType := models.BusinessTypeTechnology
 		input := ports.UpdateBusinessInput{
 			Name:         &newName,
 			BusinessType: &newType,
-			// Add other fields as needed for testing
+			
 		}
-
 		updatedBusiness, err := businessService.UpdateBusiness(context.Background(), businessToUpdate.ID, operator.ID, input)
 		assert.NoError(t, err)
 		assert.NotNil(t, updatedBusiness)
 		assert.Equal(t, newName, updatedBusiness.Name)
 		assert.Equal(t, newType, updatedBusiness.BusinessType)
 	})
-
 	t.Run("Failure - No Update Data", func(t *testing.T) {
 		businessToUpdate := models.Business{Name: "No Update Data", OperatorUserID: operator.ID, BusinessType: models.BusinessTypeOther, BusinessCategory: models.BusinessCategoryMixed, BusinessPhase: models.BusinessPhaseGrowth}
 		testutil.TestDB.Create(&businessToUpdate)
-
-		input := ports.UpdateBusinessInput{} // Empty input
-
+		input := ports.UpdateBusinessInput{} 
 		_, err := businessService.UpdateBusiness(context.Background(), businessToUpdate.ID, operator.ID, input)
 		assert.Error(t, err)
 		assert.Equal(t, ports.ErrNoUpdateData, err)
 	})
-
 	t.Run("Failure - Not Found", func(t *testing.T) {
 		nonExistentID := uint(99999)
 		newName := "Doesn't Matter"
 		input := ports.UpdateBusinessInput{Name: &newName}
-
 		_, err := businessService.UpdateBusiness(context.Background(), nonExistentID, operator.ID, input)
 		assert.Error(t, err)
 		assert.Equal(t, ports.ErrBusinessNotFound, err)
 	})
-
 	t.Run("Failure - Forbidden", func(t *testing.T) {
 		businessToUpdate := models.Business{Name: "Forbidden Update", OperatorUserID: operator.ID, BusinessType: models.BusinessTypeOther, BusinessCategory: models.BusinessCategoryMixed, BusinessPhase: models.BusinessPhaseGrowth}
 		testutil.TestDB.Create(&businessToUpdate)
-
 		newName := "Forbidden Name Change"
 		input := ports.UpdateBusinessInput{Name: &newName}
-
-		_, err := businessService.UpdateBusiness(context.Background(), businessToUpdate.ID, otherUser.ID, input) // Use otherUser.ID
+		_, err := businessService.UpdateBusiness(context.Background(), businessToUpdate.ID, otherUser.ID, input) 
 		assert.Error(t, err)
 		assert.Equal(t, ports.ErrForbidden, err)
 	})
 }
-
 func TestBusinessService_Integration_GetUserBusinesses(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	businessService := services.NewBusinessService(testutil.TestDB)
-
 	user1 := models.User{FirstName: "User1", LoginEmail: "user1@biz.com", Active: true}
 	testutil.TestDB.Create(&user1)
 	user2 := models.User{FirstName: "User2", LoginEmail: "user2@biz.com", Active: true}
 	testutil.TestDB.Create(&user2)
-
 	testutil.TestDB.Create(&models.Business{Name: "Biz 1", OperatorUserID: user1.ID, BusinessType: "Other", BusinessCategory: "Mixed", BusinessPhase: "Growth"})
 	testutil.TestDB.Create(&models.Business{Name: "Biz 2", OperatorUserID: user1.ID, BusinessType: "Other", BusinessCategory: "Mixed", BusinessPhase: "Growth"})
 	testutil.TestDB.Create(&models.Business{Name: "Biz 3", OperatorUserID: user2.ID, BusinessType: "Other", BusinessCategory: "Mixed", BusinessPhase: "Growth"})
-
 	user1Businesses, err := businessService.GetUserBusinesses(context.Background(), user1.ID)
 	assert.NoError(t, err)
 	assert.Len(t, user1Businesses, 2)
 }
-
 func TestBusinessService_Integration_ToggleBusinessStatus(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	businessService := services.NewBusinessService(testutil.TestDB)
-
 	operator := models.User{FirstName: "ToggleUser", LoginEmail: "toggle@user.com", Active: true}
 	testutil.TestDB.Create(&operator)
 	business := models.Business{Name: "Toggle Biz", OperatorUserID: operator.ID, Active: true, BusinessType: "Other", BusinessCategory: "Mixed", BusinessPhase: "Growth"}
-	testutil.TestDB.Select("*").Create(&business) // Ensure 'Active' is set
-
+	testutil.TestDB.Select("*").Create(&business) 
 	updatedBiz, err := businessService.ToggleBusinessStatus(context.Background(), business.ID)
 	assert.NoError(t, err)
 	assert.False(t, updatedBiz.Active)
-
 	updatedBiz, err = businessService.ToggleBusinessStatus(context.Background(), business.ID)
 	assert.NoError(t, err)
 	assert.True(t, updatedBiz.Active)

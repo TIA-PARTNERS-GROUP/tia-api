@@ -1,24 +1,19 @@
 package main
-
 import (
 	"context"
 	"testing"
 	"time"
-
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	testutil "github.com/TIA-PARTNERS-GROUP/tia-api/test/test_util"
 	"github.com/stretchr/testify/assert"
 )
-
 func TestPublicationService_Integration_CreateAndGet(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	pubService := services.NewPublicationService(testutil.TestDB)
-
 	author := models.User{FirstName: "Author", LoginEmail: "author@pub.com", Active: true}
 	testutil.TestDB.Create(&author)
-
 	published := true
 	createDTO := ports.CreatePublicationInput{
 		UserID:          author.ID,
@@ -34,7 +29,6 @@ func TestPublicationService_Integration_CreateAndGet(t *testing.T) {
 	assert.Equal(t, "my-first-go-post", createdPub.Slug)
 	assert.True(t, createdPub.Published)
 	assert.NotNil(t, createdPub.PublishedAt)
-
 	fetchedPub, err := pubService.GetPublicationBySlug(context.Background(), "my-first-go-post")
 	assert.NoError(t, err)
 	assert.NotNil(t, fetchedPub)
@@ -42,11 +36,9 @@ func TestPublicationService_Integration_CreateAndGet(t *testing.T) {
 	assert.NotZero(t, fetchedPub.User.ID)
 	assert.Equal(t, "Author", fetchedPub.User.FirstName)
 }
-
 func TestPublicationService_Integration_UpdatePublication(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	pubService := services.NewPublicationService(testutil.TestDB)
-
 	author := models.User{FirstName: "Author", LoginEmail: "author@pub.com", Active: true}
 	testutil.TestDB.Create(&author)
 	pub := models.Publication{
@@ -58,21 +50,17 @@ func TestPublicationService_Integration_UpdatePublication(t *testing.T) {
 		Published:       false,
 	}
 	testutil.TestDB.Select("*").Create(&pub)
-
 	newTitle := "Updated Awesome Title"
 	updateDTO := ports.UpdatePublicationInput{Title: &newTitle}
 	updatedPub, err := pubService.UpdatePublication(context.Background(), pub.ID, updateDTO)
-
 	assert.NoError(t, err)
 	assert.NotNil(t, updatedPub)
 	assert.Equal(t, "Updated Awesome Title", updatedPub.Title)
 	assert.Equal(t, "updated-awesome-title", updatedPub.Slug)
 }
-
 func TestPublicationService_Integration_Publishing(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	pubService := services.NewPublicationService(testutil.TestDB)
-
 	author := models.User{FirstName: "Author", LoginEmail: "author@pub.com", Active: true}
 	testutil.TestDB.Create(&author)
 	pub := models.Publication{
@@ -86,21 +74,17 @@ func TestPublicationService_Integration_Publishing(t *testing.T) {
 	testutil.TestDB.Select("*").Create(&pub)
 	assert.False(t, pub.Published)
 	assert.Nil(t, pub.PublishedAt)
-
 	published := true
 	updateDTO := ports.UpdatePublicationInput{Published: &published}
 	publishedPub, err := pubService.UpdatePublication(context.Background(), pub.ID, updateDTO)
-
 	assert.NoError(t, err)
 	assert.True(t, publishedPub.Published)
 	assert.NotNil(t, publishedPub.PublishedAt)
 	assert.WithinDuration(t, time.Now(), *publishedPub.PublishedAt, 5*time.Second)
 }
-
 func TestPublicationService_Integration_DeletePublication(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	pubService := services.NewPublicationService(testutil.TestDB)
-
 	author := models.User{FirstName: "Author", LoginEmail: "author@pub.com", Active: true}
 	testutil.TestDB.Create(&author)
 	pub := models.Publication{
@@ -111,7 +95,6 @@ func TestPublicationService_Integration_DeletePublication(t *testing.T) {
 		Content:         "Content.",
 	}
 	testutil.TestDB.Create(&pub)
-
 	err := pubService.DeletePublication(context.Background(), pub.ID)
 	assert.NoError(t, err)
 }

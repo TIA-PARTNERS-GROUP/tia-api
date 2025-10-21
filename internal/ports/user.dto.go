@@ -1,11 +1,8 @@
 package ports
-
 import (
 	"time"
-
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 )
-
 type UserCreationSchema struct {
 	FirstName      string `json:"first_name" validate:"required,min=2,max=60"`
 	LastName       string `json:"last_name" validate:"omitempty,min=2,max=60"`
@@ -15,7 +12,6 @@ type UserCreationSchema struct {
 	ContactPhoneNo string `json:"contact_phone_no" validate:"omitempty,max=20"`
 	AdkSessionID   string `json:"adk_session_id" validate:"omitempty,max=128"`
 }
-
 type UserUpdateSchema struct {
 	FirstName      *string `json:"first_name" validate:"omitempty,min=2,max=60"`
 	LastName       *string `json:"last_name" validate:"omitempty,min=2,max=60"`
@@ -27,7 +23,6 @@ type UserUpdateSchema struct {
 	EmailVerified  *bool   `json:"email_verified"`
 	Active         *bool   `json:"active"`
 }
-
 type UserResponse struct {
 	ID             uint      `json:"id"`
 	FirstName      string    `json:"first_name"`
@@ -40,7 +35,6 @@ type UserResponse struct {
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
 }
-
 func MapUserToResponse(user *models.User) UserResponse {
 	return UserResponse{
 		ID:             user.ID,

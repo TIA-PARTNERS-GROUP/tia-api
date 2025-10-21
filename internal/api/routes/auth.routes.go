@@ -1,9 +1,7 @@
 package routes
-
 import (
 	"github.com/gin-gonic/gin"
 )
-
 func SetupAuthRoutes(api *gin.RouterGroup, deps *RouterDependencies) {
 	auth := api.Group(deps.Routes.AuthBase)
 	{

@@ -1,11 +1,8 @@
 package ports
-
 import (
 	"time"
-
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 )
-
 type CreatePublicationInput struct {
 	UserID          uint                   `json:"user_id" validate:"required"`
 	BusinessID      *uint                  `json:"business_id"`
@@ -17,7 +14,6 @@ type CreatePublicationInput struct {
 	VideoURL        *string                `json:"video_url" validate:"omitempty,url"`
 	Published       *bool                  `json:"published"`
 }
-
 type UpdatePublicationInput struct {
 	Title     *string `json:"title" validate:"omitempty,min=2,max=255"`
 	Content   *string `json:"content"`
@@ -26,7 +22,6 @@ type UpdatePublicationInput struct {
 	VideoURL  *string `json:"video_url" validate:"omitempty,url"`
 	Published *bool   `json:"published"`
 }
-
 type PublicationResponse struct {
 	ID              uint                   `json:"id"`
 	Slug            string                 `json:"slug"`
@@ -43,7 +38,6 @@ type PublicationResponse struct {
 	Author          UserResponse           `json:"author"`
 	Business        *BusinessResponse      `json:"business,omitempty"`
 }
-
 func MapPublicationToResponse(pub *models.Publication) PublicationResponse {
 	resp := PublicationResponse{
 		ID:              pub.ID,
@@ -59,7 +53,6 @@ func MapPublicationToResponse(pub *models.Publication) PublicationResponse {
 		CreatedAt:       pub.CreatedAt,
 		UpdatedAt:       pub.UpdatedAt,
 	}
-
 	if pub.User.ID != 0 {
 		resp.Author = MapUserToResponse(&pub.User)
 	}

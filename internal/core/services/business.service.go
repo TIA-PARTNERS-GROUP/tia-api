@@ -1,26 +1,20 @@
 package services
-
 import (
 	"context"
 	"errors"
-
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"gorm.io/gorm"
 )
-
 type BusinessService struct {
 	db *gorm.DB
 }
-
 func NewBusinessService(db *gorm.DB) *BusinessService {
 	return &BusinessService{db: db}
 }
-
 func (s *BusinessService) GetBusinesses(ctx context.Context, filters ports.BusinessesFilter) ([]models.Business, error) {
 	var businesses []models.Business
 	query := s.db.WithContext(ctx).Preload("OperatorUser").Order("name asc")
-
 	if filters.BusinessType != nil {
 		query = query.Where("business_type = ?", *filters.BusinessType)
 	}
@@ -40,13 +34,11 @@ func (s *BusinessService) GetBusinesses(ctx context.Context, filters ports.Busin
 		searchQuery := "%" + *filters.Search + "%"
 		query = query.Where("name LIKE ? OR tagline LIKE ? OR description LIKE ?", searchQuery, searchQuery, searchQuery)
 	}
-
 	if err := query.Find(&businesses).Error; err != nil {
 		return nil, ports.ErrDatabase
 	}
 	return businesses, nil
 }
-
 func (s *BusinessService) GetBusinessByID(ctx context.Context, id uint) (*models.Business, error) {
 	var business models.Business
 	err := s.db.WithContext(ctx).Preload("OperatorUser").First(&business, id).Error
@@ -58,7 +50,6 @@ func (s *BusinessService) GetBusinessByID(ctx context.Context, id uint) (*models
 	}
 	return &business, nil
 }
-
 func (s *BusinessService) CreateBusiness(ctx context.Context, data ports.CreateBusinessInput) (*models.Business, error) {
 	var user models.User
 	if err := s.db.WithContext(ctx).First(&user, data.OperatorUserID).Error; err != nil {
@@ -67,7 +58,6 @@ func (s *BusinessService) CreateBusiness(ctx context.Context, data ports.CreateB
 		}
 		return nil, ports.ErrDatabase
 	}
-
 	business := models.Business{
 		OperatorUserID:   data.OperatorUserID,
 		Name:             data.Name,
@@ -88,19 +78,14 @@ func (s *BusinessService) CreateBusiness(ctx context.Context, data ports.CreateB
 		BusinessPhase:    data.BusinessPhase,
 		Active:           true,
 	}
-
 	if err := s.db.WithContext(ctx).Create(&business).Error; err != nil {
 		return nil, ports.ErrDatabase
 	}
-
 	business.OperatorUser = user
 	return &business, nil
 }
-
-// In internal/core/services/business.service.go
-
 func (s *BusinessService) UpdateBusiness(ctx context.Context, id uint, authUserID uint, input ports.UpdateBusinessInput) (*models.Business, error) {
-	// 1. Fetch the business record first
+	
 	var business models.Business
 	if err := s.db.WithContext(ctx).First(&business, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -108,23 +93,21 @@ func (s *BusinessService) UpdateBusiness(ctx context.Context, id uint, authUserI
 		}
 		return nil, ports.ErrDatabase
 	}
-
-	// 2. Perform Authorization Check
+	
 	if business.OperatorUserID != authUserID {
-		// Optional: Add admin role check here if needed in the future
-		// if !IsAdmin(authUserID) { ... }
+		
+		
 		return nil, ports.ErrForbidden
 	}
-
-	// 3. Map the input DTO to the model struct for updating
-	// This approach is safer and cleaner than building a map manually.
+	
+	
 	updated := false
 	if input.Name != nil {
 		business.Name = *input.Name
 		updated = true
 	}
 	if input.Tagline != nil {
-		business.Tagline = input.Tagline // This is a pointer field, direct assignment is fine
+		business.Tagline = input.Tagline 
 		updated = true
 	}
 	if input.Website != nil {
@@ -187,61 +170,50 @@ func (s *BusinessService) UpdateBusiness(ctx context.Context, id uint, authUserI
 		business.Active = *input.Active
 		updated = true
 	}
-
-	// 4. Check if any data was actually provided for the update
+	
 	if !updated {
 		return nil, ports.ErrNoUpdateData
 	}
-
-	// 5. Save the updated business model
+	
 	if err := s.db.WithContext(ctx).Save(&business).Error; err != nil {
 		return nil, ports.ErrDatabase
 	}
-
-	// 6. Return the fully updated and preloaded business record
+	
 	return s.GetBusinessByID(ctx, id)
 }
-
-func (s *BusinessService) DeleteBusiness(ctx context.Context, id uint, authUserID uint) error { // Added authUserID parameter
-
-	// --- Authorization Check ---
+func (s *BusinessService) DeleteBusiness(ctx context.Context, id uint, authUserID uint) error { 
+	
 	var business models.Business
 	if err := s.db.WithContext(ctx).Select("operator_user_id").First(&business, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return ports.ErrBusinessNotFound // Return specific not found error
+			return ports.ErrBusinessNotFound 
 		}
-		return ports.ErrDatabase // Return general database error for other issues
+		return ports.ErrDatabase 
 	}
-
 	if business.OperatorUserID != authUserID {
-		// Optional: Add admin role check here if needed
-		return ports.ErrForbidden // Return specific forbidden error
+		
+		return ports.ErrForbidden 
 	}
-	// --- End Authorization Check ---
-
-	// Check if the business is in use (existing logic)
+	
+	
 	var projectCount int64
 	if err := s.db.Model(&models.Project{}).Where("business_id = ?", id).Count(&projectCount).Error; err != nil {
-		return ports.ErrDatabase // Return db error if count fails
+		return ports.ErrDatabase 
 	}
-
 	var pubCount int64
 	if err := s.db.Model(&models.Publication{}).Where("business_id = ?", id).Count(&pubCount).Error; err != nil {
-		return ports.ErrDatabase // Return db error if count fails
+		return ports.ErrDatabase 
 	}
-
 	if projectCount > 0 || pubCount > 0 {
 		return ports.ErrBusinessInUse
 	}
-
-	// Proceed with deletion
+	
 	result := s.db.WithContext(ctx).Delete(&models.Business{}, id)
 	if result.Error != nil {
 		return ports.ErrDatabase
 	}
-	// No need to check RowsAffected here because the initial fetch already confirmed existence.
-	// If the record vanished between the check and delete (unlikely), GORM handles it gracefully.
-
+	
+	
 	return nil
 }
 func (s *BusinessService) GetUserBusinesses(ctx context.Context, userID uint) ([]models.Business, error) {
@@ -251,25 +223,20 @@ func (s *BusinessService) GetUserBusinesses(ctx context.Context, userID uint) ([
 	}
 	return businesses, nil
 }
-
 func (s *BusinessService) ToggleBusinessStatus(ctx context.Context, id uint) (*models.Business, error) {
 	business, err := s.GetBusinessByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-
 	newStatus := !business.Active
 	if err := s.db.WithContext(ctx).Model(business).Update("active", newStatus).Error; err != nil {
 		return nil, ports.ErrDatabase
 	}
-
 	business.Active = newStatus
 	return business, nil
 }
-
 func (s *BusinessService) GetBusinessStats(ctx context.Context, id uint) (*ports.BusinessStatsResponse, error) {
 	var projectCount, pubCount, tagCount int64
-
 	if err := s.db.Model(&models.Project{}).Where("business_id = ?", id).Count(&projectCount).Error; err != nil {
 		return nil, ports.ErrDatabase
 	}
@@ -279,7 +246,6 @@ func (s *BusinessService) GetBusinessStats(ctx context.Context, id uint) (*ports
 	if err := s.db.Model(&models.BusinessTag{}).Where("business_id = ?", id).Count(&tagCount).Error; err != nil {
 		return nil, ports.ErrDatabase
 	}
-
 	return &ports.BusinessStatsResponse{
 		TotalProjects:     projectCount,
 		TotalPublications: pubCount,

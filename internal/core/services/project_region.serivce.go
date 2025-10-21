@@ -1,28 +1,22 @@
 package services
-
 import (
 	"context"
 	"strings"
-
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"gorm.io/gorm"
 )
-
 type ProjectRegionService struct {
 	db *gorm.DB
 }
-
 func NewProjectRegionService(db *gorm.DB) *ProjectRegionService {
 	return &ProjectRegionService{db: db}
 }
-
 func (s *ProjectRegionService) AddRegionToProject(ctx context.Context, data ports.AddProjectRegionInput) (*models.ProjectRegion, error) {
 	association := models.ProjectRegion{
 		ProjectID: data.ProjectID,
 		RegionID:  data.RegionID,
 	}
-
 	if err := s.db.WithContext(ctx).Create(&association).Error; err != nil {
 		if strings.Contains(err.Error(), "Duplicate entry") {
 			return nil, ports.ErrRegionAlreadyAdded
@@ -34,7 +28,6 @@ func (s *ProjectRegionService) AddRegionToProject(ctx context.Context, data port
 	}
 	return &association, nil
 }
-
 func (s *ProjectRegionService) RemoveRegionFromProject(ctx context.Context, projectID uint, regionID string) error {
 	result := s.db.WithContext(ctx).Delete(&models.ProjectRegion{}, "project_id = ? AND region_id = ?", projectID, regionID)
 	if result.Error != nil {
@@ -45,7 +38,6 @@ func (s *ProjectRegionService) RemoveRegionFromProject(ctx context.Context, proj
 	}
 	return nil
 }
-
 func (s *ProjectRegionService) GetRegionsForProject(ctx context.Context, projectID uint) ([]models.ProjectRegion, error) {
 	var projectRegions []models.ProjectRegion
 	err := s.db.WithContext(ctx).

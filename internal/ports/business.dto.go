@@ -1,11 +1,8 @@
 package ports
-
 import (
 	"time"
-
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 )
-
 type CreateBusinessInput struct {
 	OperatorUserID   uint                    `json:"operator_user_id" validate:"required"`
 	Name             string                  `json:"name" validate:"required,min=2,max=100"`
@@ -25,7 +22,6 @@ type CreateBusinessInput struct {
 	BusinessCategory models.BusinessCategory `json:"business_category" validate:"required"`
 	BusinessPhase    models.BusinessPhase    `json:"business_phase" validate:"required"`
 }
-
 type UpdateBusinessInput struct {
 	Name             *string                  `json:"name" validate:"omitempty,min=2,max=100"`
 	Tagline          *string                  `json:"tagline" validate:"omitempty,max=100"`
@@ -45,7 +41,6 @@ type UpdateBusinessInput struct {
 	BusinessPhase    *models.BusinessPhase    `json:"business_phase"`
 	Active           *bool                    `json:"active"`
 }
-
 type BusinessesFilter struct {
 	BusinessType     *models.BusinessType     `form:"business_type"`
 	BusinessCategory *models.BusinessCategory `form:"business_category"`
@@ -54,7 +49,6 @@ type BusinessesFilter struct {
 	OperatorUserID   *uint                    `form:"operator_user_id"`
 	Search           *string                  `form:"search"`
 }
-
 type BusinessResponse struct {
 	ID               uint                    `json:"id"`
 	OperatorUserID   uint                    `json:"operator_user_id"`
@@ -79,13 +73,11 @@ type BusinessResponse struct {
 	UpdatedAt        time.Time               `json:"updated_at"`
 	OperatorUser     *UserResponse           `json:"operator_user,omitempty"`
 }
-
 type BusinessStatsResponse struct {
 	TotalProjects     int64 `json:"total_projects"`
 	TotalPublications int64 `json:"total_publications"`
 	TotalTags         int64 `json:"total_tags"`
 }
-
 func MapBusinessToResponse(business *models.Business) BusinessResponse {
 	resp := BusinessResponse{
 		ID:               business.ID,
@@ -110,11 +102,9 @@ func MapBusinessToResponse(business *models.Business) BusinessResponse {
 		CreatedAt:        business.CreatedAt,
 		UpdatedAt:        business.UpdatedAt,
 	}
-
 	if business.OperatorUser.ID != 0 {
 		operatorResp := MapUserToResponse(&business.OperatorUser)
 		resp.OperatorUser = &operatorResp
 	}
-
 	return resp
 }

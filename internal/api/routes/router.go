@@ -1,11 +1,9 @@
 package routes
-
 import (
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/handlers"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"
 	"github.com/gin-gonic/gin"
 )
-
 type RouterDependencies struct {
 	AuthMiddleware                gin.HandlerFunc
 	UserHandler                   *handlers.UserHandler
@@ -20,17 +18,11 @@ type RouterDependencies struct {
 	InferredConnectionHandler     *handlers.InferredConnectionHandler
 	L2EHandler                    *handlers.L2EHandler
 	NotificationHandler           *handlers.NotificationHandler
-
 	Routes constants.Routes
 }
-
-// In router.go
-
 func RegisterRoutes(router *gin.Engine, deps *RouterDependencies) {
 	router.RedirectTrailingSlash = false
-
 	api := router.Group(deps.Routes.APIPrefix)
-
 	SetupAuthRoutes(api, deps)
 	SetupUserRoutes(api, deps)
 	SetupBusinessRoutes(api, deps)

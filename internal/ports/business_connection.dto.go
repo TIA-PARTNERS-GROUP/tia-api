@@ -1,11 +1,8 @@
 package ports
-
 import (
 	"time"
-
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 )
-
 type CreateBusinessConnectionInput struct {
 	InitiatingBusinessID uint                          `json:"initiating_business_id" validate:"required"`
 	ReceivingBusinessID  uint                          `json:"receiving_business_id" validate:"required"`
@@ -13,13 +10,11 @@ type CreateBusinessConnectionInput struct {
 	InitiatedByUserID    uint                          `json:"initiated_by_user_id" validate:"required"`
 	Notes                *string                       `json:"notes,omitempty"`
 }
-
 type UpdateBusinessConnectionInput struct {
 	ConnectionType *models.BusinessConnectionType   `json:"connection_type,omitempty" validate:"omitempty,oneof=Partnership Supplier Client Referral Collaboration"`
 	Status         *models.BusinessConnectionStatus `json:"status,omitempty" validate:"omitempty,oneof=pending active rejected inactive"`
 	Notes          *string                          `json:"notes,omitempty"`
 }
-
 type BusinessConnectionResponse struct {
 	ID                   uint                            `json:"id"`
 	InitiatingBusinessID uint                            `json:"initiating_business_id"`
@@ -30,18 +25,15 @@ type BusinessConnectionResponse struct {
 	Notes                *string                         `json:"notes,omitempty"`
 	CreatedAt            time.Time                       `json:"created_at"`
 	UpdatedAt            time.Time                       `json:"updated_at"`
-
-	// Relationships
+	
 	InitiatingBusiness BusinessResponse `json:"initiating_business"`
 	ReceivingBusiness  BusinessResponse `json:"receiving_business"`
 	InitiatedByUser    UserResponse     `json:"initiated_by_user"`
 }
-
 type BusinessConnectionsResponse struct {
 	Connections []BusinessConnectionResponse `json:"connections"`
 	Count       int                          `json:"count"`
 }
-
 func MapToBusinessConnectionResponse(bc *models.BusinessConnection) BusinessConnectionResponse {
 	return BusinessConnectionResponse{
 		ID:                   bc.ID,
@@ -58,13 +50,11 @@ func MapToBusinessConnectionResponse(bc *models.BusinessConnection) BusinessConn
 		InitiatedByUser:      MapUserToResponse(&bc.InitiatedByUser),
 	}
 }
-
 func MapToBusinessConnectionsResponse(connections []models.BusinessConnection) BusinessConnectionsResponse {
 	conns := make([]BusinessConnectionResponse, len(connections))
 	for i, connection := range connections {
 		conns[i] = MapToBusinessConnectionResponse(&connection)
 	}
-
 	return BusinessConnectionsResponse{
 		Connections: conns,
 		Count:       len(conns),

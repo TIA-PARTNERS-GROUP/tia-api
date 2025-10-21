@@ -1,21 +1,16 @@
 package services
-
 import (
 	"context"
-
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"gorm.io/gorm"
 )
-
 type InferredConnectionService struct {
 	db *gorm.DB
 }
-
 func NewInferredConnectionService(db *gorm.DB) *InferredConnectionService {
 	return &InferredConnectionService{db: db}
 }
-
 func (s *InferredConnectionService) CreateInferredConnection(ctx context.Context, data ports.CreateInferredConnectionInput) (*models.InferredConnection, error) {
 	connection := models.InferredConnection{
 		SourceEntityType: data.SourceEntityType,
@@ -31,7 +26,6 @@ func (s *InferredConnectionService) CreateInferredConnection(ctx context.Context
 	}
 	return &connection, nil
 }
-
 func (s *InferredConnectionService) GetConnectionsForSource(ctx context.Context, entityType string, entityID uint) ([]models.InferredConnection, error) {
 	var connections []models.InferredConnection
 	err := s.db.WithContext(ctx).

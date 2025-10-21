@@ -1,9 +1,7 @@
 package routes
-
 import (
 	"github.com/gin-gonic/gin"
 )
-
 func SetupConnectionRoutes(api *gin.RouterGroup, deps *RouterDependencies) {
 	connections := api.Group(deps.Routes.ConnectBase)
 	connections.Use(deps.AuthMiddleware)
