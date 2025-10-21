@@ -4,7 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"     // <-- IMPORT
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services" // <-- IMPORT
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,7 @@ import (
 type AuthHandler struct {
 	authService *services.AuthService
 	validate    *validator.Validate
+	routes      *constants.Routes // <-- ADD THIS
 }
 
 func NewAuthHandler(authService *services.AuthService) *AuthHandler {
@@ -71,8 +73,9 @@ func (h *AuthHandler) Login(c *gin.Context) {
 // @Failure      401 {object} map[string]string "Unauthorized"
 // @Router       /auth/logout [post]
 func (h *AuthHandler) Logout(c *gin.Context) {
-	userIDVal, _ := c.Get("userID")
-	sessionIDVal, _ := c.Get("sessionID")
+	// --- USE CONSTANTS ---
+	userIDVal, _ := c.Get(h.routes.ContextKeyUserID)
+	sessionIDVal, _ := c.Get(h.routes.ContextKeySessionID)
 
 	userID, _ := userIDVal.(uint)
 	sessionID, _ := sessionIDVal.(uint)
@@ -100,7 +103,8 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 // @Failure      401 {object} map[string]string "Unauthorized"
 // @Router       /auth/me [get]
 func (h *AuthHandler) GetCurrentUser(c *gin.Context) {
-	userVal, exists := c.Get("user")
+	// --- USE CONSTANT ---
+	userVal, exists := c.Get(h.routes.ContextKeyUser)
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found in context"})
 		return

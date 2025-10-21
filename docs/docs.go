@@ -135,6 +135,236 @@ const docTemplate = `{
                 }
             }
         },
+        "/businesses": {
+            "get": {
+                "description": "Retrieves a list of all businesses, with optional filtering.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Businesses"
+                ],
+                "summary": "Get all businesses",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "Filter by active status",
+                        "name": "active",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search term for name, tagline, or description",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ports.BusinessResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Creates a new business record for the authenticated user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Businesses"
+                ],
+                "summary": "Create a new business",
+                "parameters": [
+                    {
+                        "description": "Business Creation Data",
+                        "name": "business",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ports.CreateBusinessInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/ports.BusinessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Operator user not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/businesses/{id}": {
+            "get": {
+                "description": "Retrieves the details of a single business by its unique ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Businesses"
+                ],
+                "summary": "Get a business by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Business ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ports.BusinessResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Business not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates a business's details by its ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Businesses"
+                ],
+                "summary": "Update a business",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Business ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Business Update Data",
+                        "name": "business",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ports.UpdateBusinessInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ports.BusinessResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Business not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Deletes a business by its ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Businesses"
+                ],
+                "summary": "Delete a business",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Business ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Business not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Business is in use and cannot be deleted",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "Retrieves a list of all user accounts.",
@@ -356,6 +586,201 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.BusinessCategory": {
+            "type": "string",
+            "enum": [
+                "B2B",
+                "B2C",
+                "Non_Profit",
+                "Government",
+                "Mixed"
+            ],
+            "x-enum-varnames": [
+                "BusinessCategoryB2B",
+                "BusinessCategoryB2C",
+                "BusinessCategoryNonProfit",
+                "BusinessCategoryGovernment",
+                "BusinessCategoryMixed"
+            ]
+        },
+        "models.BusinessPhase": {
+            "type": "string",
+            "enum": [
+                "Startup",
+                "Growth",
+                "Mature",
+                "Exit"
+            ],
+            "x-enum-varnames": [
+                "BusinessPhaseStartup",
+                "BusinessPhaseGrowth",
+                "BusinessPhaseMature",
+                "BusinessPhaseExit"
+            ]
+        },
+        "models.BusinessType": {
+            "type": "string",
+            "enum": [
+                "Consulting",
+                "Retail",
+                "Technology",
+                "Manufacturing",
+                "Services",
+                "Other"
+            ],
+            "x-enum-varnames": [
+                "BusinessTypeConsulting",
+                "BusinessTypeRetail",
+                "BusinessTypeTechnology",
+                "BusinessTypeManufacturing",
+                "BusinessTypeServices",
+                "BusinessTypeOther"
+            ]
+        },
+        "ports.BusinessResponse": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "business_category": {
+                    "$ref": "#/definitions/models.BusinessCategory"
+                },
+                "business_phase": {
+                    "$ref": "#/definitions/models.BusinessPhase"
+                },
+                "business_type": {
+                    "$ref": "#/definitions/models.BusinessType"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "contact_email": {
+                    "type": "string"
+                },
+                "contact_name": {
+                    "type": "string"
+                },
+                "contact_phone_no": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "operator_user": {
+                    "$ref": "#/definitions/ports.UserResponse"
+                },
+                "operator_user_id": {
+                    "type": "integer"
+                },
+                "postal_code": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "tagline": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                },
+                "website": {
+                    "type": "string"
+                }
+            }
+        },
+        "ports.CreateBusinessInput": {
+            "type": "object",
+            "required": [
+                "business_category",
+                "business_phase",
+                "business_type",
+                "name",
+                "operator_user_id"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "business_category": {
+                    "$ref": "#/definitions/models.BusinessCategory"
+                },
+                "business_phase": {
+                    "$ref": "#/definitions/models.BusinessPhase"
+                },
+                "business_type": {
+                    "$ref": "#/definitions/models.BusinessType"
+                },
+                "city": {
+                    "type": "string",
+                    "maxLength": 60
+                },
+                "contact_email": {
+                    "type": "string"
+                },
+                "contact_name": {
+                    "type": "string",
+                    "maxLength": 60
+                },
+                "contact_phone_no": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "country": {
+                    "type": "string",
+                    "maxLength": 60
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2
+                },
+                "operator_user_id": {
+                    "type": "integer"
+                },
+                "postal_code": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "state": {
+                    "type": "string",
+                    "maxLength": 60
+                },
+                "tagline": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "value": {
+                    "type": "number"
+                },
+                "website": {
+                    "type": "string"
+                }
+            }
+        },
         "ports.LoginInput": {
             "type": "object",
             "required": [
@@ -388,6 +813,72 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/ports.UserResponse"
+                }
+            }
+        },
+        "ports.UpdateBusinessInput": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "address": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "business_category": {
+                    "$ref": "#/definitions/models.BusinessCategory"
+                },
+                "business_phase": {
+                    "$ref": "#/definitions/models.BusinessPhase"
+                },
+                "business_type": {
+                    "$ref": "#/definitions/models.BusinessType"
+                },
+                "city": {
+                    "type": "string",
+                    "maxLength": 60
+                },
+                "contact_email": {
+                    "type": "string"
+                },
+                "contact_name": {
+                    "type": "string",
+                    "maxLength": 60
+                },
+                "contact_phone_no": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "country": {
+                    "type": "string",
+                    "maxLength": 60
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2
+                },
+                "postal_code": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "state": {
+                    "type": "string",
+                    "maxLength": 60
+                },
+                "tagline": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "value": {
+                    "type": "number"
+                },
+                "website": {
+                    "type": "string"
                 }
             }
         },

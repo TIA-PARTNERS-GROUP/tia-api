@@ -118,8 +118,6 @@ type User struct {
 	Businesses              []Business                  `gorm:"foreignKey:OperatorUserID"`
 	ManagedProjects         []Project                   `gorm:"foreignKey:ManagedByUserID"`
 	InitiatedConnections    []BusinessConnection        `gorm:"foreignKey:InitiatedByUserID"`
-	IdeaVotes               []IdeaVote                  `gorm:"foreignKey:VoterUserID"`
-	Ideas                   []Idea                      `gorm:"foreignKey:SubmittedByUserID"`
 	ReceivedNotifications   []Notification              `gorm:"foreignKey:ReceiverUserID"`
 	SentNotifications       []Notification              `gorm:"foreignKey:SenderUserID"`
 	ProjectMemberships      []ProjectMember             `gorm:"foreignKey:UserID"`
@@ -346,20 +344,6 @@ type Publication struct {
 	Business *Business `gorm:"foreignKey:BusinessID"`
 }
 
-type Idea struct {
-	ID                uint       `gorm:"primaryKey"`
-	SubmittedByUserID uint       `gorm:"not null;index"`
-	Title             string     `gorm:"size:200;not null"`
-	Content           string     `gorm:"type:text;not null"`
-	Status            IdeaStatus `gorm:"type:enum('open', 'under_review', 'planned', 'in_progress', 'completed', 'rejected');default:open;index"`
-	CreatedAt         time.Time  `gorm:"not null;default:current_timestamp"`
-	UpdatedAt         time.Time  `gorm:"not null;default:current_timestamp"`
-
-	// Relationships
-	SubmittedByUser User       `gorm:"foreignKey:SubmittedByUserID"`
-	IdeaVotes       []IdeaVote `gorm:"foreignKey:IdeaID"`
-}
-
 type Notification struct {
 	ID                uint               `gorm:"primaryKey"`
 	SenderUserID      *uint              `gorm:"index"`
@@ -437,17 +421,6 @@ type BusinessTag struct {
 
 	// Relationships
 	Business Business `gorm:"foreignKey:BusinessID"`
-}
-
-type IdeaVote struct {
-	VoterUserID uint         `gorm:"primaryKey"`
-	IdeaID      uint         `gorm:"primaryKey;index"`
-	VoteType    IdeaVoteType `gorm:"type:enum('up', 'down')"`
-	CreatedAt   time.Time    `gorm:"not null;default:current_timestamp"`
-
-	// Relationships
-	VoterUser User `gorm:"foreignKey:VoterUserID"`
-	Idea      Idea `gorm:"foreignKey:IdeaID"`
 }
 
 type UserSession struct {

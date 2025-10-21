@@ -1,5 +1,147 @@
 basePath: /api/v1
 definitions:
+  models.BusinessCategory:
+    enum:
+    - B2B
+    - B2C
+    - Non_Profit
+    - Government
+    - Mixed
+    type: string
+    x-enum-varnames:
+    - BusinessCategoryB2B
+    - BusinessCategoryB2C
+    - BusinessCategoryNonProfit
+    - BusinessCategoryGovernment
+    - BusinessCategoryMixed
+  models.BusinessPhase:
+    enum:
+    - Startup
+    - Growth
+    - Mature
+    - Exit
+    type: string
+    x-enum-varnames:
+    - BusinessPhaseStartup
+    - BusinessPhaseGrowth
+    - BusinessPhaseMature
+    - BusinessPhaseExit
+  models.BusinessType:
+    enum:
+    - Consulting
+    - Retail
+    - Technology
+    - Manufacturing
+    - Services
+    - Other
+    type: string
+    x-enum-varnames:
+    - BusinessTypeConsulting
+    - BusinessTypeRetail
+    - BusinessTypeTechnology
+    - BusinessTypeManufacturing
+    - BusinessTypeServices
+    - BusinessTypeOther
+  ports.BusinessResponse:
+    properties:
+      active:
+        type: boolean
+      address:
+        type: string
+      business_category:
+        $ref: '#/definitions/models.BusinessCategory'
+      business_phase:
+        $ref: '#/definitions/models.BusinessPhase'
+      business_type:
+        $ref: '#/definitions/models.BusinessType'
+      city:
+        type: string
+      contact_email:
+        type: string
+      contact_name:
+        type: string
+      contact_phone_no:
+        type: string
+      country:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      operator_user:
+        $ref: '#/definitions/ports.UserResponse'
+      operator_user_id:
+        type: integer
+      postal_code:
+        type: string
+      state:
+        type: string
+      tagline:
+        type: string
+      updated_at:
+        type: string
+      value:
+        type: number
+      website:
+        type: string
+    type: object
+  ports.CreateBusinessInput:
+    properties:
+      address:
+        maxLength: 100
+        type: string
+      business_category:
+        $ref: '#/definitions/models.BusinessCategory'
+      business_phase:
+        $ref: '#/definitions/models.BusinessPhase'
+      business_type:
+        $ref: '#/definitions/models.BusinessType'
+      city:
+        maxLength: 60
+        type: string
+      contact_email:
+        type: string
+      contact_name:
+        maxLength: 60
+        type: string
+      contact_phone_no:
+        maxLength: 20
+        type: string
+      country:
+        maxLength: 60
+        type: string
+      description:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 2
+        type: string
+      operator_user_id:
+        type: integer
+      postal_code:
+        maxLength: 20
+        type: string
+      state:
+        maxLength: 60
+        type: string
+      tagline:
+        maxLength: 100
+        type: string
+      value:
+        type: number
+      website:
+        type: string
+    required:
+    - business_category
+    - business_phase
+    - business_type
+    - name
+    - operator_user_id
+    type: object
   ports.LoginInput:
     properties:
       login_email:
@@ -22,6 +164,53 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/ports.UserResponse'
+    type: object
+  ports.UpdateBusinessInput:
+    properties:
+      active:
+        type: boolean
+      address:
+        maxLength: 100
+        type: string
+      business_category:
+        $ref: '#/definitions/models.BusinessCategory'
+      business_phase:
+        $ref: '#/definitions/models.BusinessPhase'
+      business_type:
+        $ref: '#/definitions/models.BusinessType'
+      city:
+        maxLength: 60
+        type: string
+      contact_email:
+        type: string
+      contact_name:
+        maxLength: 60
+        type: string
+      contact_phone_no:
+        maxLength: 20
+        type: string
+      country:
+        maxLength: 60
+        type: string
+      description:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 2
+        type: string
+      postal_code:
+        maxLength: 20
+        type: string
+      state:
+        maxLength: 60
+        type: string
+      tagline:
+        maxLength: 100
+        type: string
+      value:
+        type: number
+      website:
+        type: string
     type: object
   ports.UserCreationSchema:
     properties:
@@ -188,6 +377,154 @@ paths:
       summary: Get Current User
       tags:
       - Auth
+  /businesses:
+    get:
+      description: Retrieves a list of all businesses, with optional filtering.
+      parameters:
+      - description: Filter by active status
+        in: query
+        name: active
+        type: boolean
+      - description: Search term for name, tagline, or description
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ports.BusinessResponse'
+            type: array
+      summary: Get all businesses
+      tags:
+      - Businesses
+    post:
+      consumes:
+      - application/json
+      description: Creates a new business record for the authenticated user.
+      parameters:
+      - description: Business Creation Data
+        in: body
+        name: business
+        required: true
+        schema:
+          $ref: '#/definitions/ports.CreateBusinessInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ports.BusinessResponse'
+        "400":
+          description: Validation error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Operator user not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new business
+      tags:
+      - Businesses
+  /businesses/{id}:
+    delete:
+      description: Deletes a business by its ID.
+      parameters:
+      - description: Business ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Business not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Business is in use and cannot be deleted
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a business
+      tags:
+      - Businesses
+    get:
+      description: Retrieves the details of a single business by its unique ID.
+      parameters:
+      - description: Business ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ports.BusinessResponse'
+        "404":
+          description: Business not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a business by ID
+      tags:
+      - Businesses
+    put:
+      consumes:
+      - application/json
+      description: Updates a business's details by its ID.
+      parameters:
+      - description: Business ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Business Update Data
+        in: body
+        name: business
+        required: true
+        schema:
+          $ref: '#/definitions/ports.UpdateBusinessInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ports.BusinessResponse'
+        "404":
+          description: Business not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a business
+      tags:
+      - Businesses
   /users:
     get:
       description: Retrieves a list of all user accounts.

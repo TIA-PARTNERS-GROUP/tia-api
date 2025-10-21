@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants" // <-- IMPORT
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/pkg/utils"
@@ -17,6 +18,13 @@ import (
 func TestAuthAPI_Integration_LoginLogout(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	router := SetupRouter()
+
+	// --- USE CONSTANTS ---
+	constApiPrefix := constants.AppRoutes.APIPrefix
+	constAuthBase := constApiPrefix + constants.AppRoutes.AuthBase
+	constLoginPath := constAuthBase + constants.AppRoutes.Login
+	constMePath := constAuthBase + constants.AppRoutes.Me
+	constLogoutPath := constAuthBase + constants.AppRoutes.Logout
 
 	// 1. Seed a test user
 	password := "ValidPassword123!"
@@ -30,7 +38,8 @@ func TestAuthAPI_Integration_LoginLogout(t *testing.T) {
 		Password:   password,
 	}
 	body, _ := json.Marshal(loginDTO)
-	req, _ := http.NewRequest(http.MethodPost, "/api/v1/auth/login", bytes.NewBuffer(body))
+	// Use constant path
+	req, _ := http.NewRequest(http.MethodPost, constLoginPath, bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 
 	w := httptest.NewRecorder()
@@ -44,7 +53,8 @@ func TestAuthAPI_Integration_LoginLogout(t *testing.T) {
 	token := loginResponse.Token
 
 	// 3. Test GetCurrentUser Endpoint (with valid token)
-	req, _ = http.NewRequest(http.MethodGet, "/api/v1/auth/me", nil)
+	// Use constant path
+	req, _ = http.NewRequest(http.MethodGet, constMePath, nil)
 	req.Header.Set("Authorization", "Bearer "+token)
 	w = httptest.NewRecorder()
 	router.ServeHTTP(w, req)
@@ -55,7 +65,8 @@ func TestAuthAPI_Integration_LoginLogout(t *testing.T) {
 	assert.Equal(t, user.LoginEmail, currentUser.LoginEmail)
 
 	// 4. Test Logout Endpoint
-	req, _ = http.NewRequest(http.MethodPost, "/api/v1/auth/logout", nil)
+	// Use constant path
+	req, _ = http.NewRequest(http.MethodPost, constLogoutPath, nil)
 	req.Header.Set("Authorization", "Bearer "+token)
 	w = httptest.NewRecorder()
 	router.ServeHTTP(w, req)
@@ -63,7 +74,8 @@ func TestAuthAPI_Integration_LoginLogout(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 
 	// 5. Verify token is now invalid
-	req, _ = http.NewRequest(http.MethodGet, "/api/v1/auth/me", nil)
+	// Use constant path
+	req, _ = http.NewRequest(http.MethodGet, constMePath, nil)
 	req.Header.Set("Authorization", "Bearer "+token)
 	w = httptest.NewRecorder()
 	router.ServeHTTP(w, req)

@@ -8,7 +8,7 @@ import (
 )
 
 type CreateL2EResponseInput struct {
-	UserID   uint           `json:"user_id" validate:"required"`
+	UserID   uint           `json:"-" validate:"-"`
 	Response datatypes.JSON `json:"response" validate:"required"`
 }
 

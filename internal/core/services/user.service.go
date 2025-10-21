@@ -162,13 +162,30 @@ func (s *UserService) FindAllUsers(ctx context.Context) ([]models.User, error) {
 }
 
 func (s *UserService) DeleteUser(ctx context.Context, id uint) error {
-	result := s.db.WithContext(ctx).Delete(&models.User{}, id)
-	if result.Error != nil {
+	err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("user_id = ?", id).Delete(&models.UserSession{}).Error; err != nil {
+			return err
+		}
+
+		result := tx.Delete(&models.User{}, id)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		if result.RowsAffected == 0 {
+			return ports.ErrUserNotFound
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		if errors.Is(err, ports.ErrUserNotFound) {
+			return ports.ErrUserNotFound
+		}
 		return ports.ErrDatabase
 	}
-	if result.RowsAffected == 0 {
-		return ports.ErrUserNotFound
-	}
+
 	return nil
 }
 

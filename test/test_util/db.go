@@ -24,9 +24,9 @@ func SetupTestDB() {
 	// Run migrations
 	allModels := []interface{}{
 		&models.User{}, &models.Business{}, &models.Project{}, &models.Skill{},
-		&models.Publication{}, &models.Idea{}, &models.Notification{}, &models.UserSkill{},
+		&models.Publication{}, &models.Notification{}, &models.UserSkill{},
 		&models.ProjectSkill{}, &models.ProjectMember{}, &models.BusinessConnection{},
-		&models.BusinessTag{}, &models.IdeaVote{}, &models.UserSession{},
+		&models.BusinessTag{}, &models.UserSession{},
 		&models.Feedback{}, &models.ProjectApplicant{}, &models.UserConfig{},
 		&models.L2EResponse{}, &models.Subscription{}, &models.UserSubscription{},
 		&models.UserDailyActivityProgress{}, &models.Event{}, &models.DailyActivity{},

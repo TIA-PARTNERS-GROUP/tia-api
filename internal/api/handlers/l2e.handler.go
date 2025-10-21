@@ -1,0 +1,105 @@
+package handlers
+
+import (
+	"net/http"
+	"strconv"
+
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
+	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+)
+
+type L2EHandler struct {
+	service  *services.L2EResponseService
+	validate *validator.Validate
+}
+
+func NewL2EHandler(service *services.L2EResponseService) *L2EHandler {
+	return &L2EHandler{
+		service:  service,
+		validate: validator.New(),
+	}
+}
+
+// @Summary      Create L2E Response
+// @Description  Creates a new L2E response for the authenticated user.
+// @Tags         L2EResponses
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        response body ports.CreateL2EResponseInput true "L2E Response JSON"
+// @Success      201 {object} ports.L2EResponseResponse
+// @Failure      400 {object} map[string]string "Validation error or invalid JSON body"
+// @Failure      401 {object} map[string]string "Unauthorized"
+// @Failure      500 {object} map[string]string "Internal server error"
+// @Router       /l2e-responses [post]
+func (h *L2EHandler) CreateL2EResponse(c *gin.Context) {
+	var input ports.CreateL2EResponseInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body: " + err.Error()})
+		return
+	}
+
+	userIDVal, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
+		return
+	}
+	userID, ok := userIDVal.(uint)
+	if !ok || userID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid user ID in context"})
+		return
+	}
+	input.UserID = userID // Set UserID from context
+
+	// Validate after setting UserID (although it's ignored by validate:"-")
+	if err := h.validate.Struct(input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// The service checks if the user exists implicitly now
+	response, err := h.service.CreateL2EResponse(c.Request.Context(), input)
+	if err != nil {
+		// Service only returns UserNotFound if DB query fails differently now,
+		// mostly we'll get ErrDatabase
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create L2E response"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, ports.MapL2EResponseToResponse(response))
+}
+
+// @Summary      Get L2E Responses For User
+// @Description  Retrieves all L2E responses submitted by a specific user. (Protected)
+// @Tags         L2EResponses
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id path int true "User ID"
+// @Success      200 {array} ports.L2EResponseResponse
+// @Failure      400 {object} map[string]string "Invalid User ID"
+// @Failure      401 {object} map[string]string "Unauthorized"
+// @Failure      500 {object} map[string]string "Internal server error"
+// @Router       /users/{id}/l2e-responses [get]
+func (h *L2EHandler) GetL2EResponsesForUser(c *gin.Context) {
+	userID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	responses, err := h.service.GetL2EResponsesForUser(c.Request.Context(), uint(userID))
+	if err != nil {
+		// Check if user exists? Service currently doesn't error on empty results.
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve L2E responses"})
+		return
+	}
+
+	responseDTOs := make([]ports.L2EResponseResponse, len(responses))
+	for i, resp := range responses {
+		responseDTOs[i] = ports.MapL2EResponseToResponse(&resp)
+	}
+
+	c.JSON(http.StatusOK, responseDTOs)
+}
