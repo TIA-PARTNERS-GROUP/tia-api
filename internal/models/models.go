@@ -146,7 +146,7 @@ type DailyActivityEnrolment struct {
 type UserDailyActivityProgress struct {
 	UserID          uint `gorm:"primaryKey"`
 	DailyActivityID uint `gorm:"primaryKey"`
-	// FIX: Apply swaggertype:"string"
+
 	Date     datatypes.Date              `gorm:"primaryKey;type:date" swaggertype:"string"`
 	Status   DailyActivityProgressStatus `gorm:"type:enum('not_started', 'in_progress', 'completed');default:not_started"`
 	Progress int                         `gorm:"default:0"`
@@ -157,7 +157,7 @@ type UserDailyActivityProgress struct {
 type Event struct {
 	ID        uint   `gorm:"primaryKey"`
 	EventType string `gorm:"size:100;not null;index"`
-	// FIX: Apply swaggertype:"object"
+
 	Payload   datatypes.JSON `gorm:"type:json" swaggertype:"object"`
 	Timestamp time.Time      `gorm:"not null;default:current_timestamp;index"`
 	UserID    *uint          `gorm:"index"`
@@ -186,7 +186,7 @@ type UserConfig struct {
 	ID         uint   `gorm:"primaryKey"`
 	UserID     uint   `gorm:"not null;uniqueIndex:uq_user_config_type"`
 	ConfigType string `gorm:"size:50;not null;uniqueIndex:uq_user_config_type"`
-	// FIX: Apply swaggertype:"object" (already done, confirming for completeness)
+
 	Config datatypes.JSON `gorm:"type:json;not null" swaggertype:"object"`
 
 	User User `gorm:"foreignKey:UserID"`
@@ -194,7 +194,7 @@ type UserConfig struct {
 type L2EResponse struct {
 	ID     uint `gorm:"primaryKey"`
 	UserID uint `gorm:"not null"`
-	// FIX: Apply swaggertype:"object"
+
 	Response  datatypes.JSON `gorm:"type:json;not null" swaggertype:"object"`
 	DateAdded time.Time      `gorm:"not null;default:current_timestamp"`
 
