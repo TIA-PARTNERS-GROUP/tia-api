@@ -1,4 +1,21 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: tia_api_app
+    restart: unless-stopped
+
+    env_file:
+      - ./.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    environment:
+      DATABASE_URL: "root:tia-dev-password@tcp(database:3306)/tia-dev?parseTime=true"
+
   database:
     image: mariadb:latest
     container_name: mariadb_db

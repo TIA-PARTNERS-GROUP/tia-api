@@ -1,9 +1,17 @@
 ?   	github.com/TIA-PARTNERS-GROUP/tia-api/cmd/api	[no test files]
 ?   	github.com/TIA-PARTNERS-GROUP/tia-api/configs	[no test files]
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/docs	[no test files]
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/handlers	[no test files]
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/middleware	[no test files]
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/internal/api/routes	[no test files]
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants	[no test files]
 ?   	github.com/TIA-PARTNERS-GROUP/tia-api/internal/core	[no test files]
 ?   	github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services	[no test files]
 ?   	github.com/TIA-PARTNERS-GROUP/tia-api/internal/models	[no test files]
 ?   	github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports	[no test files]
 ?   	github.com/TIA-PARTNERS-GROUP/tia-api/pkg/utils	[no test files]
 PASS
-ok  	github.com/TIA-PARTNERS-GROUP/tia-api/test/integration	1.292s
+ok  	github.com/TIA-PARTNERS-GROUP/tia-api/test/integration/api	1.111s
+PASS
+ok  	github.com/TIA-PARTNERS-GROUP/tia-api/test/integration/services	1.156s
+?   	github.com/TIA-PARTNERS-GROUP/tia-api/test/test_util	[no test files]
