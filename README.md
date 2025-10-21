@@ -74,7 +74,10 @@ Unit tests validate isolated package logic (files in the `test/unit` directory).
 Integration tests validate the service layer interaction with the database (files in the `test/integration` directory). Requires the MySQL container to be running.
 
 ```bash
-./scripts/tests/run_integration.sh
+./scripts/tests/run_service_integration.sh
+```
+```bash
+./scripts/tests/run_api_integration.sh
 ```
 
 #### 3. Test Visualization (Advanced)

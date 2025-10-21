@@ -28,5 +28,18 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
+  docs:
+    build:
+      context: ./docs
+      dockerfile: Dockerfile
+    container_name: tia_api_docs
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    depends_on:
+      - api
+    volumes:
+      - ./docs/output:/app/output
+
 volumes:
   db_data:
