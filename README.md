@@ -1,4 +1,4 @@
-## TIA API: Development and Testing Guide
+## TIA API
 ---
 
 ### Prerequisites
