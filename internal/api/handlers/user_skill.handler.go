@@ -26,7 +26,6 @@ func NewUserSkillHandler(userSkillService *services.UserSkillService, routes *co
 	}
 }
 
-// getAuthUserID retrieves the authenticated user's ID from the context.
 func (h *UserSkillHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	authUserIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
@@ -39,7 +38,6 @@ func (h *UserSkillHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
-// checkUserOwnership verifies if the auth user matches the target user in the URL.
 func (h *UserSkillHandler) checkUserOwnership(c *gin.Context) (uint, uint, *ports.ApiError) {
 	authUserID, err := h.getAuthUserID(c)
 	if err != nil {
@@ -59,7 +57,6 @@ func (h *UserSkillHandler) checkUserOwnership(c *gin.Context) (uint, uint, *port
 	return authUserID, uint(targetUserID), nil
 }
 
-// AddUserSkill handles POST /users/:id/skills
 func (h *UserSkillHandler) AddUserSkill(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {
@@ -73,7 +70,6 @@ func (h *UserSkillHandler) AddUserSkill(c *gin.Context) {
 		return
 	}
 
-	// Override UserID from DTO with the one from the URL param for consistency
 	input.UserID = targetUserID
 
 	if err := h.validate.Struct(input); err != nil {
@@ -94,7 +90,6 @@ func (h *UserSkillHandler) AddUserSkill(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapToUserSkillResponse(userSkill))
 }
 
-// GetUserSkills handles GET /users/:id/skills
 func (h *UserSkillHandler) GetUserSkills(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {
@@ -111,7 +106,6 @@ func (h *UserSkillHandler) GetUserSkills(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToUserSkillsResponse(skills))
 }
 
-// UpdateUserSkill handles PUT /users/:id/skills/:skillID
 func (h *UserSkillHandler) UpdateUserSkill(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {
@@ -150,7 +144,6 @@ func (h *UserSkillHandler) UpdateUserSkill(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToUserSkillResponse(userSkill))
 }
 
-// RemoveUserSkill handles DELETE /users/:id/skills/:skillID
 func (h *UserSkillHandler) RemoveUserSkill(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {

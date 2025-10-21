@@ -16,7 +16,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Helper to create a project for testing
 func CreateTestProject(t *testing.T, router *gin.Engine, managerUser models.User, managerToken string) ports.ProjectResponse {
 	constProjectBase := constants.AppRoutes.APIPrefix + constants.AppRoutes.ProjectBase
 	createDTO := ports.CreateProjectInput{
@@ -41,12 +40,10 @@ func TestProjectApplicantAPI_Integration(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	router := SetupRouter()
 
-	// 1. Create Users
 	managerUser, managerToken := CreateTestUserAndLogin(t, router, "app.manager@test.com", "ValidPass123!")
 	applicantUser, applicantToken := CreateTestUserAndLogin(t, router, "app.applicant@test.com", "ValidPass123!")
 	_, otherToken := CreateTestUserAndLogin(t, router, "app.other@test.com", "ValidPass123!")
 
-	// 2. Create Project
 	project := CreateTestProject(t, router, managerUser, managerToken)
 	projectID := project.ID
 	applicantID := applicantUser.ID
@@ -68,7 +65,7 @@ func TestProjectApplicantAPI_Integration(t *testing.T) {
 		req.Header.Set("Authorization", "Bearer "+applicantToken)
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
-		assert.Equal(t, http.StatusConflict, w.Code) // ErrAlreadyApplied
+		assert.Equal(t, http.StatusConflict, w.Code) 
 	})
 
 	t.Run("Manager gets applicants", func(t *testing.T) {
@@ -133,7 +130,7 @@ func TestProjectApplicantAPI_Integration(t *testing.T) {
 		req.Header.Set("Authorization", "Bearer "+applicantToken)
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
-		assert.Equal(t, http.StatusNotFound, w.Code) // ErrApplicationNotFound
+		assert.Equal(t, http.StatusNotFound, w.Code) 
 	})
 
 	t.Run("Manager gets applicants (empty)", func(t *testing.T) {

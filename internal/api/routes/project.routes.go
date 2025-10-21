@@ -14,12 +14,10 @@ func SetupProjectRoutes(api *gin.RouterGroup, deps *RouterDependencies) {
 		projects.PUT(deps.Routes.ParamID, deps.ProjectHandler.UpdateProject)
 		projects.DELETE(deps.Routes.ParamID, deps.ProjectHandler.DeleteProject)
 
-		// --- Project Applicant Routes ---
 		projects.POST(deps.Routes.ProjectApply, deps.ProjectApplicantHandler.ApplyToProject)
 		projects.DELETE(deps.Routes.ProjectApply, deps.ProjectApplicantHandler.WithdrawApplication)
 		projects.GET(deps.Routes.ProjectApplicants, deps.ProjectApplicantHandler.GetApplicantsForProject)
 
-		// --- Project Region Routes --- // <--- ADD THIS BLOCK
 		regions := projects.Group(deps.Routes.ProjectRegions)
 		{
 			regions.POST("", deps.ProjectRegionHandler.AddRegionToProject)
@@ -27,7 +25,6 @@ func SetupProjectRoutes(api *gin.RouterGroup, deps *RouterDependencies) {
 			regions.DELETE(deps.Routes.ParamRegionID, deps.ProjectRegionHandler.RemoveRegionFromProject)
 		}
 
-		// --- Project Skill Routes --- // <--- ADD THIS BLOCK
 		skills := projects.Group(deps.Routes.ProjectSkills)
 		{
 			skills.POST("", deps.ProjectSkillHandler.AddProjectSkill)
@@ -36,7 +33,6 @@ func SetupProjectRoutes(api *gin.RouterGroup, deps *RouterDependencies) {
 			skills.DELETE(deps.Routes.ParamSkillID, deps.ProjectSkillHandler.RemoveProjectSkill)
 		}
 
-		// Nested routes for project members
 		members := projects.Group(deps.Routes.ProjectMembers)
 		{
 			members.POST("", deps.ProjectMemberHandler.AddProjectMember)

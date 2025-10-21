@@ -134,7 +134,6 @@ func (s *PublicationService) DeletePublication(ctx context.Context, id uint) err
 	return nil
 }
 
-// Add this method inside your services.PublicationService
 func (s *PublicationService) FindAllPublications(ctx context.Context) ([]models.Publication, error) {
 	var publications []models.Publication
 	err := s.db.WithContext(ctx).

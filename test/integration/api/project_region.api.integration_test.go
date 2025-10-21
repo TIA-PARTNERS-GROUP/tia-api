@@ -20,7 +20,6 @@ const (
 	TEST_REGION_NAME = "Australia"
 )
 
-// Helper to create a Region in the DB
 func CreateTestRegion(t *testing.T) {
 	region := models.Region{
 		ID:   TEST_REGION_ID,
@@ -35,11 +34,9 @@ func TestProjectRegionAPI_Integration(t *testing.T) {
 	router := SetupRouter()
 	CreateTestRegion(t)
 
-	// 1. Create Users
 	managerUser, managerToken := CreateTestUserAndLogin(t, router, "region.manager@test.com", "ValidPass123!")
 	_, otherToken := CreateTestUserAndLogin(t, router, "region.other@test.com", "ValidPass123!")
 
-	// 2. Create Project
 	project := CreateTestProjectHelper(t, router, managerUser, managerToken)
 	projectID := project.ID
 
@@ -61,7 +58,7 @@ func TestProjectRegionAPI_Integration(t *testing.T) {
 
 	t.Run("Add Region - Success (Manager)", func(t *testing.T) {
 		addDTO := ports.AddProjectRegionInput{
-			ProjectID: 999, // Should be ignored
+			ProjectID: 999, 
 			RegionID:  TEST_REGION_ID,
 		}
 		body, _ := json.Marshal(addDTO)
@@ -81,7 +78,7 @@ func TestProjectRegionAPI_Integration(t *testing.T) {
 
 	t.Run("Get Project Regions", func(t *testing.T) {
 		req, _ := http.NewRequest(http.MethodGet, regionsBaseURL, nil)
-		req.Header.Set("Authorization", "Bearer "+otherToken) // Any auth user
+		req.Header.Set("Authorization", "Bearer "+otherToken) 
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 

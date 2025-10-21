@@ -14,7 +14,7 @@ import (
 
 type ProjectRegionHandler struct {
 	projectRegionService *services.ProjectRegionService
-	projectService       *services.ProjectService // Needed for manager checks
+	projectService       *services.ProjectService 
 	validate             *validator.Validate
 	routes               *constants.Routes
 }
@@ -32,7 +32,6 @@ func NewProjectRegionHandler(
 	}
 }
 
-// getAuthUserID retrieves the authenticated user's ID from the context.
 func (h *ProjectRegionHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	authUserIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
@@ -45,7 +44,6 @@ func (h *ProjectRegionHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
-// checkProjectManager is a helper to verify if the auth user is the project manager.
 func (h *ProjectRegionHandler) checkProjectManager(c *gin.Context, projectID uint) (uint, *ports.ApiError) {
 	authUserID, err := h.getAuthUserID(c)
 	if err != nil {
@@ -66,7 +64,6 @@ func (h *ProjectRegionHandler) checkProjectManager(c *gin.Context, projectID uin
 	return authUserID, nil
 }
 
-// AddRegionToProject handles POST /projects/:id/regions
 func (h *ProjectRegionHandler) AddRegionToProject(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -75,7 +72,6 @@ func (h *ProjectRegionHandler) AddRegionToProject(c *gin.Context) {
 		return
 	}
 
-	// Auth: Only the project manager can add regions
 	if _, apiErr := h.checkProjectManager(c, uint(projectID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return
@@ -87,7 +83,6 @@ func (h *ProjectRegionHandler) AddRegionToProject(c *gin.Context) {
 		return
 	}
 
-	// Override ProjectID from DTO with the one from the URL param for consistency
 	input.ProjectID = uint(projectID)
 
 	if err := h.validate.Struct(input); err != nil {
@@ -109,7 +104,6 @@ func (h *ProjectRegionHandler) AddRegionToProject(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapProjectRegionToResponse(association))
 }
 
-// RemoveRegionFromProject handles DELETE /projects/:id/regions/:regionID
 func (h *ProjectRegionHandler) RemoveRegionFromProject(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -118,7 +112,6 @@ func (h *ProjectRegionHandler) RemoveRegionFromProject(c *gin.Context) {
 		return
 	}
 
-	// Auth: Only the project manager can remove regions
 	if _, apiErr := h.checkProjectManager(c, uint(projectID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return
@@ -144,7 +137,6 @@ func (h *ProjectRegionHandler) RemoveRegionFromProject(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// GetRegionsForProject handles GET /projects/:id/regions
 func (h *ProjectRegionHandler) GetRegionsForProject(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -153,7 +145,6 @@ func (h *ProjectRegionHandler) GetRegionsForProject(c *gin.Context) {
 		return
 	}
 
-	// Auth: Any authenticated user can see project regions
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return

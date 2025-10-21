@@ -26,7 +26,6 @@ func NewSubscriptionHandler(subscriptionService *services.SubscriptionService, r
 	}
 }
 
-// getAuthUserID retrieves the authenticated user's ID from the context.
 func (h *SubscriptionHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	authUserIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
@@ -39,8 +38,6 @@ func (h *SubscriptionHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
-// CreateSubscription handles POST /subscriptions
-// NOTE: Assuming this is an admin-level endpoint, but only checking for basic authentication
 func (h *SubscriptionHandler) CreateSubscription(c *gin.Context) {
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
@@ -70,7 +67,6 @@ func (h *SubscriptionHandler) CreateSubscription(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapSubscriptionToResponse(subscription))
 }
 
-// GetSubscriptionByID handles GET /subscriptions/:id
 func (h *SubscriptionHandler) GetSubscriptionByID(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -79,7 +75,6 @@ func (h *SubscriptionHandler) GetSubscriptionByID(c *gin.Context) {
 		return
 	}
 
-	// Auth: Any authenticated user can view a subscription plan
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -98,7 +93,6 @@ func (h *SubscriptionHandler) GetSubscriptionByID(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapSubscriptionToResponse(subscription))
 }
 
-// SubscribeUser handles POST /subscriptions/subscribe
 func (h *SubscriptionHandler) SubscribeUser(c *gin.Context) {
 	authUserID, err := h.getAuthUserID(c)
 	if err != nil {
@@ -112,7 +106,6 @@ func (h *SubscriptionHandler) SubscribeUser(c *gin.Context) {
 		return
 	}
 
-	// Ensure the user ID in the body matches the authenticated user ID (self-subscribe)
 	if input.UserID != authUserID {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden: You can only subscribe for yourself"})
 		return
@@ -133,6 +126,5 @@ func (h *SubscriptionHandler) SubscribeUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "An internal error occurred"})
 		return
 	}
-	// NOTE: MapUserSubscriptionToResponse is assumed to exist in ports package
 	c.JSON(http.StatusCreated, ports.MapUserSubscriptionToResponse(userSubscription))
 }

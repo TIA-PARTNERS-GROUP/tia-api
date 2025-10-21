@@ -22,26 +22,20 @@ func SetupUserRoutes(api *gin.RouterGroup, deps *RouterDependencies) {
 			protectedUsers.GET(deps.Routes.UserApplications, deps.ProjectApplicantHandler.GetApplicationsForUser)
 			protectedUsers.GET(deps.Routes.ProjectMemberships, deps.ProjectMemberHandler.GetProjectsByUser)
 
-			// --- FIX: USE EXPLICIT, NON-NESTED ROUTES FOR SUBSCRIPTIONS ---
-			// This matches the pattern of other nested GETs (like UserApplications)
 
-			// 1. GET /users/:id/subscriptions (List active subscriptions)
 			protectedUsers.GET(deps.Routes.UserSubscriptions, deps.UserSubscriptionHandler.GetSubscriptionsForUser)
 
-			// 2. DELETE /users/:id/subscriptions/:userSubscriptionID (Cancel one subscription)
-			// Note: UserSubscriptionCancel must be defined as /:id/subscriptions/:userSubscriptionID
 			protectedUsers.DELETE(deps.Routes.UserSubscriptionCancel, deps.UserSubscriptionHandler.CancelSubscription)
 
-			// --- END FIX ---
 
 			protectedUsers.PUT(deps.Routes.ParamID, deps.UserHandler.UpdateUser)
 			protectedUsers.DELETE(deps.Routes.ParamID, deps.UserHandler.DeleteUser)
 
-			userConfig := protectedUsers.Group(deps.Routes.UserConfigBase) // /users/:id/config
+			userConfig := protectedUsers.Group(deps.Routes.UserConfigBase) 
 			{
-				userConfig.PUT("", deps.UserConfigHandler.SetUserConfig)                                // PUT /users/:id/config
-				userConfig.GET(deps.Routes.ParamConfigType, deps.UserConfigHandler.GetUserConfig)       // GET /users/:id/config/:configType
-				userConfig.DELETE(deps.Routes.ParamConfigType, deps.UserConfigHandler.DeleteUserConfig) // DELETE /users/:id/config/:configType
+				userConfig.PUT("", deps.UserConfigHandler.SetUserConfig)                                
+				userConfig.GET(deps.Routes.ParamConfigType, deps.UserConfigHandler.GetUserConfig)       
+				userConfig.DELETE(deps.Routes.ParamConfigType, deps.UserConfigHandler.DeleteUserConfig) 
 			}
 
 			userSkills := protectedUsers.Group(deps.Routes.UserSkillsBase)

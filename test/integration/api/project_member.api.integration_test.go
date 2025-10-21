@@ -16,7 +16,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Helper (from applicant test) to create a project
 func CreateTestProjectHelper(t *testing.T, router *gin.Engine, managerUser models.User, managerToken string) ports.ProjectResponse {
 	constProjectBase := constants.AppRoutes.APIPrefix + constants.AppRoutes.ProjectBase
 	createDTO := ports.CreateProjectInput{
@@ -40,12 +39,10 @@ func TestProjectMemberAPI_Integration(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	router := SetupRouter()
 
-	// 1. Create Users
 	managerUser, managerToken := CreateTestUserAndLogin(t, router, "member.manager@test.com", "ValidPass123!")
 	memberUser, memberToken := CreateTestUserAndLogin(t, router, "member.user@test.com", "ValidPass123!")
 	_, otherToken := CreateTestUserAndLogin(t, router, "member.other@test.com", "ValidPass123!")
 
-	// 2. Create Project
 	project := CreateTestProjectHelper(t, router, managerUser, managerToken)
 	projectID := project.ID
 	memberID := memberUser.ID
@@ -70,7 +67,7 @@ func TestProjectMemberAPI_Integration(t *testing.T) {
 
 	t.Run("Add Member - Success (Manager)", func(t *testing.T) {
 		addDTO := ports.AddProjectMemberInput{
-			ProjectID: 999, // Test that this gets overridden by the URL param
+			ProjectID: 999, 
 			UserID:    memberID,
 			Role:      models.ProjectMemberRoleContributor,
 		}
@@ -85,25 +82,25 @@ func TestProjectMemberAPI_Integration(t *testing.T) {
 		var newMember ports.ProjectMemberResponse
 		json.Unmarshal(w.Body.Bytes(), &newMember)
 		assert.Equal(t, memberID, newMember.UserID)
-		assert.Equal(t, projectID, newMember.ProjectID) // Verify override
+		assert.Equal(t, projectID, newMember.ProjectID) 
 		assert.Equal(t, models.ProjectMemberRoleContributor, newMember.Role)
 	})
 
 	t.Run("Get Project Members", func(t *testing.T) {
 		req, _ := http.NewRequest(http.MethodGet, membersBaseURL, nil)
-		req.Header.Set("Authorization", "Bearer "+otherToken) // Any auth user
+		req.Header.Set("Authorization", "Bearer "+otherToken) 
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 
 		assert.Equal(t, http.StatusOK, w.Code)
 		var resp ports.ProjectMembersResponse
 		json.Unmarshal(w.Body.Bytes(), &resp)
-		assert.Equal(t, 2, resp.Count) // Manager + new member
+		assert.Equal(t, 2, resp.Count) 
 	})
 
 	t.Run("Get Specific Project Member", func(t *testing.T) {
 		req, _ := http.NewRequest(http.MethodGet, memberSpecificURL, nil)
-		req.Header.Set("Authorization", "Bearer "+otherToken) // Any auth user
+		req.Header.Set("Authorization", "Bearer "+otherToken) 
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 
@@ -115,7 +112,7 @@ func TestProjectMemberAPI_Integration(t *testing.T) {
 
 	t.Run("Get My Project Memberships", func(t *testing.T) {
 		req, _ := http.NewRequest(http.MethodGet, myMembershipsURL, nil)
-		req.Header.Set("Authorization", "Bearer "+memberToken) // Self
+		req.Header.Set("Authorization", "Bearer "+memberToken) 
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 
@@ -128,7 +125,7 @@ func TestProjectMemberAPI_Integration(t *testing.T) {
 
 	t.Run("Get My Project Memberships (Filtered)", func(t *testing.T) {
 		req, _ := http.NewRequest(http.MethodGet, myMembershipsURL+"?role=contributor", nil)
-		req.Header.Set("Authorization", "Bearer "+memberToken) // Self
+		req.Header.Set("Authorization", "Bearer "+memberToken) 
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 
@@ -138,7 +135,7 @@ func TestProjectMemberAPI_Integration(t *testing.T) {
 		assert.Equal(t, 1, resp.Count)
 
 		req, _ = http.NewRequest(http.MethodGet, myMembershipsURL+"?role=manager", nil)
-		req.Header.Set("Authorization", "Bearer "+memberToken) // Self
+		req.Header.Set("Authorization", "Bearer "+memberToken) 
 		w = httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 		assert.Equal(t, http.StatusOK, w.Code)
@@ -187,7 +184,6 @@ func TestProjectMemberAPI_Integration(t *testing.T) {
 		assert.Equal(t, http.StatusNoContent, w.Code)
 	})
 
-	// Re-add member for manager-delete test
 	addDTO := ports.AddProjectMemberInput{
 		UserID: memberID,
 		Role:   models.ProjectMemberRoleContributor,
@@ -211,9 +207,9 @@ func TestProjectMemberAPI_Integration(t *testing.T) {
 	t.Run("Remove Manager - Fail (Service Logic)", func(t *testing.T) {
 		managerMemberURL := fmt.Sprintf("%s/%d", membersBaseURL, managerUser.ID)
 		req, _ := http.NewRequest(http.MethodDelete, managerMemberURL, nil)
-		req.Header.Set("Authorization", "Bearer "+managerToken) // Manager trying to remove self
+		req.Header.Set("Authorization", "Bearer "+managerToken) 
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
-		assert.Equal(t, http.StatusBadRequest, w.Code) // ErrCannotRemoveManager
+		assert.Equal(t, http.StatusBadRequest, w.Code) 
 	})
 }

@@ -35,16 +35,16 @@ func SetupRouter() *gin.Engine {
 	l2eResponseService := services.NewL2EResponseService(testutil.TestDB)
 	notificationService := services.NewNotificationService(testutil.TestDB)
 	projectService := services.NewProjectService(testutil.TestDB)
-	projectApplicantService := services.NewProjectApplicantService(testutil.TestDB) // <--- ADD THIS
-	projectMemberService := services.NewProjectMemberService(testutil.TestDB)       // <--- ADD THIS
-	projectRegionService := services.NewProjectRegionService(testutil.TestDB)       // <--- ADD THIS
-	projectSkillService := services.NewProjectSkillService(testutil.TestDB)         // <--- ADD THIS
-	publicationService := services.NewPublicationService(testutil.TestDB)           // <--- ADD THIS
-	skillService := services.NewSkillService(testutil.TestDB)                       // <--- ADD THIS
-	subscriptionService := services.NewSubscriptionService(testutil.TestDB)         // <--- ADD THIS
-	userSubscriptionService := services.NewUserSubscriptionService(testutil.TestDB) // <--- ADD THIS
-	userConfigService := services.NewUserConfigService(testutil.TestDB)             // <--- ADD THIS
-	userSkillService := services.NewUserSkillService(testutil.TestDB)               // <--- ADD THIS
+	projectApplicantService := services.NewProjectApplicantService(testutil.TestDB) 
+	projectMemberService := services.NewProjectMemberService(testutil.TestDB)       
+	projectRegionService := services.NewProjectRegionService(testutil.TestDB)       
+	projectSkillService := services.NewProjectSkillService(testutil.TestDB)         
+	publicationService := services.NewPublicationService(testutil.TestDB)           
+	skillService := services.NewSkillService(testutil.TestDB)                       
+	subscriptionService := services.NewSubscriptionService(testutil.TestDB)         
+	userSubscriptionService := services.NewUserSubscriptionService(testutil.TestDB) 
+	userConfigService := services.NewUserConfigService(testutil.TestDB)             
+	userSkillService := services.NewUserSkillService(testutil.TestDB)               
 
 	userHandler := handlers.NewUserHandler(userService, &constants.AppRoutes)
 	authHandler := handlers.NewAuthHandler(authService, &constants.AppRoutes)
@@ -59,16 +59,16 @@ func SetupRouter() *gin.Engine {
 	l2eHandler := handlers.NewL2EHandler(l2eResponseService, &constants.AppRoutes)
 	notificationHandler := handlers.NewNotificationHandler(notificationService, &constants.AppRoutes)
 	projectHandler := handlers.NewProjectHandler(projectService, &constants.AppRoutes)
-	projectApplicantHandler := handlers.NewProjectApplicantHandler(projectApplicantService, projectService, &constants.AppRoutes) // <--- ADD THIS
-	projectMemberHandler := handlers.NewProjectMemberHandler(projectMemberService, projectService, &constants.AppRoutes)          // <--- ADD THIS
-	projectRegionHandler := handlers.NewProjectRegionHandler(projectRegionService, projectService, &constants.AppRoutes)          // <--- ADD THIS
-	projectSkillHandler := handlers.NewProjectSkillHandler(projectSkillService, projectService, &constants.AppRoutes)             // <--- ADD THIS
-	publicationHandler := handlers.NewPublicationHandler(publicationService, &constants.AppRoutes)                                // <--- ADD THIS
-	skillHandler := handlers.NewSkillHandler(skillService, &constants.AppRoutes)                                                  // <--- ADD THIS
-	subscriptionHandler := handlers.NewSubscriptionHandler(subscriptionService, &constants.AppRoutes)                             // <--- ADD THIS
-	userSubscriptionHandler := handlers.NewUserSubscriptionHandler(userSubscriptionService, &constants.AppRoutes)                 // <--- ADD THIS
-	userConfigHandler := handlers.NewUserConfigHandler(userConfigService, &constants.AppRoutes)                                   // <--- ADD THIS
-	userSkillHandler := handlers.NewUserSkillHandler(userSkillService, &constants.AppRoutes)                                      // <--- ADD THIS
+	projectApplicantHandler := handlers.NewProjectApplicantHandler(projectApplicantService, projectService, &constants.AppRoutes) 
+	projectMemberHandler := handlers.NewProjectMemberHandler(projectMemberService, projectService, &constants.AppRoutes)          
+	projectRegionHandler := handlers.NewProjectRegionHandler(projectRegionService, projectService, &constants.AppRoutes)          
+	projectSkillHandler := handlers.NewProjectSkillHandler(projectSkillService, projectService, &constants.AppRoutes)             
+	publicationHandler := handlers.NewPublicationHandler(publicationService, &constants.AppRoutes)                                
+	skillHandler := handlers.NewSkillHandler(skillService, &constants.AppRoutes)                                                  
+	subscriptionHandler := handlers.NewSubscriptionHandler(subscriptionService, &constants.AppRoutes)                             
+	userSubscriptionHandler := handlers.NewUserSubscriptionHandler(userSubscriptionService, &constants.AppRoutes)                 
+	userConfigHandler := handlers.NewUserConfigHandler(userConfigService, &constants.AppRoutes)                                   
+	userSkillHandler := handlers.NewUserSkillHandler(userSkillService, &constants.AppRoutes)                                      
 
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
@@ -111,16 +111,16 @@ func SetupRouter() *gin.Engine {
 		InferredConnectionHandler:     inferredConnectionHandler,
 		L2EHandler:                    l2eHandler,
 		NotificationHandler:           notificationHandler,
-		ProjectApplicantHandler:       projectApplicantHandler, // <--- ADD THIS
-		ProjectMemberHandler:          projectMemberHandler,    // <--- ADD THIS
-		ProjectRegionHandler:          projectRegionHandler,    // <--- ADD THIS
-		ProjectSkillHandler:           projectSkillHandler,     // <--- ADD THIS
-		PublicationHandler:            publicationHandler,      // <--- ADD THIS
-		SkillHandler:                  skillHandler,            // <--- ADD THIS
-		SubscriptionHandler:           subscriptionHandler,     // <--- ADD THIS
-		UserSubscriptionHandler:       userSubscriptionHandler, // <--- ADD THIS
-		UserConfigHandler:             userConfigHandler,       // <--- ADD THIS
-		UserSkillHandler:              userSkillHandler,        // <--- ADD THIS
+		ProjectApplicantHandler:       projectApplicantHandler, 
+		ProjectMemberHandler:          projectMemberHandler,    
+		ProjectRegionHandler:          projectRegionHandler,    
+		ProjectSkillHandler:           projectSkillHandler,     
+		PublicationHandler:            publicationHandler,      
+		SkillHandler:                  skillHandler,            
+		SubscriptionHandler:           subscriptionHandler,     
+		UserSubscriptionHandler:       userSubscriptionHandler, 
+		UserConfigHandler:             userConfigHandler,       
+		UserSkillHandler:              userSkillHandler,        
 		Routes:                        constants.AppRoutes,
 	}
 

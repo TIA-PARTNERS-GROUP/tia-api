@@ -15,7 +15,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Helper to create a Subscription Plan in the DB
 func CreateTestSubscriptionPlan(t *testing.T) models.Subscription {
 	plan := models.Subscription{
 		Name:        "Test Plan",
@@ -29,13 +28,12 @@ func CreateTestSubscriptionPlan(t *testing.T) models.Subscription {
 	return plan
 }
 
-// Helper to directly create a UserSubscription record for setup
 func CreateTestUserSubscription(t *testing.T, userID uint, planID uint, isTrial bool) models.UserSubscription {
 	userSub := models.UserSubscription{
 		UserID:         userID,
 		SubscriptionID: planID,
-		DateFrom:       time.Now().Add(-24 * time.Hour),     // Start yesterday
-		DateTo:         time.Now().Add(30 * 24 * time.Hour), // Active for a month
+		DateFrom:       time.Now().Add(-24 * time.Hour),     
+		DateTo:         time.Now().Add(30 * 24 * time.Hour), 
 		IsTrial:        isTrial,
 	}
 	result := testutil.TestDB.Create(&userSub)
@@ -48,32 +46,26 @@ func TestUserSubscriptionAPI_Integration(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	router := SetupRouter()
 
-	// 1. Setup Data
 	user, userToken := CreateTestUserAndLogin(t, router, "usub.user@test.com", "ValidPass123!")
-	// --- FIX: Capture otherUser model to get its ID ---
 	otherUser, otherToken := CreateTestUserAndLogin(t, router, "usub.other@test.com", "ValidPass123!")
 	plan := CreateTestSubscriptionPlan(t)
 
-	// Create an active user subscription record
 	activeSub := CreateTestUserSubscription(t, user.ID, plan.ID, false)
 
-	// Create an expired user subscription record (should NOT be returned by GET)
 	expiredSub := models.UserSubscription{
 		UserID:         user.ID,
 		SubscriptionID: plan.ID,
 		DateFrom:       time.Now().AddDate(-1, 0, 0),
-		DateTo:         time.Now().AddDate(-1, 0, 1), // Expired 1 year ago
+		DateTo:         time.Now().AddDate(-1, 0, 1), 
 		IsTrial:        false,
 	}
 	result := testutil.TestDB.Create(&expiredSub)
 	assert.NoError(t, result.Error)
 
-	// Base URLs
 	userSubsURL := fmt.Sprintf("%s/users/%d/subscriptions", constants.AppRoutes.APIPrefix, user.ID)
 	cancelSubURL := fmt.Sprintf("%s/users/%d/subscriptions/%d", constants.AppRoutes.APIPrefix, user.ID, activeSub.ID)
 
 	t.Run("Get Subscriptions - Forbidden (Other User)", func(t *testing.T) {
-		// This uses 'otherToken' to authenticate, but tries to access 'user.ID's subs
 		req, _ := http.NewRequest(http.MethodGet, userSubsURL, nil)
 		req.Header.Set("Authorization", "Bearer "+otherToken)
 		w := httptest.NewRecorder()
@@ -96,7 +88,6 @@ func TestUserSubscriptionAPI_Integration(t *testing.T) {
 	})
 
 	t.Run("Cancel Subscription - Forbidden (Wrong User ID in URL)", func(t *testing.T) {
-		// Auth: 'userToken' (ID 1), trying to cancel subscription for URL ID 'otherUser.ID' (ID 2)
 		wrongUserURL := fmt.Sprintf("%s/users/%d/subscriptions/%d", constants.AppRoutes.APIPrefix, otherUser.ID, activeSub.ID)
 		req, _ := http.NewRequest(http.MethodDelete, wrongUserURL, nil)
 		req.Header.Set("Authorization", "Bearer "+userToken)
@@ -107,7 +98,7 @@ func TestUserSubscriptionAPI_Integration(t *testing.T) {
 
 	t.Run("Cancel Subscription - Forbidden (Not Owner)", func(t *testing.T) {
 		req, _ := http.NewRequest(http.MethodDelete, cancelSubURL, nil)
-		req.Header.Set("Authorization", "Bearer "+otherToken) // Auth is 'otherUser'
+		req.Header.Set("Authorization", "Bearer "+otherToken) 
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 		assert.Equal(t, http.StatusForbidden, w.Code)
@@ -122,7 +113,6 @@ func TestUserSubscriptionAPI_Integration(t *testing.T) {
 	})
 
 	t.Run("Verify Cancellation", func(t *testing.T) {
-		// Check that the active subscription list is now empty
 		req, _ := http.NewRequest(http.MethodGet, userSubsURL, nil)
 		req.Header.Set("Authorization", "Bearer "+userToken)
 		w := httptest.NewRecorder()

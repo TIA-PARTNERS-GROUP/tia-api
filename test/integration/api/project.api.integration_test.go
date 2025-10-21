@@ -22,7 +22,6 @@ func TestProjectAPI_Integration_CRUD(t *testing.T) {
 	constApiPrefix := constants.AppRoutes.APIPrefix
 	constProjectBase := constApiPrefix + constants.AppRoutes.ProjectBase
 
-	// 1. Create Users (Manager, Member, Other)
 	managerUser, managerToken := CreateTestUserAndLogin(t, router, "proj.manager@test.com", "ValidPass123!")
 	_, memberToken := CreateTestUserAndLogin(t, router, "proj.member@test.com", "ValidPass123!")
 	_, otherToken := CreateTestUserAndLogin(t, router, "proj.other@test.com", "ValidPass123!")
@@ -54,7 +53,7 @@ func TestProjectAPI_Integration_CRUD(t *testing.T) {
 	t.Run("Get Project By ID", func(t *testing.T) {
 		url := fmt.Sprintf("%s/%d", constProjectBase, createdProjectID)
 		req, _ := http.NewRequest(http.MethodGet, url, nil)
-		req.Header.Set("Authorization", "Bearer "+memberToken) // Any auth user can get
+		req.Header.Set("Authorization", "Bearer "+memberToken) 
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 
@@ -66,7 +65,7 @@ func TestProjectAPI_Integration_CRUD(t *testing.T) {
 
 	t.Run("Get All Projects", func(t *testing.T) {
 		req, _ := http.NewRequest(http.MethodGet, constProjectBase, nil)
-		req.Header.Set("Authorization", "Bearer "+memberToken) // Any auth user can get
+		req.Header.Set("Authorization", "Bearer "+memberToken) 
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 
@@ -105,7 +104,6 @@ func TestProjectAPI_Integration_CRUD(t *testing.T) {
 		assert.Equal(t, updatedName, updatedProject.Name)
 	})
 
-	// --- Deletion ---
 	t.Run("Delete Project - Forbidden (Not Manager)", func(t *testing.T) {
 		url := fmt.Sprintf("%s/%d", constProjectBase, createdProjectID)
 		req, _ := http.NewRequest(http.MethodDelete, url, nil)

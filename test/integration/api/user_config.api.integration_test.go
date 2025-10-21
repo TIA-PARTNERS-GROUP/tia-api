@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/http/httptest" // Corrected import (already in file, but used explicitly below)
+	"net/http/httptest" 
 	"testing"
 
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"
@@ -19,17 +19,13 @@ func TestUserConfigAPI_Integration_CRUD(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	router := SetupRouter()
 
-	// 1. Create Users
 	user, userToken := CreateTestUserAndLogin(t, router, "config.user@test.com", "ValidPass123!")
-	// FIX 1: Removed otherToken as it was not used.
 	otherUser, _ := CreateTestUserAndLogin(t, router, "config.other@test.com", "ValidPassword123!")
 
 	const configType = "user_preferences"
 	const configType2 = "notification_settings"
 
-	// Base URL for the authenticated user's configs
 	userConfigBaseURL := fmt.Sprintf("%s/users/%d/config", constants.AppRoutes.APIPrefix, user.ID)
-	// Base URL for another user's configs (to test forbidden access)
 	otherUserConfigBaseURL := fmt.Sprintf("%s/users/%d/config", constants.AppRoutes.APIPrefix, otherUser.ID)
 
 	t.Run("Set Config (UPSERT) - Success", func(t *testing.T) {
@@ -62,9 +58,8 @@ func TestUserConfigAPI_Integration_CRUD(t *testing.T) {
 		body, _ := json.Marshal(setDTO)
 		req, _ := http.NewRequest(http.MethodPut, otherUserConfigBaseURL, bytes.NewBuffer(body))
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Authorization", "Bearer "+userToken) // Authenticated as 'user', but targeting 'otherUser'
+		req.Header.Set("Authorization", "Bearer "+userToken) 
 
-		// FIX 2: Corrected typo from htttest.NewRecorder() to httptest.NewRecorder()
 		w := httptest.NewRecorder()
 
 		router.ServeHTTP(w, req)
@@ -116,7 +111,6 @@ func TestUserConfigAPI_Integration_CRUD(t *testing.T) {
 	})
 
 	t.Run("Delete Config - Success", func(t *testing.T) {
-		// Set a second config type first
 		setDTO := ports.SetUserConfigInput{
 			ConfigType: configType2,
 			Config:     datatypes.JSON([]byte(`{"volume": 50}`)),
@@ -127,7 +121,6 @@ func TestUserConfigAPI_Integration_CRUD(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 		router.ServeHTTP(httptest.NewRecorder(), req)
 
-		// Now delete it
 		url := fmt.Sprintf("%s/%s", userConfigBaseURL, configType2)
 		req, _ = http.NewRequest(http.MethodDelete, url, nil)
 		req.Header.Set("Authorization", "Bearer "+userToken)

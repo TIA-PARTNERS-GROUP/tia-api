@@ -14,7 +14,7 @@ import (
 
 type ProjectSkillHandler struct {
 	projectSkillService *services.ProjectSkillService
-	projectService      *services.ProjectService // Needed for manager checks
+	projectService      *services.ProjectService 
 	validate            *validator.Validate
 	routes              *constants.Routes
 }
@@ -32,7 +32,6 @@ func NewProjectSkillHandler(
 	}
 }
 
-// getAuthUserID retrieves the authenticated user's ID from the context.
 func (h *ProjectSkillHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	authUserIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
@@ -45,7 +44,6 @@ func (h *ProjectSkillHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
-// checkProjectManager is a helper to verify if the auth user is the project manager.
 func (h *ProjectSkillHandler) checkProjectManager(c *gin.Context, projectID uint) (uint, *ports.ApiError) {
 	authUserID, err := h.getAuthUserID(c)
 	if err != nil {
@@ -66,7 +64,6 @@ func (h *ProjectSkillHandler) checkProjectManager(c *gin.Context, projectID uint
 	return authUserID, nil
 }
 
-// AddProjectSkill handles POST /projects/:id/skills
 func (h *ProjectSkillHandler) AddProjectSkill(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -75,7 +72,6 @@ func (h *ProjectSkillHandler) AddProjectSkill(c *gin.Context) {
 		return
 	}
 
-	// Auth: Only the project manager can add skills
 	if _, apiErr := h.checkProjectManager(c, uint(projectID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return
@@ -87,7 +83,6 @@ func (h *ProjectSkillHandler) AddProjectSkill(c *gin.Context) {
 		return
 	}
 
-	// Override ProjectID from DTO with the one from the URL param for consistency
 	input.ProjectID = uint(projectID)
 
 	if err := h.validate.Struct(input); err != nil {
@@ -109,7 +104,6 @@ func (h *ProjectSkillHandler) AddProjectSkill(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapToProjectSkillResponse(projectSkill))
 }
 
-// GetProjectSkills handles GET /projects/:id/skills
 func (h *ProjectSkillHandler) GetProjectSkills(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -118,7 +112,6 @@ func (h *ProjectSkillHandler) GetProjectSkills(c *gin.Context) {
 		return
 	}
 
-	// Auth: Any authenticated user can view project skills
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -133,7 +126,6 @@ func (h *ProjectSkillHandler) GetProjectSkills(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToProjectSkillsResponse(skills))
 }
 
-// UpdateProjectSkill handles PUT /projects/:id/skills/:skillID
 func (h *ProjectSkillHandler) UpdateProjectSkill(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -148,7 +140,6 @@ func (h *ProjectSkillHandler) UpdateProjectSkill(c *gin.Context) {
 		return
 	}
 
-	// Auth: Only the project manager can update skills
 	if _, apiErr := h.checkProjectManager(c, uint(projectID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return
@@ -178,7 +169,6 @@ func (h *ProjectSkillHandler) UpdateProjectSkill(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToProjectSkillResponse(projectSkill))
 }
 
-// RemoveProjectSkill handles DELETE /projects/:id/skills/:skillID
 func (h *ProjectSkillHandler) RemoveProjectSkill(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -193,7 +183,6 @@ func (h *ProjectSkillHandler) RemoveProjectSkill(c *gin.Context) {
 		return
 	}
 
-	// Auth: Only the project manager can remove skills
 	if _, apiErr := h.checkProjectManager(c, uint(projectID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return

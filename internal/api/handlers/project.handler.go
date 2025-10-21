@@ -26,7 +26,6 @@ func NewProjectHandler(projectService *services.ProjectService, routes *constant
 	}
 }
 
-// getAuthUserID retrieves the authenticated user's ID from the context.
 func (h *ProjectHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	authUserIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
@@ -39,32 +38,26 @@ func (h *ProjectHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
-// checkProjectManager is a helper to verify if the auth user is the project manager.
 func (h *ProjectHandler) checkProjectManager(c *gin.Context, projectID uint) (uint, *ports.ApiError) {
 	authUserID, err := h.getAuthUserID(c)
 	if err != nil {
-		// Use a predefined error for auth issues
 		return 0, ports.ErrInvalidToken
 	}
 
 	project, err := h.projectService.GetProjectByID(c.Request.Context(), projectID)
 	if err != nil {
 		if errors.Is(err, ports.ErrProjectNotFound) {
-			// Use the predefined error
 			return 0, ports.ErrProjectNotFound
 		}
-		// Use the generic database error
 		return 0, ports.ErrDatabase
 	}
 
 	if project.ManagedByUserID != authUserID {
-		// Use the predefined forbidden error
 		return 0, ports.ErrForbidden
 	}
 	return authUserID, nil
 }
 
-// CreateProject handles POST /projects
 func (h *ProjectHandler) CreateProject(c *gin.Context) {
 	_, err := h.getAuthUserID(c)
 	if err != nil {
@@ -95,7 +88,6 @@ func (h *ProjectHandler) CreateProject(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapToProjectResponse(project))
 }
 
-// GetProjectByID handles GET /projects/:id
 func (h *ProjectHandler) GetProjectByID(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -127,7 +119,6 @@ func (h *ProjectHandler) GetProjectByID(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToProjectResponse(project))
 }
 
-// GetAllProjects handles GET /projects
 func (h *ProjectHandler) GetAllProjects(c *gin.Context) {
 	_, err := h.getAuthUserID(c)
 	if err != nil {
@@ -148,7 +139,6 @@ func (h *ProjectHandler) GetAllProjects(c *gin.Context) {
 	c.JSON(http.StatusOK, projectResponses)
 }
 
-// UpdateProject handles PUT /projects/:id
 func (h *ProjectHandler) UpdateProject(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(idStr, 10, 32)
@@ -157,7 +147,6 @@ func (h *ProjectHandler) UpdateProject(c *gin.Context) {
 		return
 	}
 
-	// Check if the user is the project manager
 	if _, apiErr := h.checkProjectManager(c, uint(projectID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return
@@ -182,7 +171,6 @@ func (h *ProjectHandler) UpdateProject(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToProjectResponse(project))
 }
 
-// DeleteProject handles DELETE /projects/:id
 func (h *ProjectHandler) DeleteProject(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(idStr, 10, 32)
@@ -191,7 +179,6 @@ func (h *ProjectHandler) DeleteProject(c *gin.Context) {
 		return
 	}
 
-	// Check if the user is the project manager
 	if _, apiErr := h.checkProjectManager(c, uint(projectID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return

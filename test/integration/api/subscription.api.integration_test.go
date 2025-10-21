@@ -21,7 +21,6 @@ func TestSubscriptionAPI_Integration(t *testing.T) {
 	constApiPrefix := constants.AppRoutes.APIPrefix
 	constSubBase := constApiPrefix + constants.AppRoutes.SubscriptionBase
 
-	// 1. Create Users
 	_, userToken := CreateTestUserAndLogin(t, router, "sub.user@test.com", "ValidPass123!")
 	_, otherToken := CreateTestUserAndLogin(t, router, "sub.other@test.com", "ValidPass123!")
 
@@ -45,7 +44,6 @@ func TestSubscriptionAPI_Integration(t *testing.T) {
 		assert.NotZero(t, createdPlan.ID)
 		assert.Equal(t, float64(12), float64(*createdPlan.ValidMonths))
 
-		// Attempt to create duplicate (should fail)
 		req2, _ := http.NewRequest(http.MethodPost, constSubBase, bytes.NewBuffer(body))
 		req2.Header.Set("Content-Type", "application/json")
 		req2.Header.Set("Authorization", "Bearer "+userToken)

@@ -19,21 +19,18 @@ func TestUserSkillAPI_Integration_CRUD(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	router := SetupRouter()
 
-	// 1. Create Users and Skills
 	user, userToken := CreateTestUserAndLogin(t, router, "uskill.user@test.com", "ValidPass123!")
 	otherUser, _ := CreateTestUserAndLogin(t, router, "uskill.other@test.com", "ValidPass123!")
 
 	skill1 := CreateTestSkill(t, "Rust", 1)
 	skill2 := CreateTestSkill(t, "DevOps", 2)
 
-	// Base URL for the authenticated user's skills
 	userSkillBaseURL := fmt.Sprintf("%s/users/%d/skills", constants.AppRoutes.APIPrefix, user.ID)
-	// Base URL for another user's skills
 	otherUserSkillBaseURL := fmt.Sprintf("%s/users/%d/skills", constants.AppRoutes.APIPrefix, otherUser.ID)
 
 	t.Run("Add Skill - Success", func(t *testing.T) {
 		addDTO := ports.CreateUserSkillInput{
-			UserID:           999, // Should be ignored
+			UserID:           999, 
 			SkillID:          skill1.ID,
 			ProficiencyLevel: models.ProficiencyIntermediate,
 		}
@@ -61,7 +58,7 @@ func TestUserSkillAPI_Integration_CRUD(t *testing.T) {
 		body, _ := json.Marshal(addDTO)
 		req, _ := http.NewRequest(http.MethodPost, otherUserSkillBaseURL, bytes.NewBuffer(body))
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Authorization", "Bearer "+userToken) // Authenticated as 'user', but targeting 'otherUser'
+		req.Header.Set("Authorization", "Bearer "+userToken) 
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 		assert.Equal(t, http.StatusForbidden, w.Code)

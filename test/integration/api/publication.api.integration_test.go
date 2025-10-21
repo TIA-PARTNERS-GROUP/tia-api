@@ -22,7 +22,6 @@ func TestPublicationAPI_Integration_CRUD(t *testing.T) {
 	constApiPrefix := constants.AppRoutes.APIPrefix
 	constPubBase := constApiPrefix + constants.AppRoutes.PublicationBase
 
-	// 1. Create Users
 	authorUser, authorToken := CreateTestUserAndLogin(t, router, "pub.author@test.com", "ValidPass123!")
 	_, otherToken := CreateTestUserAndLogin(t, router, "pub.other@test.com", "ValidPass123!")
 
@@ -51,7 +50,6 @@ func TestPublicationAPI_Integration_CRUD(t *testing.T) {
 		assert.NotNil(t, createdPub.PublishedAt)
 		createdPubID := createdPub.ID
 
-		// Attempt to create with duplicate slug
 		req2, _ := http.NewRequest(http.MethodPost, constPubBase, bytes.NewBuffer(body))
 		req2.Header.Set("Content-Type", "application/json")
 		req2.Header.Set("Authorization", "Bearer "+authorToken)
@@ -59,7 +57,6 @@ func TestPublicationAPI_Integration_CRUD(t *testing.T) {
 		router.ServeHTTP(w2, req2)
 		assert.Equal(t, http.StatusConflict, w2.Code)
 
-		// Attempt to create for another user
 		createDTO.Title = "Other User's Article"
 		createDTO.UserID = 9999
 		body3, _ := json.Marshal(createDTO)
@@ -70,12 +67,12 @@ func TestPublicationAPI_Integration_CRUD(t *testing.T) {
 		router.ServeHTTP(w3, req3)
 		assert.Equal(t, http.StatusForbidden, w3.Code)
 
-		createdPub.ID = createdPubID // Restore ID for later tests
+		createdPub.ID = createdPubID 
 	})
 
 	t.Run("Get All Publications", func(t *testing.T) {
 		req, _ := http.NewRequest(http.MethodGet, constPubBase, nil)
-		req.Header.Set("Authorization", "Bearer "+otherToken) // Any auth user
+		req.Header.Set("Authorization", "Bearer "+otherToken) 
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 
@@ -139,7 +136,7 @@ func TestPublicationAPI_Integration_CRUD(t *testing.T) {
 		var updatedPub ports.PublicationResponse
 		json.Unmarshal(w.Body.Bytes(), &updatedPub)
 		assert.Equal(t, updatedTitle, updatedPub.Title)
-		assert.Equal(t, "updated-article-title", updatedPub.Slug) // Slug updated
+		assert.Equal(t, "updated-article-title", updatedPub.Slug) 
 	})
 
 	t.Run("Delete Publication - Forbidden (Not Author)", func(t *testing.T) {

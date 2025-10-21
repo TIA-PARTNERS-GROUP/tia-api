@@ -15,7 +15,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Helper to create a Skill in the DB
 func CreateTestSkill(t *testing.T, name string, id uint) models.Skill {
 	skill := models.Skill{
 		ID:       id,
@@ -32,11 +31,9 @@ func TestProjectSkillAPI_Integration(t *testing.T) {
 	testutil.CleanupTestDB(t, testutil.TestDB)
 	router := SetupRouter()
 
-	// 1. Create Users
 	managerUser, managerToken := CreateTestUserAndLogin(t, router, "skill.manager@test.com", "ValidPass123!")
 	_, otherToken := CreateTestUserAndLogin(t, router, "skill.other@test.com", "ValidPass123!")
 
-	// 2. Create Project and Skills
 	project := CreateTestProjectHelper(t, router, managerUser, managerToken)
 	projectID := project.ID
 	skill1 := CreateTestSkill(t, "GoLang", 101)
@@ -61,7 +58,7 @@ func TestProjectSkillAPI_Integration(t *testing.T) {
 
 	t.Run("Add Skill 1 - Success (Manager)", func(t *testing.T) {
 		addDTO := ports.CreateProjectSkillInput{
-			ProjectID:  999, // Should be ignored
+			ProjectID:  999, 
 			SkillID:    skill1.ID,
 			Importance: models.SkillImportanceRequired,
 		}
@@ -96,7 +93,7 @@ func TestProjectSkillAPI_Integration(t *testing.T) {
 
 	t.Run("Get Project Skills", func(t *testing.T) {
 		req, _ := http.NewRequest(http.MethodGet, skillsBaseURL, nil)
-		req.Header.Set("Authorization", "Bearer "+otherToken) // Any auth user
+		req.Header.Set("Authorization", "Bearer "+otherToken) 
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 
@@ -105,8 +102,6 @@ func TestProjectSkillAPI_Integration(t *testing.T) {
 		json.Unmarshal(w.Body.Bytes(), &resp)
 		assert.Equal(t, 2, resp.Count)
 
-		// --- MODIFIED ASSERTIONS FOR ORDERING ---
-		// Find the two skills by ID to assert their properties, regardless of index.
 		var foundSkill1, foundSkill2 *ports.ProjectSkillResponse
 		for i := range resp.Skills {
 			if resp.Skills[i].SkillID == skill1.ID {
@@ -120,10 +115,8 @@ func TestProjectSkillAPI_Integration(t *testing.T) {
 		assert.NotNil(t, foundSkill1, "Skill 1 (GoLang) not found")
 		assert.NotNil(t, foundSkill2, "Skill 2 (AWS) not found")
 
-		// Assert properties, not index/order
 		assert.Equal(t, models.SkillImportanceRequired, foundSkill1.Importance, "Skill 1 importance incorrect")
 		assert.Equal(t, models.SkillImportancePreferred, foundSkill2.Importance, "Skill 2 importance incorrect")
-		// --- END MODIFIED ASSERTIONS ---
 	})
 
 	t.Run("Update Skill - Forbidden (Not Manager)", func(t *testing.T) {

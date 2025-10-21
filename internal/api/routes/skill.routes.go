@@ -5,7 +5,6 @@ import (
 )
 
 func SetupSkillRoutes(api *gin.RouterGroup, deps *RouterDependencies) {
-	// --- MODIFIED: Use the correct SkillsBase constant ---
 	skills := api.Group(deps.Routes.SkillsBase)
 	skills.Use(deps.AuthMiddleware)
 	{

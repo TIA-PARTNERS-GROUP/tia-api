@@ -26,7 +26,6 @@ func NewPublicationHandler(publicationService *services.PublicationService, rout
 	}
 }
 
-// getAuthUserID retrieves the authenticated user's ID from the context.
 func (h *PublicationHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	authUserIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
@@ -39,7 +38,6 @@ func (h *PublicationHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
-// checkPublicationOwnership verifies if the auth user is the author of the publication.
 func (h *PublicationHandler) checkPublicationOwnership(c *gin.Context, pubID uint) (uint, *ports.ApiError) {
 	authUserID, err := h.getAuthUserID(c)
 	if err != nil {
@@ -60,7 +58,6 @@ func (h *PublicationHandler) checkPublicationOwnership(c *gin.Context, pubID uin
 	return authUserID, nil
 }
 
-// CreatePublication handles POST /publications
 func (h *PublicationHandler) CreatePublication(c *gin.Context) {
 	authUserID, err := h.getAuthUserID(c)
 	if err != nil {
@@ -74,7 +71,6 @@ func (h *PublicationHandler) CreatePublication(c *gin.Context) {
 		return
 	}
 
-	// Ensure the author ID in the body matches the authenticated user ID
 	if input.UserID != authUserID {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden: Cannot create publication for another user"})
 		return
@@ -98,7 +94,6 @@ func (h *PublicationHandler) CreatePublication(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapPublicationToResponse(publication))
 }
 
-// GetPublicationByID handles GET /publications/id/:id
 func (h *PublicationHandler) GetPublicationByID(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -107,7 +102,6 @@ func (h *PublicationHandler) GetPublicationByID(c *gin.Context) {
 		return
 	}
 
-	// Auth: Any authenticated user can view a publication
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -126,7 +120,6 @@ func (h *PublicationHandler) GetPublicationByID(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapPublicationToResponse(publication))
 }
 
-// GetPublicationBySlug handles GET /publications/slug/:slug
 func (h *PublicationHandler) GetPublicationBySlug(c *gin.Context) {
 	slug := c.Param(h.routes.ParamKeySlug)
 	if slug == "" {
@@ -134,7 +127,6 @@ func (h *PublicationHandler) GetPublicationBySlug(c *gin.Context) {
 		return
 	}
 
-	// Auth: Any authenticated user can view a publication
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -153,9 +145,7 @@ func (h *PublicationHandler) GetPublicationBySlug(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapPublicationToResponse(publication))
 }
 
-// GetAllPublications handles GET /publications
 func (h *PublicationHandler) GetAllPublications(c *gin.Context) {
-	// Auth: Any authenticated user can view all publications
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -174,7 +164,6 @@ func (h *PublicationHandler) GetAllPublications(c *gin.Context) {
 	c.JSON(http.StatusOK, responses)
 }
 
-// UpdatePublication handles PUT /publications/:id
 func (h *PublicationHandler) UpdatePublication(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	pubID, err := strconv.ParseUint(idStr, 10, 32)
@@ -183,7 +172,6 @@ func (h *PublicationHandler) UpdatePublication(c *gin.Context) {
 		return
 	}
 
-	// Auth: Check ownership
 	if _, apiErr := h.checkPublicationOwnership(c, uint(pubID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return
@@ -212,7 +200,6 @@ func (h *PublicationHandler) UpdatePublication(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapPublicationToResponse(publication))
 }
 
-// DeletePublication handles DELETE /publications/:id
 func (h *PublicationHandler) DeletePublication(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	pubID, err := strconv.ParseUint(idStr, 10, 32)
@@ -221,7 +208,6 @@ func (h *PublicationHandler) DeletePublication(c *gin.Context) {
 		return
 	}
 
-	// Auth: Check ownership
 	if _, apiErr := h.checkPublicationOwnership(c, uint(pubID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return

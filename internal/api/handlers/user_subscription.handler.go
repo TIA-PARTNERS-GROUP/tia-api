@@ -23,7 +23,6 @@ func NewUserSubscriptionHandler(userSubscriptionService *services.UserSubscripti
 	}
 }
 
-// getAuthUserID retrieves the authenticated user's ID from the context.
 func (h *UserSubscriptionHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	authUserIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
@@ -36,7 +35,6 @@ func (h *UserSubscriptionHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
-// GetSubscriptionsForUser handles GET /users/:id/subscriptions
 func (h *UserSubscriptionHandler) GetSubscriptionsForUser(c *gin.Context) {
 	targetUserIDStr := c.Param(h.routes.ParamKeyID)
 	targetUserID, err := strconv.ParseUint(targetUserIDStr, 10, 32)
@@ -51,7 +49,6 @@ func (h *UserSubscriptionHandler) GetSubscriptionsForUser(c *gin.Context) {
 		return
 	}
 
-	// Auth: Users can only view their own subscriptions
 	if authUserID != uint(targetUserID) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden: You can only view your own subscriptions"})
 		return
@@ -65,14 +62,12 @@ func (h *UserSubscriptionHandler) GetSubscriptionsForUser(c *gin.Context) {
 
 	responses := make([]ports.UserSubscriptionResponse, len(subscriptions))
 	for i, sub := range subscriptions {
-		// NOTE: The service must ensure `Subscription` is preloaded for mapping to work
 		responses[i] = ports.MapUserSubscriptionToResponse(&sub)
 	}
 
 	c.JSON(http.StatusOK, responses)
 }
 
-// CancelSubscription handles DELETE /users/:userID/subscriptions/:subID
 func (h *UserSubscriptionHandler) CancelSubscription(c *gin.Context) {
 	targetUserIDStr := c.Param(h.routes.ParamKeyID)
 	targetUserID, err := strconv.ParseUint(targetUserIDStr, 10, 32)
@@ -94,13 +89,11 @@ func (h *UserSubscriptionHandler) CancelSubscription(c *gin.Context) {
 		return
 	}
 
-	// Auth: Users can only cancel their own subscription records
 	if authUserID != uint(targetUserID) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden: You can only cancel your own subscriptions"})
 		return
 	}
 
-	// Step 1: Verify ownership of the subscription record
 	userSub, err := h.userSubscriptionService.GetUserSubscriptionByID(c.Request.Context(), uint(userSubID))
 	if err != nil {
 		var apiErr *ports.ApiError
@@ -113,12 +106,10 @@ func (h *UserSubscriptionHandler) CancelSubscription(c *gin.Context) {
 	}
 
 	if userSub.UserID != authUserID {
-		// Found the record, but it belongs to someone else. Return Forbidden.
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden: Subscription record does not belong to you"})
 		return
 	}
 
-	// Step 2: Delete/Cancel the record
 	err = h.userSubscriptionService.CancelSubscription(c.Request.Context(), uint(userSubID))
 	if err != nil {
 		var apiErr *ports.ApiError

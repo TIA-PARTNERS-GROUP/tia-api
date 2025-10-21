@@ -26,7 +26,6 @@ func NewUserConfigHandler(userConfigService *services.UserConfigService, routes 
 	}
 }
 
-// getAuthUserID retrieves the authenticated user's ID from the context.
 func (h *UserConfigHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	authUserIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
@@ -39,7 +38,6 @@ func (h *UserConfigHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
-// checkUserOwnership verifies if the auth user matches the target user in the URL.
 func (h *UserConfigHandler) checkUserOwnership(c *gin.Context) (uint, uint, *ports.ApiError) {
 	authUserID, err := h.getAuthUserID(c)
 	if err != nil {
@@ -49,7 +47,6 @@ func (h *UserConfigHandler) checkUserOwnership(c *gin.Context) (uint, uint, *por
 	targetUserIDStr := c.Param(h.routes.ParamKeyID)
 	targetUserID, err := strconv.ParseUint(targetUserIDStr, 10, 32)
 	if err != nil {
-		// Use a generic Bad Request or Database error when error struct isn't handy
 		return 0, 0, ports.ErrDatabase
 	}
 
@@ -60,9 +57,7 @@ func (h *UserConfigHandler) checkUserOwnership(c *gin.Context) (uint, uint, *por
 	return authUserID, uint(targetUserID), nil
 }
 
-// SetUserConfig handles PUT /users/:id/config
 func (h *UserConfigHandler) SetUserConfig(c *gin.Context) {
-	// authUserID is needed but targetUserID is sufficient for the service call
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
@@ -93,9 +88,7 @@ func (h *UserConfigHandler) SetUserConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapUserConfigToResponse(config))
 }
 
-// GetUserConfig handles GET /users/:id/config/:configType
 func (h *UserConfigHandler) GetUserConfig(c *gin.Context) {
-	// authUserID is not used, targetUserID is sufficient for the service call
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
@@ -121,9 +114,7 @@ func (h *UserConfigHandler) GetUserConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapUserConfigToResponse(config))
 }
 
-// DeleteUserConfig handles DELETE /users/:id/config/:configType
 func (h *UserConfigHandler) DeleteUserConfig(c *gin.Context) {
-	// authUserID is not used, targetUserID is sufficient for the service call
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})

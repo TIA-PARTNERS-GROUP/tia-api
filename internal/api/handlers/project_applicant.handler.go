@@ -14,7 +14,7 @@ import (
 
 type ProjectApplicantHandler struct {
 	applicantService *services.ProjectApplicantService
-	projectService   *services.ProjectService // Needed for manager checks
+	projectService   *services.ProjectService 
 	validate         *validator.Validate
 	routes           *constants.Routes
 }
@@ -32,7 +32,6 @@ func NewProjectApplicantHandler(
 	}
 }
 
-// getAuthUserID retrieves the authenticated user's ID from the context.
 func (h *ProjectApplicantHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	authUserIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
@@ -45,7 +44,6 @@ func (h *ProjectApplicantHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
-// checkProjectManager is a helper to verify if the auth user is the project manager.
 func (h *ProjectApplicantHandler) checkProjectManager(c *gin.Context, projectID uint) (uint, *ports.ApiError) {
 	authUserID, err := h.getAuthUserID(c)
 	if err != nil {
@@ -66,7 +64,6 @@ func (h *ProjectApplicantHandler) checkProjectManager(c *gin.Context, projectID 
 	return authUserID, nil
 }
 
-// ApplyToProject handles POST /projects/:id/apply
 func (h *ProjectApplicantHandler) ApplyToProject(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -100,7 +97,6 @@ func (h *ProjectApplicantHandler) ApplyToProject(c *gin.Context) {
 	c.Status(http.StatusCreated)
 }
 
-// WithdrawApplication handles DELETE /projects/:id/apply
 func (h *ProjectApplicantHandler) WithdrawApplication(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -129,7 +125,6 @@ func (h *ProjectApplicantHandler) WithdrawApplication(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// GetApplicantsForProject handles GET /projects/:id/applicants
 func (h *ProjectApplicantHandler) GetApplicantsForProject(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -138,7 +133,6 @@ func (h *ProjectApplicantHandler) GetApplicantsForProject(c *gin.Context) {
 		return
 	}
 
-	// Only the project manager can see applicants
 	if _, apiErr := h.checkProjectManager(c, uint(projectID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return
@@ -158,7 +152,6 @@ func (h *ProjectApplicantHandler) GetApplicantsForProject(c *gin.Context) {
 	c.JSON(http.StatusOK, applicantResponses)
 }
 
-// GetApplicationsForUser handles GET /users/:id/applications
 func (h *ProjectApplicantHandler) GetApplicationsForUser(c *gin.Context) {
 	targetUserIDStr := c.Param(h.routes.ParamKeyID)
 	targetUserID, err := strconv.ParseUint(targetUserIDStr, 10, 32)
@@ -173,7 +166,6 @@ func (h *ProjectApplicantHandler) GetApplicationsForUser(c *gin.Context) {
 		return
 	}
 
-	// Users can only see their own applications
 	if authUserID != uint(targetUserID) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden: You can only view your own applications"})
 		return
@@ -185,7 +177,6 @@ func (h *ProjectApplicantHandler) GetApplicationsForUser(c *gin.Context) {
 		return
 	}
 
-	// Use the new mapper to include project details
 	applicationResponses := make([]ports.UserApplicationResponse, len(applications))
 	for i, app := range applications {
 		applicationResponses[i] = ports.MapUserApplicationToResponse(&app)

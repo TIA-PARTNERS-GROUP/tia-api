@@ -15,7 +15,7 @@ import (
 
 type ProjectMemberHandler struct {
 	projectMemberService *services.ProjectMemberService
-	projectService       *services.ProjectService // Needed for manager checks
+	projectService       *services.ProjectService 
 	validate             *validator.Validate
 	routes               *constants.Routes
 }
@@ -33,7 +33,6 @@ func NewProjectMemberHandler(
 	}
 }
 
-// getAuthUserID retrieves the authenticated user's ID from the context.
 func (h *ProjectMemberHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	authUserIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
@@ -46,7 +45,6 @@ func (h *ProjectMemberHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
-// checkProjectManager is a helper to verify if the auth user is the project manager.
 func (h *ProjectMemberHandler) checkProjectManager(c *gin.Context, projectID uint) (uint, *ports.ApiError) {
 	authUserID, err := h.getAuthUserID(c)
 	if err != nil {
@@ -67,7 +65,6 @@ func (h *ProjectMemberHandler) checkProjectManager(c *gin.Context, projectID uin
 	return authUserID, nil
 }
 
-// AddProjectMember handles POST /projects/:id/members
 func (h *ProjectMemberHandler) AddProjectMember(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -76,7 +73,6 @@ func (h *ProjectMemberHandler) AddProjectMember(c *gin.Context) {
 		return
 	}
 
-	// Auth: Only the project manager can add members
 	if _, apiErr := h.checkProjectManager(c, uint(projectID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return
@@ -88,7 +84,6 @@ func (h *ProjectMemberHandler) AddProjectMember(c *gin.Context) {
 		return
 	}
 
-	// Override ProjectID from DTO with the one from the URL param for consistency
 	input.ProjectID = uint(projectID)
 
 	if err := h.validate.Struct(input); err != nil {
@@ -109,7 +104,6 @@ func (h *ProjectMemberHandler) AddProjectMember(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapToProjectMemberResponse(member))
 }
 
-// GetProjectMembers handles GET /projects/:id/members
 func (h *ProjectMemberHandler) GetProjectMembers(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -118,7 +112,6 @@ func (h *ProjectMemberHandler) GetProjectMembers(c *gin.Context) {
 		return
 	}
 
-	// Auth: Any authenticated user can see project members
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -132,7 +125,6 @@ func (h *ProjectMemberHandler) GetProjectMembers(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToProjectMembersResponse(members))
 }
 
-// GetProjectMember handles GET /projects/:id/members/:userID
 func (h *ProjectMemberHandler) GetProjectMember(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -147,7 +139,6 @@ func (h *ProjectMemberHandler) GetProjectMember(c *gin.Context) {
 		return
 	}
 
-	// Auth: Any authenticated user can get a specific member
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -166,7 +157,6 @@ func (h *ProjectMemberHandler) GetProjectMember(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToProjectMemberResponse(member))
 }
 
-// GetProjectsByUser handles GET /users/:id/project-memberships
 func (h *ProjectMemberHandler) GetProjectsByUser(c *gin.Context) {
 	targetUserIDStr := c.Param(h.routes.ParamKeyID)
 	targetUserID, err := strconv.ParseUint(targetUserIDStr, 10, 32)
@@ -181,18 +171,15 @@ func (h *ProjectMemberHandler) GetProjectsByUser(c *gin.Context) {
 		return
 	}
 
-	// Auth: Users can only see their own project memberships
 	if authUserID != uint(targetUserID) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden: You can only view your own project memberships"})
 		return
 	}
 
-	// Check for optional "role" query param
 	var role *models.ProjectMemberRole
 	roleStr := c.Query("role")
 	if roleStr != "" {
 		pmRole := models.ProjectMemberRole(roleStr)
-		// Basic validation for the role enum
 		if pmRole == models.ProjectMemberRoleManager || pmRole == models.ProjectMemberRoleContributor || pmRole == models.ProjectMemberRoleReviewer {
 			role = &pmRole
 		}
@@ -206,7 +193,6 @@ func (h *ProjectMemberHandler) GetProjectsByUser(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToProjectMembersResponse(memberships))
 }
 
-// UpdateProjectMemberRole handles PUT /projects/:id/members/:userID
 func (h *ProjectMemberHandler) UpdateProjectMemberRole(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -221,7 +207,6 @@ func (h *ProjectMemberHandler) UpdateProjectMemberRole(c *gin.Context) {
 		return
 	}
 
-	// Auth: Only the project manager can update roles
 	if _, apiErr := h.checkProjectManager(c, uint(projectID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return
@@ -250,7 +235,6 @@ func (h *ProjectMemberHandler) UpdateProjectMemberRole(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToProjectMemberResponse(member))
 }
 
-// RemoveProjectMember handles DELETE /projects/:id/members/:userID
 func (h *ProjectMemberHandler) RemoveProjectMember(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -271,7 +255,6 @@ func (h *ProjectMemberHandler) RemoveProjectMember(c *gin.Context) {
 		return
 	}
 
-	// Auth: Allow if user is removing themselves
 	if authUserID == uint(userIDToRemove) {
 		err = h.projectMemberService.RemoveProjectMember(c.Request.Context(), uint(projectID), uint(userIDToRemove))
 		if err != nil {
@@ -287,13 +270,11 @@ func (h *ProjectMemberHandler) RemoveProjectMember(c *gin.Context) {
 		return
 	}
 
-	// Auth: Otherwise, check if the user is the project manager
 	if _, apiErr := h.checkProjectManager(c, uint(projectID)); apiErr != nil {
 		c.JSON(apiErr.StatusCode, gin.H{"error": apiErr.Message})
 		return
 	}
 
-	// Manager is allowed to remove anyone (service will block manager self-removal)
 	err = h.projectMemberService.RemoveProjectMember(c.Request.Context(), uint(projectID), uint(userIDToRemove))
 	if err != nil {
 		var apiErr *ports.ApiError

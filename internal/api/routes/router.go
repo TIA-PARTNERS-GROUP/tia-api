@@ -21,16 +21,16 @@ type RouterDependencies struct {
 	InferredConnectionHandler     *handlers.InferredConnectionHandler
 	L2EHandler                    *handlers.L2EHandler
 	NotificationHandler           *handlers.NotificationHandler
-	ProjectApplicantHandler       *handlers.ProjectApplicantHandler // <--- ADD THIS
-	ProjectMemberHandler          *handlers.ProjectMemberHandler    // <--- ADD THIS
-	ProjectRegionHandler          *handlers.ProjectRegionHandler    // <--- ADD THIS
-	ProjectSkillHandler           *handlers.ProjectSkillHandler     // <--- ADD THIS
-	PublicationHandler            *handlers.PublicationHandler      // <--- ADD THIS
-	SkillHandler                  *handlers.SkillHandler            // <--- ADD THIS
-	SubscriptionHandler           *handlers.SubscriptionHandler     // <--- ADD THIS
-	UserSubscriptionHandler       *handlers.UserSubscriptionHandler // <--- ADD THIS
-	UserConfigHandler             *handlers.UserConfigHandler       // <--- ADD THIS
-	UserSkillHandler              *handlers.UserSkillHandler        // <--- ADD THIS
+	ProjectApplicantHandler       *handlers.ProjectApplicantHandler 
+	ProjectMemberHandler          *handlers.ProjectMemberHandler    
+	ProjectRegionHandler          *handlers.ProjectRegionHandler    
+	ProjectSkillHandler           *handlers.ProjectSkillHandler     
+	PublicationHandler            *handlers.PublicationHandler      
+	SkillHandler                  *handlers.SkillHandler            
+	SubscriptionHandler           *handlers.SubscriptionHandler     
+	UserSubscriptionHandler       *handlers.UserSubscriptionHandler 
+	UserConfigHandler             *handlers.UserConfigHandler       
+	UserSkillHandler              *handlers.UserSkillHandler        
 	Routes                        constants.Routes
 }
 
@@ -49,7 +49,7 @@ func RegisterRoutes(router *gin.Engine, deps *RouterDependencies) {
 	SetupInferredConnectionRoutes(api, deps)
 	SetupL2ERoutes(api, deps)
 	SetupNotificationRoutes(api, deps)
-	SetupPublicationRoutes(api, deps)  // <--- ADD THIS
-	SetupSubscriptionRoutes(api, deps) // <--- ADD THIS
-	SetupSkillRoutes(api, deps)        // <--- ADD THIS
+	SetupPublicationRoutes(api, deps)  
+	SetupSubscriptionRoutes(api, deps) 
+	SetupSkillRoutes(api, deps)        
 }

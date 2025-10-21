@@ -31,7 +31,6 @@ type UserApplicationResponse struct {
 	Project   ProjectResponse `json:"project"`
 }
 
-// --- NEW MAPPER ---
 func MapUserApplicationToResponse(pa *models.ProjectApplicant) UserApplicationResponse {
 	resp := UserApplicationResponse{
 		ProjectID: pa.ProjectID,

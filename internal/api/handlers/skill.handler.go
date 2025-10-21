@@ -26,7 +26,6 @@ func NewSkillHandler(skillService *services.SkillService, routes *constants.Rout
 	}
 }
 
-// getAuthUserID retrieves the authenticated user's ID from the context.
 func (h *SkillHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	authUserIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
@@ -39,9 +38,7 @@ func (h *SkillHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
-// GetSkills handles GET /skills (with optional filters)
 func (h *SkillHandler) GetSkills(c *gin.Context) {
-	// Auth: Any authenticated user can view skills
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -66,7 +63,6 @@ func (h *SkillHandler) GetSkills(c *gin.Context) {
 	c.JSON(http.StatusOK, responses)
 }
 
-// GetSkillByID handles GET /skills/:id
 func (h *SkillHandler) GetSkillByID(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -75,7 +71,6 @@ func (h *SkillHandler) GetSkillByID(c *gin.Context) {
 		return
 	}
 
-	// Auth: Any authenticated user can view a skill
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -94,9 +89,7 @@ func (h *SkillHandler) GetSkillByID(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapSkillToResponse(skill))
 }
 
-// CreateSkill handles POST /skills
 func (h *SkillHandler) CreateSkill(c *gin.Context) {
-	// Auth: Check authentication
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -125,7 +118,6 @@ func (h *SkillHandler) CreateSkill(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapSkillToResponse(skill))
 }
 
-// UpdateSkill handles PUT /skills/:id
 func (h *SkillHandler) UpdateSkill(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -134,7 +126,6 @@ func (h *SkillHandler) UpdateSkill(c *gin.Context) {
 		return
 	}
 
-	// Auth: Check authentication
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -163,7 +154,6 @@ func (h *SkillHandler) UpdateSkill(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapSkillToResponse(skill))
 }
 
-// DeleteSkill handles DELETE /skills/:id
 func (h *SkillHandler) DeleteSkill(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -172,7 +162,6 @@ func (h *SkillHandler) DeleteSkill(c *gin.Context) {
 		return
 	}
 
-	// Auth: Check authentication
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -191,7 +180,6 @@ func (h *SkillHandler) DeleteSkill(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// ToggleSkillStatus handles PATCH /skills/:id/toggle-status
 func (h *SkillHandler) ToggleSkillStatus(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -200,7 +188,6 @@ func (h *SkillHandler) ToggleSkillStatus(c *gin.Context) {
 		return
 	}
 
-	// Auth: Check authentication
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return

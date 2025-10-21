@@ -121,7 +121,6 @@ func (s *ProjectService) UpdateProject(ctx context.Context, id uint, data ports.
 }
 func (s *ProjectService) DeleteProject(ctx context.Context, id uint) error {
 	err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		// 1. Check if project exists *within* the transaction
 		var project models.Project
 		if err := tx.First(&project, id).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -130,41 +129,33 @@ func (s *ProjectService) DeleteProject(ctx context.Context, id uint) error {
 			return ports.ErrDatabase
 		}
 
-		// 2. Delete all dependent records.
-		// (Based on your models.go file)
 
-		// Delete ProjectApplicants
 		if err := tx.Unscoped().Where("project_id = ?", id).Delete(&models.ProjectApplicant{}).Error; err != nil {
 			return err
 		}
-		// Delete ProjectMembers
 		if err := tx.Unscoped().Where("project_id = ?", id).Delete(&models.ProjectMember{}).Error; err != nil {
 			return err
 		}
-		// Delete ProjectRegions
 		if err := tx.Unscoped().Where("project_id = ?", id).Delete(&models.ProjectRegion{}).Error; err != nil {
 			return err
 		}
-		// Delete ProjectSkills
 		if err := tx.Unscoped().Where("project_id = ?", id).Delete(&models.ProjectSkill{}).Error; err != nil {
 			return err
 		}
 
-		// 3. Finally, delete the project itself
 		if err := tx.Unscoped().Delete(&project).Error; err != nil {
 			return err
 		}
 
-		return nil // Commit the transaction
+		return nil 
 	})
 
-	// Handle errors returned from the transaction
 	if err != nil {
 		var apiErr *ports.ApiError
 		if errors.As(err, &apiErr) {
-			return apiErr // Return specific errors like ErrProjectNotFound
+			return apiErr 
 		}
-		return ports.ErrDatabase // Return generic db error for any other failure
+		return ports.ErrDatabase 
 	}
 
 	return nil

@@ -31,7 +31,6 @@ func (s *ProjectRegionService) AddRegionToProject(ctx context.Context, data port
 		return nil, ports.ErrDatabase
 	}
 
-	// --- ADDED: Retrieve the created association and preload the Region ---
 	var createdAssociation models.ProjectRegion
 	if err := s.db.WithContext(ctx).
 		Preload("Region").
@@ -40,7 +39,6 @@ func (s *ProjectRegionService) AddRegionToProject(ctx context.Context, data port
 	}
 
 	return &createdAssociation, nil
-	// --- END ADDED ---
 }
 func (s *ProjectRegionService) RemoveRegionFromProject(ctx context.Context, projectID uint, regionID string) error {
 	result := s.db.WithContext(ctx).Delete(&models.ProjectRegion{}, "project_id = ? AND region_id = ?", projectID, regionID)
