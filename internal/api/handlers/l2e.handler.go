@@ -1,32 +1,49 @@
 package handlers
+
 import (
 	"net/http"
 	"strconv"
-	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants" 
+
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
+
 type L2EHandler struct {
 	service  *services.L2EResponseService
 	validate *validator.Validate
-	routes   *constants.Routes 
+	routes   *constants.Routes
 }
+
 func NewL2EHandler(service *services.L2EResponseService, routes *constants.Routes) *L2EHandler {
 	return &L2EHandler{
 		service:  service,
 		validate: validator.New(),
-		routes:   routes, 
+		routes:   routes,
 	}
 }
+
+// @Summary Submit New L2E Response
+// @Description Submits a user's response or data payload for a Learn-to-Earn (L2E) module. The UserID is taken from the auth context.
+// @Tags l2e
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param response body ports.CreateL2EResponseInput true "L2E response data payload"
+// @Success 201 {object} ports.L2EResponseResponse "Response recorded successfully"
+// @Failure 400 {object} gin.H "Invalid request body or validation error"
+// @Failure 401 {object} gin.H "Unauthorized or invalid context"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /l2e-responses [post]
 func (h *L2EHandler) CreateL2EResponse(c *gin.Context) {
 	var input ports.CreateL2EResponseInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body: " + err.Error()})
 		return
 	}
-	
+
 	userIDVal, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication context"})
@@ -37,8 +54,8 @@ func (h *L2EHandler) CreateL2EResponse(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid user ID in context"})
 		return
 	}
-	input.UserID = userID 
-	
+	input.UserID = userID
+
 	if err := h.validate.Struct(input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -50,21 +67,26 @@ func (h *L2EHandler) CreateL2EResponse(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, ports.MapL2EResponseToResponse(response))
 }
+
+// @Summary Get All L2E Responses for User
+// @Description Retrieves all L2E responses submitted by a specific user.
+// @Tags l2e
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "User ID"
+// @Success 200 {array} ports.L2EResponseResponse "List of L2E responses"
+// @Failure 400 {object} gin.H "Invalid user ID"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /users/{id}/l2e-responses [get]
 func (h *L2EHandler) GetL2EResponsesForUser(c *gin.Context) {
-	
+
 	userIDStr := c.Param(h.routes.ParamKeyID)
 	userID, err := strconv.ParseUint(userIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
-	
-	
-	
-	
-	
-	
-	
+
 	responses, err := h.service.GetL2EResponsesForUser(c.Request.Context(), uint(userID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve L2E responses"})

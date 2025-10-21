@@ -57,6 +57,20 @@ func (h *UserConfigHandler) checkUserOwnership(c *gin.Context) (uint, uint, *por
 	return authUserID, uint(targetUserID), nil
 }
 
+// @Summary Set or Update User Configuration
+// @Description Creates a new configuration entry for a user, or updates an existing one for the given config_type. Enforces self-management.
+// @Tags users, config
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "User ID"
+// @Param config body ports.SetUserConfigInput true "Configuration Data"
+// @Success 200 {object} ports.UserConfigResponse "Configuration successfully saved/updated"
+// @Failure 400 {object} gin.H "Invalid request body or validation error"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden: Cannot modify another user's config"
+// @Failure 500 {object} gin.H "Database error"
+// @Router /users/{id}/config [put]
 func (h *UserConfigHandler) SetUserConfig(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {
@@ -88,6 +102,20 @@ func (h *UserConfigHandler) SetUserConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapUserConfigToResponse(config))
 }
 
+// @Summary Get User Configuration by Type
+// @Description Retrieves a specific configuration entry for a user. Enforces self-management.
+// @Tags users, config
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "User ID"
+// @Param configType path string true "Configuration Type (e.g., user_preferences)"
+// @Success 200 {object} ports.UserConfigResponse "Configuration successfully retrieved"
+// @Failure 400 {object} gin.H "Invalid user ID or missing configType"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden: Cannot view another user's config"
+// @Failure 404 {object} gin.H "ErrUserConfigNotFound"
+// @Failure 500 {object} gin.H "Database error"
+// @Router /users/{id}/config/{configType} [get]
 func (h *UserConfigHandler) GetUserConfig(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {
@@ -114,6 +142,20 @@ func (h *UserConfigHandler) GetUserConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapUserConfigToResponse(config))
 }
 
+// @Summary Delete User Configuration by Type
+// @Description Deletes a specific configuration entry for a user. Enforces self-management.
+// @Tags users, config
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "User ID"
+// @Param configType path string true "Configuration Type (e.g., notification_settings)"
+// @Success 204 "Configuration successfully deleted (No Content)"
+// @Failure 400 {object} gin.H "Invalid user ID or missing configType"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden: Cannot delete another user's config"
+// @Failure 404 {object} gin.H "ErrUserConfigNotFound"
+// @Failure 500 {object} gin.H "Database error"
+// @Router /users/{id}/config/{configType} [delete]
 func (h *UserConfigHandler) DeleteUserConfig(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {

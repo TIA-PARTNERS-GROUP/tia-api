@@ -14,7 +14,7 @@ import (
 
 type ProjectApplicantHandler struct {
 	applicantService *services.ProjectApplicantService
-	projectService   *services.ProjectService 
+	projectService   *services.ProjectService
 	validate         *validator.Validate
 	routes           *constants.Routes
 }
@@ -64,6 +64,19 @@ func (h *ProjectApplicantHandler) checkProjectManager(c *gin.Context, projectID 
 	return authUserID, nil
 }
 
+// @Summary Apply to Project
+// @Description Submits an application for the authenticated user to join a project. The UserID is taken from the auth context.
+// @Tags projects, applicants
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Project ID"
+// @Success 201 "Application submitted successfully (Created)"
+// @Failure 400 {object} gin.H "Invalid project ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 404 {object} gin.H "ErrProjectNotFound or user not found"
+// @Failure 409 {object} gin.H "ErrAlreadyApplied"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /projects/{id}/apply [post]
 func (h *ProjectApplicantHandler) ApplyToProject(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -97,6 +110,18 @@ func (h *ProjectApplicantHandler) ApplyToProject(c *gin.Context) {
 	c.Status(http.StatusCreated)
 }
 
+// @Summary Withdraw Application
+// @Description Withdraws the authenticated user's application from a project.
+// @Tags projects, applicants
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Project ID"
+// @Success 204 "Application withdrawn successfully (No Content)"
+// @Failure 400 {object} gin.H "Invalid project ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 404 {object} gin.H "ErrApplicationNotFound"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /projects/{id}/apply [delete]
 func (h *ProjectApplicantHandler) WithdrawApplication(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -125,6 +150,19 @@ func (h *ProjectApplicantHandler) WithdrawApplication(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Get Applicants for Project
+// @Description Retrieves a list of all users who have applied to a specific project. Only accessible by the **Project Manager**.
+// @Tags projects, applicants
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Project ID"
+// @Success 200 {array} ports.ProjectApplicantResponse "List of applicants"
+// @Failure 400 {object} gin.H "Invalid project ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden (Not the project manager)"
+// @Failure 404 {object} gin.H "ErrProjectNotFound"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /projects/{id}/applicants [get]
 func (h *ProjectApplicantHandler) GetApplicantsForProject(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -152,6 +190,18 @@ func (h *ProjectApplicantHandler) GetApplicantsForProject(c *gin.Context) {
 	c.JSON(http.StatusOK, applicantResponses)
 }
 
+// @Summary Get Applications for User
+// @Description Retrieves a list of all projects the specified user has applied to. Requires authentication and self-management.
+// @Tags users, applicants
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "User ID"
+// @Success 200 {array} ports.UserApplicationResponse "List of user applications"
+// @Failure 400 {object} gin.H "Invalid user ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /users/{id}/applications [get]
 func (h *ProjectApplicantHandler) GetApplicationsForUser(c *gin.Context) {
 	targetUserIDStr := c.Param(h.routes.ParamKeyID)
 	targetUserID, err := strconv.ParseUint(targetUserIDStr, 10, 32)

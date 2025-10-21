@@ -14,7 +14,7 @@ import (
 
 type ProjectSkillHandler struct {
 	projectSkillService *services.ProjectSkillService
-	projectService      *services.ProjectService 
+	projectService      *services.ProjectService
 	validate            *validator.Validate
 	routes              *constants.Routes
 }
@@ -64,6 +64,22 @@ func (h *ProjectSkillHandler) checkProjectManager(c *gin.Context, projectID uint
 	return authUserID, nil
 }
 
+// @Summary Add Skill Requirement to Project
+// @Description Associates a specific skill (by Skill ID) with a project and sets its importance level. Only accessible by the **Project Manager**.
+// @Tags projects, skills
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Project ID"
+// @Param skill body ports.CreateProjectSkillInput true "Skill details (SkillID, Importance)"
+// @Success 201 {object} ports.ProjectSkillResponse "Skill requirement added successfully"
+// @Failure 400 {object} gin.H "Invalid project ID, skill ID, request body, or validation error"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden (Not the project manager)"
+// @Failure 404 {object} gin.H "ErrProjectNotFound or ErrSkillNotFound"
+// @Failure 409 {object} gin.H "ErrProjectSkillAlreadyExists"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /projects/{id}/skills [post]
 func (h *ProjectSkillHandler) AddProjectSkill(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -104,6 +120,17 @@ func (h *ProjectSkillHandler) AddProjectSkill(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapToProjectSkillResponse(projectSkill))
 }
 
+// @Summary Get Skills Required by Project
+// @Description Retrieves all skill requirements for a specific project.
+// @Tags projects, skills
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Project ID"
+// @Success 200 {object} ports.ProjectSkillsResponse "List of required skills"
+// @Failure 400 {object} gin.H "Invalid project ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /projects/{id}/skills [get]
 func (h *ProjectSkillHandler) GetProjectSkills(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -126,6 +153,22 @@ func (h *ProjectSkillHandler) GetProjectSkills(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToProjectSkillsResponse(skills))
 }
 
+// @Summary Update Project Skill Importance
+// @Description Updates the importance level (required, preferred, optional) for an existing project skill. Only accessible by the **Project Manager**.
+// @Tags projects, skills
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Project ID"
+// @Param skillID path int true "Skill ID"
+// @Param update body ports.UpdateProjectSkillInput true "New importance level"
+// @Success 200 {object} ports.ProjectSkillResponse "Skill importance updated successfully"
+// @Failure 400 {object} gin.H "Invalid ID, request body, or validation error"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden (Not the project manager)"
+// @Failure 404 {object} gin.H "ErrProjectSkillNotFound"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /projects/{id}/skills/{skillID} [put]
 func (h *ProjectSkillHandler) UpdateProjectSkill(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -169,6 +212,20 @@ func (h *ProjectSkillHandler) UpdateProjectSkill(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToProjectSkillResponse(projectSkill))
 }
 
+// @Summary Remove Skill Requirement from Project
+// @Description Removes a skill requirement association from a project. Only accessible by the **Project Manager**.
+// @Tags projects, skills
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Project ID"
+// @Param skillID path int true "Skill ID"
+// @Success 204 "Skill requirement removed successfully (No Content)"
+// @Failure 400 {object} gin.H "Invalid ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden (Not the project manager)"
+// @Failure 404 {object} gin.H "ErrProjectSkillNotFound"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /projects/{id}/skills/{skillID} [delete]
 func (h *ProjectSkillHandler) RemoveProjectSkill(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)

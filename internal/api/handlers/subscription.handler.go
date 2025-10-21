@@ -38,6 +38,19 @@ func (h *SubscriptionHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
+// @Summary Create New Subscription Plan
+// @Description Creates a new recurring subscription plan definition. Requires authentication (implies admin/privileged access).
+// @Tags subscriptions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param plan body ports.CreateSubscriptionInput true "Subscription plan details (Name, Price, ValidDays/ValidMonths)"
+// @Success 201 {object} ports.SubscriptionResponse "Subscription plan created successfully"
+// @Failure 400 {object} gin.H "Invalid request body or validation failed"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 409 {object} gin.H "ErrSubscriptionNameExists"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /subscriptions [post]
 func (h *SubscriptionHandler) CreateSubscription(c *gin.Context) {
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
@@ -67,6 +80,18 @@ func (h *SubscriptionHandler) CreateSubscription(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapSubscriptionToResponse(subscription))
 }
 
+// @Summary Get Subscription Plan by ID
+// @Description Retrieves a specific subscription plan definition by its unique ID.
+// @Tags subscriptions
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Subscription Plan ID"
+// @Success 200 {object} ports.SubscriptionResponse "Subscription plan retrieved successfully"
+// @Failure 400 {object} gin.H "Invalid subscription ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 404 {object} gin.H "ErrSubscriptionNotFound"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /subscriptions/{id} [get]
 func (h *SubscriptionHandler) GetSubscriptionByID(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -93,6 +118,20 @@ func (h *SubscriptionHandler) GetSubscriptionByID(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapSubscriptionToResponse(subscription))
 }
 
+// @Summary Subscribe User to a Plan
+// @Description Creates a new UserSubscription record for the authenticated user, starting their access to a plan. Enforces self-subscription.
+// @Tags subscriptions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param subscription body ports.UserSubscribeInput true "Subscription details (UserID and SubscriptionID)"
+// @Success 201 {object} ports.UserSubscriptionResponse "User subscribed successfully"
+// @Failure 400 {object} gin.H "Invalid request body or validation failed"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden: Cannot subscribe for another user"
+// @Failure 404 {object} gin.H "ErrSubscriptionNotFound or ErrUserNotFound"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /subscriptions/subscribe [post]
 func (h *SubscriptionHandler) SubscribeUser(c *gin.Context) {
 	authUserID, err := h.getAuthUserID(c)
 	if err != nil {

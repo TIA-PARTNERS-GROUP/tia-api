@@ -38,6 +38,19 @@ func (h *SkillHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
+// @Summary Get All Skills with Filters
+// @Description Retrieves a list of all skills, with options to filter by category, activity status, or search term.
+// @Tags skills
+// @Produce json
+// @Security BearerAuth
+// @Param category query string false "Filter by skill category"
+// @Param active query bool false "Filter by active status (true/false)"
+// @Param search query string false "Search by name, category, or description"
+// @Success 200 {array} ports.SkillResponse "List of skills"
+// @Failure 400 {object} gin.H "Invalid query parameters"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /skills [get]
 func (h *SkillHandler) GetSkills(c *gin.Context) {
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
@@ -63,6 +76,18 @@ func (h *SkillHandler) GetSkills(c *gin.Context) {
 	c.JSON(http.StatusOK, responses)
 }
 
+// @Summary Get Skill by ID
+// @Description Retrieves a specific skill record by its unique ID.
+// @Tags skills
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Skill ID"
+// @Success 200 {object} ports.SkillResponse "Skill retrieved successfully"
+// @Failure 400 {object} gin.H "Invalid skill ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 404 {object} gin.H "ErrSkillNotFound"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /skills/{id} [get]
 func (h *SkillHandler) GetSkillByID(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -89,6 +114,19 @@ func (h *SkillHandler) GetSkillByID(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapSkillToResponse(skill))
 }
 
+// @Summary Create New Skill
+// @Description Creates a new global skill record.
+// @Tags skills
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param skill body ports.CreateSkillInput true "Skill creation details (Name, Category)"
+// @Success 201 {object} ports.SkillResponse "Skill created successfully"
+// @Failure 400 {object} gin.H "Invalid request body or validation failed"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 409 {object} gin.H "ErrSkillNameExists"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /skills [post]
 func (h *SkillHandler) CreateSkill(c *gin.Context) {
 	if _, err := h.getAuthUserID(c); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
@@ -118,6 +156,21 @@ func (h *SkillHandler) CreateSkill(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapSkillToResponse(skill))
 }
 
+// @Summary Update Skill
+// @Description Updates the details of an existing skill (e.g., category, name).
+// @Tags skills
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Skill ID"
+// @Param update body ports.UpdateSkillInput true "Fields to update (Category, Name, Active)"
+// @Success 200 {object} ports.SkillResponse "Skill updated successfully"
+// @Failure 400 {object} gin.H "Invalid skill ID or request body"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 404 {object} gin.H "ErrSkillNotFound"
+// @Failure 409 {object} gin.H "ErrSkillNameExists"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /skills/{id} [put]
 func (h *SkillHandler) UpdateSkill(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -154,6 +207,19 @@ func (h *SkillHandler) UpdateSkill(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapSkillToResponse(skill))
 }
 
+// @Summary Delete Skill
+// @Description Deletes a specific skill record. Fails if the skill is currently in use by a user or project.
+// @Tags skills
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Skill ID"
+// @Success 204 "Skill deleted successfully (No Content)"
+// @Failure 400 {object} gin.H "Invalid skill ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 404 {object} gin.H "ErrSkillNotFound"
+// @Failure 409 {object} gin.H "ErrSkillInUse"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /skills/{id} [delete]
 func (h *SkillHandler) DeleteSkill(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -180,6 +246,18 @@ func (h *SkillHandler) DeleteSkill(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Toggle Skill Status
+// @Description Toggles the active status of a skill (Active -> Inactive, or vice versa).
+// @Tags skills
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Skill ID"
+// @Success 200 {object} ports.SkillResponse "Skill status toggled successfully"
+// @Failure 400 {object} gin.H "Invalid skill ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 404 {object} gin.H "ErrSkillNotFound"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /skills/{id}/toggle-status [patch]
 func (h *SkillHandler) ToggleSkillStatus(c *gin.Context) {
 	idStr := c.Param(h.routes.ParamKeyID)
 	id, err := strconv.ParseUint(idStr, 10, 32)

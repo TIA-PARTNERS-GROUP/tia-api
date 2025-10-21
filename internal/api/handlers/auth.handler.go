@@ -2,13 +2,14 @@ package handlers
 
 import (
 	"errors"
+	"net/http"
+
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/models"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"net/http"
 )
 
 type AuthHandler struct {
@@ -24,6 +25,18 @@ func NewAuthHandler(authService *services.AuthService, routes *constants.Routes)
 		routes:      routes,
 	}
 }
+
+// @Summary User Login
+// @Description Authenticates a user with email and password, creating a new session and returning a JWT token.
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param login body ports.LoginInput true "Login Credentials"
+// @Success 200 {object} ports.LoginResponse "Successful login, returns user data and token"
+// @Failure 400 {object} map[string]interface{} "Invalid request body or validation error"
+// @Failure 401 {object} map[string]interface{} "Invalid email/password or account deactivated"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /auth/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
 	var input ports.LoginInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -48,6 +61,16 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, response)
 }
+
+// @Summary User Logout
+// @Description Invalidates the current user session (token).
+// @Tags auth
+// @Produce json
+// @Security BearerAuth
+// @Success 204 "Successfully logged out (No Content)"
+// @Failure 401 {object} map[string]interface{}  "Unauthorized or missing token"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /auth/logout [post]
 func (h *AuthHandler) Logout(c *gin.Context) {
 
 	userIDVal, _ := c.Get(h.routes.ContextKeyUserID)
@@ -65,6 +88,16 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	}
 	c.Status(http.StatusNoContent)
 }
+
+// @Summary Get Current User
+// @Description Retrieves the profile of the currently authenticated user based on the provided JWT token.
+// @Tags auth
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} ports.UserResponse "User profile retrieved successfully"
+// @Failure 401 {object} map[string]interface{} "Unauthorized or token missing/invalid"
+// @Failure 500 {object} map[string]interface{} "Internal server error or invalid context"
+// @Router /auth/me [get]
 func (h *AuthHandler) GetCurrentUser(c *gin.Context) {
 
 	userVal, exists := c.Get(h.routes.ContextKeyUser)

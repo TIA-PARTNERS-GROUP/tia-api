@@ -57,6 +57,22 @@ func (h *UserSkillHandler) checkUserOwnership(c *gin.Context) (uint, uint, *port
 	return authUserID, uint(targetUserID), nil
 }
 
+// @Summary Add User Skill
+// @Description Adds a new skill and its proficiency level to the authenticated user's profile. Enforces self-management.
+// @Tags users, skills
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "User ID"
+// @Param skill body ports.CreateUserSkillInput true "Skill details (SkillID, ProficiencyLevel)"
+// @Success 201 {object} ports.UserSkillResponse "Skill added successfully"
+// @Failure 400 {object} gin.H "Invalid request body or validation error"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
+// @Failure 404 {object} gin.H "ErrUserNotFound or ErrSkillNotFound"
+// @Failure 409 {object} gin.H "ErrUserSkillAlreadyExists"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /users/{id}/skills [post]
 func (h *UserSkillHandler) AddUserSkill(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {
@@ -90,6 +106,17 @@ func (h *UserSkillHandler) AddUserSkill(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapToUserSkillResponse(userSkill))
 }
 
+// @Summary Get User Skills
+// @Description Retrieves all skills and proficiency levels associated with the user. Enforces self-management.
+// @Tags users, skills
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "User ID"
+// @Success 200 {object} ports.UserSkillsResponse "List of user skills"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /users/{id}/skills [get]
 func (h *UserSkillHandler) GetUserSkills(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {
@@ -106,6 +133,22 @@ func (h *UserSkillHandler) GetUserSkills(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToUserSkillsResponse(skills))
 }
 
+// @Summary Update User Skill Proficiency
+// @Description Updates the proficiency level for an existing skill associated with the user. Enforces self-management.
+// @Tags users, skills
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "User ID"
+// @Param skillID path int true "Skill ID"
+// @Param update body ports.UpdateUserSkillInput true "New proficiency level"
+// @Success 200 {object} ports.UserSkillResponse "Proficiency updated successfully"
+// @Failure 400 {object} gin.H "Invalid ID, request body, or validation error"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
+// @Failure 404 {object} gin.H "ErrUserSkillNotFound"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /users/{id}/skills/{skillID} [put]
 func (h *UserSkillHandler) UpdateUserSkill(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {
@@ -144,6 +187,20 @@ func (h *UserSkillHandler) UpdateUserSkill(c *gin.Context) {
 	c.JSON(http.StatusOK, ports.MapToUserSkillResponse(userSkill))
 }
 
+// @Summary Remove User Skill
+// @Description Removes a skill association from the user's profile. Enforces self-management.
+// @Tags users, skills
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "User ID"
+// @Param skillID path int true "Skill ID"
+// @Success 204 "Skill removed successfully (No Content)"
+// @Failure 400 {object} gin.H "Invalid ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden (Not the target user)"
+// @Failure 404 {object} gin.H "ErrUserSkillNotFound"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /users/{id}/skills/{skillID} [delete]
 func (h *UserSkillHandler) RemoveUserSkill(c *gin.Context) {
 	_, targetUserID, apiErr := h.checkUserOwnership(c)
 	if apiErr != nil {

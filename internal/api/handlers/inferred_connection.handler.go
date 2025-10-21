@@ -1,31 +1,47 @@
 package handlers
+
 import (
 	"net/http"
 	"strconv"
-	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants" 
+
+	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/constants"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/core/services"
 	"github.com/TIA-PARTNERS-GROUP/tia-api/internal/ports"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
+
 type InferredConnectionHandler struct {
 	service  *services.InferredConnectionService
 	validate *validator.Validate
-	routes   *constants.Routes 
+	routes   *constants.Routes
 }
+
 func NewInferredConnectionHandler(service *services.InferredConnectionService, routes *constants.Routes) *InferredConnectionHandler {
 	return &InferredConnectionHandler{
 		service:  service,
 		validate: validator.New(),
-		routes:   routes, 
+		routes:   routes,
 	}
 }
+
+// @Summary Create Inferred Connection Record
+// @Description Creates a new record for a potential connection inferred by a model. Intended for internal/system use.
+// @Tags inferred_connections
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param connection body ports.CreateInferredConnectionInput true "Inferred connection details"
+// @Success 201 {object} ports.InferredConnectionResponse "Connection record created successfully"
+// @Failure 400 {object} gin.H "Invalid request body or validation error"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /inferred-connections [post]
 func (h *InferredConnectionHandler) CreateInferredConnection(c *gin.Context) {
-	
-	
+
 	_, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
-		
+
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
@@ -45,15 +61,27 @@ func (h *InferredConnectionHandler) CreateInferredConnection(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, ports.MapInferredConnectionToResponse(connection))
 }
+
+// @Summary Get Inferred Connections by Source Entity
+// @Description Retrieves all potential connections inferred from a specific source entity (e.g., a Project or Business).
+// @Tags inferred_connections
+// @Produce json
+// @Security BearerAuth
+// @Param entityType path string true "Type of the source entity (e.g., business, project)"
+// @Param entityID path int true "ID of the source entity"
+// @Success 200 {array} ports.InferredConnectionResponse "List of inferred connections"
+// @Failure 400 {object} gin.H "Invalid entity ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /inferred-connections/source/{entityType}/{entityID} [get]
 func (h *InferredConnectionHandler) GetConnectionsForSource(c *gin.Context) {
-	
-	
+
 	_, exists := c.Get(h.routes.ContextKeyUserID)
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
-	
+
 	entityType := c.Param(h.routes.ParamKeyEntityType)
 	entityIDStr := c.Param(h.routes.ParamKeyEntityID)
 	entityID, err := strconv.ParseUint(entityIDStr, 10, 32)

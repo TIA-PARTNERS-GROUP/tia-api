@@ -14,7 +14,7 @@ import (
 
 type ProjectRegionHandler struct {
 	projectRegionService *services.ProjectRegionService
-	projectService       *services.ProjectService 
+	projectService       *services.ProjectService
 	validate             *validator.Validate
 	routes               *constants.Routes
 }
@@ -64,6 +64,21 @@ func (h *ProjectRegionHandler) checkProjectManager(c *gin.Context, projectID uin
 	return authUserID, nil
 }
 
+// @Summary Add Region to Project
+// @Description Associates a geographical region (identified by its short code/ID) with a project. Only accessible by the **Project Manager**.
+// @Tags projects, regions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Project ID"
+// @Param region body ports.AddProjectRegionInput true "Region details (RegionID)"
+// @Success 201 {object} ports.ProjectRegionResponse "Region associated successfully"
+// @Failure 400 {object} gin.H "Invalid project ID, request body, or validation error"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden (Not the project manager)"
+// @Failure 409 {object} gin.H "ErrRegionAlreadyAdded"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /projects/{id}/regions [post]
 func (h *ProjectRegionHandler) AddRegionToProject(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -104,6 +119,20 @@ func (h *ProjectRegionHandler) AddRegionToProject(c *gin.Context) {
 	c.JSON(http.StatusCreated, ports.MapProjectRegionToResponse(association))
 }
 
+// @Summary Remove Region from Project
+// @Description Dissociates a geographical region from a project. Only accessible by the **Project Manager**.
+// @Tags projects, regions
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Project ID"
+// @Param regionID path string true "Region ID (e.g., USA, AUS)"
+// @Success 204 "Region removed successfully (No Content)"
+// @Failure 400 {object} gin.H "Invalid project ID or missing regionID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden (Not the project manager)"
+// @Failure 404 {object} gin.H "ErrProjectRegionNotFound or ErrProjectNotFound"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /projects/{id}/regions/{regionID} [delete]
 func (h *ProjectRegionHandler) RemoveRegionFromProject(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)
@@ -137,6 +166,17 @@ func (h *ProjectRegionHandler) RemoveRegionFromProject(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Get Regions for Project
+// @Description Retrieves all geographical regions associated with a specific project.
+// @Tags projects, regions
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Project ID"
+// @Success 200 {array} ports.ProjectRegionResponse "List of regions"
+// @Failure 400 {object} gin.H "Invalid project ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /projects/{id}/regions [get]
 func (h *ProjectRegionHandler) GetRegionsForProject(c *gin.Context) {
 	projectIDStr := c.Param(h.routes.ParamKeyID)
 	projectID, err := strconv.ParseUint(projectIDStr, 10, 32)

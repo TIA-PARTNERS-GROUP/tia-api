@@ -35,6 +35,18 @@ func (h *UserSubscriptionHandler) getAuthUserID(c *gin.Context) (uint, error) {
 	return authUserID, nil
 }
 
+// @Summary Get Active Subscriptions for User
+// @Description Retrieves all currently active user subscription records (those not yet expired). Enforces self-management.
+// @Tags users, subscriptions
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Target User ID (must match authenticated user)"
+// @Success 200 {array} ports.UserSubscriptionResponse "List of active user subscriptions"
+// @Failure 400 {object} gin.H "Invalid user ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden: Cannot view another user's subscriptions"
+// @Failure 500 {object} gin.H "Internal server error"
+// @Router /users/{id}/subscriptions [get]
 func (h *UserSubscriptionHandler) GetSubscriptionsForUser(c *gin.Context) {
 	targetUserIDStr := c.Param(h.routes.ParamKeyID)
 	targetUserID, err := strconv.ParseUint(targetUserIDStr, 10, 32)
@@ -68,6 +80,20 @@ func (h *UserSubscriptionHandler) GetSubscriptionsForUser(c *gin.Context) {
 	c.JSON(http.StatusOK, responses)
 }
 
+// @Summary Cancel User Subscription
+// @Description Cancels a specific user subscription record by deleting it from the database. Enforces self-management and ownership of the record.
+// @Tags users, subscriptions
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Target User ID (must match authenticated user)"
+// @Param userSubscriptionID path int true "User Subscription Record ID to cancel"
+// @Success 204 "Subscription cancelled successfully (No Content)"
+// @Failure 400 {object} gin.H "Invalid user or subscription ID"
+// @Failure 401 {object} gin.H "Unauthorized"
+// @Failure 403 {object} gin.H "Forbidden: You are not the owner of this record"
+// @Failure 404 {object} gin.H "ErrUserSubscriptionNotFound"
+// @Failure 500 {object} gin.H "Internal error during cancellation"
+// @Router /users/{id}/subscriptions/{userSubscriptionID} [delete]
 func (h *UserSubscriptionHandler) CancelSubscription(c *gin.Context) {
 	targetUserIDStr := c.Param(h.routes.ParamKeyID)
 	targetUserID, err := strconv.ParseUint(targetUserIDStr, 10, 32)

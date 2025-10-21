@@ -71,15 +71,15 @@ func main() {
 	notificationService := services.NewNotificationService(db)
 	projectService := services.NewProjectService(db)
 	projectApplicantService := services.NewProjectApplicantService(db)
-	projectMemberService := services.NewProjectMemberService(db)       
-	projectRegionService := services.NewProjectRegionService(db)       
-	projectSkillService := services.NewProjectSkillService(db)         
-	publicationService := services.NewPublicationService(db)           
-	skillService := services.NewSkillService(db)                       
-	subscriptionService := services.NewSubscriptionService(db)         
-	userSubscriptionService := services.NewUserSubscriptionService(db) 
-	userConfigService := services.NewUserConfigService(db)             
-	userSkillService := services.NewUserSkillService(db)               
+	projectMemberService := services.NewProjectMemberService(db)
+	projectRegionService := services.NewProjectRegionService(db)
+	projectSkillService := services.NewProjectSkillService(db)
+	publicationService := services.NewPublicationService(db)
+	skillService := services.NewSkillService(db)
+	subscriptionService := services.NewSubscriptionService(db)
+	userSubscriptionService := services.NewUserSubscriptionService(db)
+	userConfigService := services.NewUserConfigService(db)
+	userSkillService := services.NewUserSkillService(db)
 
 	userHandler := handlers.NewUserHandler(userService, &constants.AppRoutes)
 	authHandler := handlers.NewAuthHandler(authService, &constants.AppRoutes)
@@ -94,16 +94,16 @@ func main() {
 	l2eHandler := handlers.NewL2EHandler(l2eResponseService, &constants.AppRoutes)
 	notificationHandler := handlers.NewNotificationHandler(notificationService, &constants.AppRoutes)
 	projectHandler := handlers.NewProjectHandler(projectService, &constants.AppRoutes)
-	projectApplicantHandler := handlers.NewProjectApplicantHandler(projectApplicantService, projectService, &constants.AppRoutes) 
-	projectMemberHandler := handlers.NewProjectMemberHandler(projectMemberService, projectService, &constants.AppRoutes)          
-	projectRegionHandler := handlers.NewProjectRegionHandler(projectRegionService, projectService, &constants.AppRoutes)          
-	projectSkillHandler := handlers.NewProjectSkillHandler(projectSkillService, projectService, &constants.AppRoutes)             
-	publicationHandler := handlers.NewPublicationHandler(publicationService, &constants.AppRoutes)                                
-	skillHandler := handlers.NewSkillHandler(skillService, &constants.AppRoutes)                                                  
-	subscriptionHandler := handlers.NewSubscriptionHandler(subscriptionService, &constants.AppRoutes)                             
-	userSubscriptionHandler := handlers.NewUserSubscriptionHandler(userSubscriptionService, &constants.AppRoutes)                 
-	userConfigHandler := handlers.NewUserConfigHandler(userConfigService, &constants.AppRoutes)                                   
-	userSkillHandler := handlers.NewUserSkillHandler(userSkillService, &constants.AppRoutes)                                      
+	projectApplicantHandler := handlers.NewProjectApplicantHandler(projectApplicantService, projectService, &constants.AppRoutes)
+	projectMemberHandler := handlers.NewProjectMemberHandler(projectMemberService, projectService, &constants.AppRoutes)
+	projectRegionHandler := handlers.NewProjectRegionHandler(projectRegionService, projectService, &constants.AppRoutes)
+	projectSkillHandler := handlers.NewProjectSkillHandler(projectSkillService, projectService, &constants.AppRoutes)
+	publicationHandler := handlers.NewPublicationHandler(publicationService, &constants.AppRoutes)
+	skillHandler := handlers.NewSkillHandler(skillService, &constants.AppRoutes)
+	subscriptionHandler := handlers.NewSubscriptionHandler(subscriptionService, &constants.AppRoutes)
+	userSubscriptionHandler := handlers.NewUserSubscriptionHandler(userSubscriptionService, &constants.AppRoutes)
+	userConfigHandler := handlers.NewUserConfigHandler(userConfigService, &constants.AppRoutes)
+	userSkillHandler := handlers.NewUserSkillHandler(userSkillService, &constants.AppRoutes)
 
 	authMiddleware := middleware.AuthMiddleware(authService, &constants.AppRoutes)
 
@@ -122,24 +122,24 @@ func main() {
 		InferredConnectionHandler:     inferredConnectionHandler,
 		L2EHandler:                    l2eHandler,
 		NotificationHandler:           notificationHandler,
-		ProjectApplicantHandler:       projectApplicantHandler, 
-		ProjectMemberHandler:          projectMemberHandler,    
-		ProjectRegionHandler:          projectRegionHandler,    
-		ProjectSkillHandler:           projectSkillHandler,     
-		PublicationHandler:            publicationHandler,      
-		SkillHandler:                  skillHandler,            
-		SubscriptionHandler:           subscriptionHandler,     
-		UserSubscriptionHandler:       userSubscriptionHandler, 
-		UserConfigHandler:             userConfigHandler,       
-		UserSkillHandler:              userSkillHandler,        
+		ProjectApplicantHandler:       projectApplicantHandler,
+		ProjectMemberHandler:          projectMemberHandler,
+		ProjectRegionHandler:          projectRegionHandler,
+		ProjectSkillHandler:           projectSkillHandler,
+		PublicationHandler:            publicationHandler,
+		SkillHandler:                  skillHandler,
+		SubscriptionHandler:           subscriptionHandler,
+		UserSubscriptionHandler:       userSubscriptionHandler,
+		UserConfigHandler:             userConfigHandler,
+		UserSkillHandler:              userSkillHandler,
 		Routes:                        constants.AppRoutes,
 	}
 	router := gin.Default()
 
 	routes.RegisterRoutes(router, deps)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	log.Println("Starting server on http:
-	log.Println("Swagger UI available on http:
+	log.Println("Starting server on http:")
+	log.Println("Swagger UI available on http:")
 	if err := router.Run(":8080"); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
