@@ -3,16 +3,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-
     container_name: tia_api_app
     restart: unless-stopped
-
     env_file:
       - ./.env
     ports:
       - "8080:8080"
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     environment:
       DATABASE_URL: "root:tia-dev-password@tcp(database:3306)/tia-dev?parseTime=true"
 
@@ -27,19 +26,144 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    command: ['--log-bin=mysql-bin', '--binlog_format=ROW', '--server-id=1']
 
-  docs:
-    build:
-      context: ./docs
-      dockerfile: Dockerfile
-    container_name: tia_api_docs
+    healthcheck:
+      test: ["CMD-SHELL", "ss -tuln | grep :3306 || exit 1"]
+      timeout: 5s
+      retries: 3
+      interval: 5s
+      start_period: 10s
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_logs:/var/lib/zookeeper/log
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      timeout: 20s
+      retries: 10
+
+  kafka-connect:
+    image: debezium/connect:2.4
+    container_name: kafka-connect
+    depends_on:
+      - kafka
+    ports:
+      - "8083:8083"
+    environment:
+      BOOTSTRAP_SERVERS: kafka:29092
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: my_connect_configs
+      OFFSET_STORAGE_TOPIC: my_connect_offsets
+      STATUS_STORAGE_TOPIC: my_connect_statuses
+      CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      STATUS_STORAGE_REPLICATION_FACTOR: 1
+      KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
+    volumes:
+      - kafka_connect_data:/kafka/connect
+
+  memgraph:
+    image: memgraph/memgraph-mage
+    container_name: memgraph
     restart: unless-stopped
     ports:
-      - "8081:8080"
-    depends_on:
-      - api
+      - "7687:7687"
     volumes:
-      - ./docs/output:/app/output
+      - memgraph_data:/var/lib/memgraph
+      - memgraph_logs:/var/log/memgraph
+      - memgraph_etc:/etc/memgraph
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'RETURN 0;' | mgconsole || exit 1"]
+      timeout: 5s
+      retries: 3
+      interval: 5s
+      start_period: 10s
+
+  memgraph-lab:
+    image: memgraph/lab
+    container_name: memgraph-lab
+    restart: unless-stopped
+    ports:
+      - "7444:3000"
+    environment:
+      - MEMGRAPH_HOST=memgraph
+      - MEMGRAPH_PORT=7687
+    depends_on:
+      memgraph:
+        condition: service_healthy
+
+  kg-builder:
+    build:
+      context: .
+      dockerfile: cdc/kg-builder/Dockerfile.kg-builder
+    container_name: kg-builder
+    restart: unless-stopped
+    depends_on:
+      kafka:
+        condition: service_healthy
+      memgraph:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKERS: kafka:29092
+      MEMGRAPH_HOST: memgraph
+      MEMGRAPH_PORT: 7687
+      DATABASE_URL: "root:tia-dev-password@tcp(database:3306)/tia-dev?parseTime=true"
+
+  connection-analyzer:
+    build:
+      context: .
+      dockerfile: cdc/connection-analyzer/Dockerfile.connection-analyzer
+    container_name: connection-analyzer
+    restart: unless-stopped
+    depends_on:
+      memgraph:
+        condition: service_healthy
+      api:
+        condition: service_started
+    environment:
+      MEMGRAPH_HOST: memgraph
+      MEMGRAPH_PORT: 7687
+      API_HOST: api
+      API_PORT: 8080
+    ports:
+      - "8082:8082"
 
 volumes:
   db_data:
+  
+  zookeeper_data:
+  zookeeper_logs:
+  kafka_data:
+  kafka_connect_data:
+  memgraph_data:
+  memgraph_logs:
+  memgraph_etc:

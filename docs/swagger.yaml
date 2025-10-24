@@ -228,7 +228,6 @@ definitions:
       id:
         type: integer
       response:
-        description: 'FIX: Apply swaggertype:"object"'
         type: object
       user:
         $ref: '#/definitions/models.User'
@@ -576,8 +575,6 @@ definitions:
   models.UserConfig:
     properties:
       config:
-        description: 'FIX: Apply swaggertype:"object" (already done, confirming for
-          completeness)'
         type: object
       configType:
         type: string
@@ -595,7 +592,6 @@ definitions:
       dailyActivityID:
         type: integer
       date:
-        description: 'FIX: Apply swaggertype:"string"'
         type: string
       progress:
         type: integer
@@ -2455,6 +2451,194 @@ paths:
       summary: Reject Pending Connection
       tags:
       - business_connections
+  /connections/alliance/{userId}:
+    get:
+      description: Retrieves alliance partners for a user based on skill compatibility
+        and project collaboration potential
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Alliance partners retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Alliance Partners
+      tags:
+      - connections
+  /connections/analysis/{userId}:
+    get:
+      description: Retrieves comprehensive connection analysis for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Connection analysis retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Connection Analysis
+      tags:
+      - connections
+  /connections/complementary/{userId}:
+    get:
+      description: Retrieves complementary business partners for a user based on business
+        type compatibility
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Complementary partners retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Complementary Partners
+      tags:
+      - connections
+  /connections/mastermind/{userId}:
+    get:
+      description: Retrieves mastermind partners for a user based on complementary
+        skills and business phase
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Mastermind partners retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get Mastermind Partners
+      tags:
+      - connections
+  /connections/recommendations/{userId}:
+    get:
+      description: Retrieves all types of connection recommendations for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All recommendations retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid user ID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get All Connection Recommendations
+      tags:
+      - connections
   /daily-activities:
     get:
       description: Retrieves a list of all defined daily activities.

@@ -31,6 +31,7 @@ type RouterDependencies struct {
 	UserSubscriptionHandler       *handlers.UserSubscriptionHandler 
 	UserConfigHandler             *handlers.UserConfigHandler       
 	UserSkillHandler              *handlers.UserSkillHandler        
+	ConnectionHandler             *handlers.ConnectionHandler
 	Routes                        constants.Routes
 }
 
@@ -43,6 +44,7 @@ func RegisterRoutes(router *gin.Engine, deps *RouterDependencies) {
 	SetupProjectRoutes(api, deps)
 	SetupBusinessTagRoutes(api, deps)
 	SetupConnectionRoutes(api, deps)
+	SetupConnectionRecommendationRoutes(api, deps)
 	SetupDailyActivityRoutes(api, deps)
 	SetupEventRoutes(api, deps)
 	SetupFeedbackRoutes(api, deps)
@@ -51,5 +53,5 @@ func RegisterRoutes(router *gin.Engine, deps *RouterDependencies) {
 	SetupNotificationRoutes(api, deps)
 	SetupPublicationRoutes(api, deps)  
 	SetupSubscriptionRoutes(api, deps) 
-	SetupSkillRoutes(api, deps)        
+	SetupSkillRoutes(api, deps)
 }

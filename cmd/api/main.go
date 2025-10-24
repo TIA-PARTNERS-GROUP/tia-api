@@ -116,6 +116,7 @@ func main() {
 	userSubscriptionHandler := handlers.NewUserSubscriptionHandler(userSubscriptionService, &constants.AppRoutes)
 	userConfigHandler := handlers.NewUserConfigHandler(userConfigService, &constants.AppRoutes)
 	userSkillHandler := handlers.NewUserSkillHandler(userSkillService, &constants.AppRoutes)
+	connectionHandler := handlers.NewConnectionHandler(&constants.AppRoutes)
 
 	authMiddleware := middleware.AuthMiddleware(authService, &constants.AppRoutes)
 
@@ -144,6 +145,7 @@ func main() {
 		UserSubscriptionHandler:       userSubscriptionHandler,
 		UserConfigHandler:             userConfigHandler,
 		UserSkillHandler:              userSkillHandler,
+		ConnectionHandler:             connectionHandler,
 		Routes:                        constants.AppRoutes,
 	}
 	router := gin.Default()
